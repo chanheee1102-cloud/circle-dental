@@ -1,0 +1,171 @@
+@import 'tailwindcss';
+
+/* Pretendard — 한글 가독성이 시스템 폰트보다 확연히 낫다. 실패 시 시스템 폰트로 폴백. */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+/**
+ * 동그라미치과의원 디자인 토큰.
+ *
+ * ★ 색 방향 전환 (2026-08-13 오너)
+ *   기존: 로즈·핑크 계열 → 변경: **웜 뉴트럴 다크(토프/차콜)**.
+ *   근거는 원본 사이트의 드롭다운 메뉴 바 색이다. 핑크가 전면에 나오면 심미·미용 쪽으로
+ *   읽히는데, 이 병원의 축은 자연치아 보존·근관치료·임플란트라 임상 쪽 인상이 맞다.
+ *   로즈는 완전히 버리지 않고 **강조(gold-*)로만** 남긴다 — 원본의 온기를 잃지 않으려고.
+ *
+ * ★ brand-700(#443c37)이 기준색이다. 원본 드롭다운 바와 같은 계열이고,
+ *   헤더·버튼·푸터가 이 색을 쓴다. brand-900 은 가장 어두운 면(푸터·사회공헌).
+ *
+ * ★ 라운드 축소
+ *   카드 1.5rem → 0.75rem, 버튼 pill(9999px) → 0.5rem.
+ *   둥근 알약 버튼은 소비재 느낌이 강하다. 의료는 각이 조금 살아 있어야 신뢰가 읽힌다.
+ *   ⚠️ 단 **원형 요소(로고 마크·아이콘 배지·순번 원)는 그대로 둔다** — 병원 이름이
+ *      '동그라미'라 그 모티프까지 없애면 브랜드가 사라진다. 각을 준 것은 면(카드·버튼)뿐이다.
+ */
+@theme {
+  --color-ink: #2a2724;
+  --color-ink-soft: #625b55;
+  --color-ink-muted: #948c85;
+
+  /* 웜 뉴트럴 — 따뜻한 회갈색 축 */
+  --color-brand-50: #f8f6f4;
+  --color-brand-100: #eeeae6;
+  --color-brand-200: #dcd5cf;
+  --color-brand-300: #bcb2aa;
+  --color-brand-400: #948a81;
+  --color-brand-500: #6f665f;
+  --color-brand-600: #565049;
+  --color-brand-700: #443c37; /* ← 원본 드롭다운 바 계열. 기준색 */
+  --color-brand-800: #332e2a;
+  --color-brand-900: #22201d;
+
+  /* 강조 — 원본의 로즈/테라코타를 여기에만 남긴다. 면적을 크게 쓰지 말 것. */
+  --color-gold-400: #c08a72;
+  --color-gold-500: #a8735c;
+  --color-gold-600: #8a5c47;
+
+  --color-cream: #faf8f6;
+  --color-cream-deep: #f1ece7;
+
+  --font-sans:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Malgun Gothic',
+    sans-serif;
+
+  /**
+   * 반경 스케일 — Tailwind 기본값을 통째로 낮춘다.
+   * 이렇게 하면 코드의 rounded-xl / rounded-2xl 을 그대로 두고도 전체가 덜 둥글어진다.
+   */
+  --radius-sm: 0.1875rem;
+  --radius-md: 0.3125rem;
+  --radius-lg: 0.4375rem;
+  --radius-xl: 0.5625rem;
+  --radius-2xl: 0.6875rem;
+  --radius-3xl: 0.875rem;
+
+  /* 두 겹 그림자 — 가까운 그림자로 윤곽을, 먼 그림자로 깊이를 만든다. */
+  --shadow-soft: 0 1px 2px rgba(34, 32, 29, 0.05), 0 8px 24px -10px rgba(34, 32, 29, 0.14);
+  --shadow-lift: 0 2px 4px rgba(34, 32, 29, 0.06), 0 20px 44px -14px rgba(34, 32, 29, 0.22);
+  --shadow-btn: 0 2px 6px rgba(68, 60, 55, 0.24), 0 12px 26px -10px rgba(68, 60, 55, 0.4);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all; /* 한국어 단어 중간에서 줄이 끊기지 않게. */
+}
+
+/**
+ * 디스플레이 타이포.
+ *
+ * ★ 900 → 800 으로 낮췄다. Pretendard Black 은 큰 크기에서 획이 뭉쳐 둥글게 읽힌다.
+ *   800(ExtraBold)이 같은 무게감을 유지하면서 자획이 또렷해 전문적으로 보인다.
+ * ★ 자간을 좁히면 덩어리로 읽혀 임팩트가 산다. 한글은 라틴보다 더 좁혀야 같은 인상이 난다.
+ */
+.display {
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  line-height: 1.16;
+}
+
+.display-sm {
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  line-height: 1.26;
+}
+
+/* 히어로 문구용 — 배경 영상/사진 위에서도 읽히도록 아주 옅은 그림자를 깐다. */
+.on-photo {
+  text-shadow: 0 2px 20px rgba(34, 32, 29, 0.4), 0 1px 3px rgba(34, 32, 29, 0.3);
+}
+
+/* 본문 링크는 밑줄로 구분 — 색만으로 구분하면 색각 이상 사용자가 링크를 놓친다. */
+.prose-body a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/**
+ * 히어로 배경 영상 — 컨테이너를 꽉 채우는 cover 배치.
+ *
+ * ★ 단위를 vw/vh 로 통일해야 계산이 맞는다. 퍼센트(부모 기준)와 섞으면
+ *   두 축의 기준이 어긋나 영상이 가운데만 차고 양옆에 배경이 드러난다(실제로 겪음).
+ * ★ 원리 — 16:9 영상을 화면비와 무관하게 채우려면 두 경우를 모두 덮어야 한다.
+ *   넓적하면 너비 기준, 길쭉하면 높이 기준. 둘 중 큰 값이 이겨 항상 넘치고,
+ *   넘친 부분은 부모의 overflow:hidden 이 자른다.
+ * ⚠️ 부모에 position:relative(또는 absolute) + overflow:hidden 이 반드시 있어야 한다.
+ */
+.video-cover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 0;
+  pointer-events: none;
+}
+
+/* 16:9 (w/h 1.778) */
+.video-cover-16x9 {
+  width: 100vw;
+  height: 56.25vw;
+  min-width: 177.78vh;
+  min-height: 100vh;
+}
+
+/* 4:5 세로 (w/h 0.8) — 모바일 히어로 */
+.video-cover-4x5 {
+  width: 100vw;
+  height: 125vw;
+  min-width: 80vh;
+  min-height: 100vh;
+}
+
+/* 섹션 사이 얇은 그라데이션 구분선 — 딱딱한 1px 선보다 깊이가 산다. */
+.rule-fade {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-brand-200) 18%,
+    var(--color-brand-200) 82%,
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

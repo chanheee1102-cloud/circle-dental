@@ -1,0 +1,176 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { IMPLANT_TOPICS, implantTopicBySlug } from '@/lib/implantTopics';
+import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
+import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { JsonLd } from '@/components/JsonLd';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema } from '@/lib/seo';
+
+/**
+ * 임플란트 세부 주제 상세.
+ *
+ * ⚠️ 라우트 위치 주의 — /treatment/implant 는 [slug] 동적 라우트가 이미 잡고 있다.
+ *   Next 는 정적 세그먼트(implant)를 동적([slug])보다 우선하므로 이 폴더가 이긴다.
+ *   그래서 개요 페이지(/treatment/implant)가 여전히 [slug] 로 처리되도록
+ *   같은 폴더에 별도 page.tsx 를 두지 않고, 세부 주제만 [topic] 으로 받는다.
+ */
+export function generateStaticParams() {
+  return IMPLANT_TOPICS.map((t) => ({ topic: t.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ topic: string }>;
+}): Promise<Metadata> {
+  const { topic } = await params;
+  const t = implantTopicBySlug(topic);
+  if (!t) return {};
+  return {
+    title: `${t.name} — ${t.tagline}`,
+    description: t.answer.slice(0, 155),
+    alternates: { canonical: `/treatment/implant/${t.slug}` },
+    openGraph: { title: `임플란트 ${t.name}`, description: t.answer.slice(0, 155) },
+  };
+}
+
+export default async function ImplantTopicPage({
+  params,
+}: {
+  params: Promise<{ topic: string }>;
+}) {
+  const { topic } = await params;
+  const t = implantTopicBySlug(topic);
+  if (!t) notFound();
+
+  const trail = [
+    { name: '홈', path: '/' },
+    { name: '진료과목', path: '/treatment' },
+    { name: '임플란트', path: '/treatment/implant' },
+    { name: t.name, path: `/treatment/implant/${t.slug}` },
+  ];
+
+  const others = IMPLANT_TOPICS.filter((o) => o.slug !== t.slug);
+
+  return (
+    <>
+      <JsonLd
+        data={[
+          breadcrumbSchema(trail),
+          medicalWebPageSchema({
+            title: `${t.name} — ${t.tagline}`,
+            description: t.answer,
+            path: `/treatment/implant/${t.slug}`,
+            about: { type: 'MedicalProcedure', name: `임플란트 ${t.name}` },
+          }),
+          faqSchema(t.faq),
+        ]}
+      />
+
+      <Container className="pt-10">
+        <Breadcrumb trail={trail} />
+      </Container>
+
+      <article>
+        <Container className="py-10 lg:py-14">
+          <p className="text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
+            임플란트
+          </p>
+          <h1 className="display mt-4 max-w-3xl text-[32px] text-ink sm:text-[46px]">{t.name}</h1>
+          <p className="mt-3 text-[16px] font-semibold text-ink-muted">{t.tagline}</p>
+
+          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
+            <p className="text-[17px] leading-[1.85] text-ink">{t.answer}</p>
+          </div>
+
+          <p className="mt-7 max-w-[66ch] text-[16px] leading-[1.85] text-ink-soft">{t.detail}</p>
+        </Container>
+
+        <section className="border-y border-brand-200/60 bg-white py-14">
+          <Container>
+            <div className="grid gap-12 lg:grid-cols-2">
+              <div>
+                <h2 className="display-sm text-[21px] text-ink">이런 경우에 해당합니다</h2>
+                <ul className="mt-6 space-y-3">
+                  {t.indications.map((s) => (
+                    <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
+                      <span
+                        aria-hidden
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[11px] text-white"
+                      >
+                        ✓
+                      </span>
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* 부작용·한계를 같은 비중으로 둔다. 이점만 적으면 의료광고법상 문제가 된다. */}
+              <div>
+                <h2 className="display-sm text-[21px] text-ink">알아 두실 점</h2>
+                <ul className="mt-6 space-y-3">
+                  {t.cautions.map((s) => (
+                    <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
+                      <span
+                        aria-hidden
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500 text-[11px] text-white"
+                      >
+                        !
+                      </span>
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        <Container className="py-14">
+          <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">자주 묻는 질문</h2>
+          <div className="mt-8 divide-y divide-brand-100 border-t border-brand-100">
+            {t.faq.map((f) => (
+              <article key={f.q} className="py-6">
+                <h3 className="text-[18px] font-black leading-snug text-ink">{f.q}</h3>
+                <p className="mt-3 max-w-[68ch] text-[15.5px] leading-[1.85] text-ink-soft">{f.a}</p>
+              </article>
+            ))}
+          </div>
+        </Container>
+
+        <section className="border-t border-brand-200/60 bg-brand-50/40 py-14">
+          <Container>
+            <h2 className="text-[20px] font-black text-ink">임플란트 다른 주제</h2>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {others.map((o) => (
+                <Link
+                  key={o.slug}
+                  href={`/treatment/implant/${o.slug}`}
+                  className="group rounded-xl border border-brand-200/70 bg-white px-5 py-4 transition-colors hover:border-brand-400"
+                >
+                  <span className="block text-[15px] font-black text-ink group-hover:text-brand-700">
+                    {o.name}
+                  </span>
+                  <span className="mt-1 block text-[13px] text-ink-muted">{o.tagline}</span>
+                </Link>
+              ))}
+            </div>
+            <Link
+              href="/insight/journey/implant"
+              className="mt-8 inline-flex items-center gap-2 text-[15px] font-black text-brand-700 hover:underline"
+            >
+              임플란트는 몇 번 오고 얼마나 걸리나요 <span aria-hidden>→</span>
+            </Link>
+          </Container>
+        </section>
+
+        <Container>
+          <MedicalNotice extra={NO_GUARANTEE_NOTE} />
+        </Container>
+      </article>
+
+      <ContactCta />
+    </>
+  );
+}
