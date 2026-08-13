@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CLINIC, CREDENTIALS } from '@/lib/clinic';
+import { CLINIC } from '@/lib/clinic';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { IMG } from '@/lib/assets';
 import { Container, SectionHead, Breadcrumb, ContactCta } from '@/components/ui';
@@ -165,20 +165,32 @@ export default function DoctorsPage() {
       <section className="border-y border-brand-200/60 bg-white py-16">
         <Container>
           <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">인증 · 수료</h2>
-          <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {IMG.credentials.map((c, i) => (
-              <figure key={c.src} className="text-center">
-                <div className="overflow-hidden rounded-xl border border-brand-100 bg-brand-50/50 p-3">
+          {/*
+            ★ 라벨을 `CREDENTIALS[i]` 로 가져오지 않는다.
+              이미지 배열과 문구 배열을 인덱스로 짝지으면 한쪽 순서만 바뀌어도 전부 어긋나는데
+              화면은 멀쩡해 보인다. 실제로 네 장 모두 다른 인증서 이름을 달고 있었다.
+              문구는 이제 이미지 옆(lib/assets.ts)에 붙어 있으므로 `c.label` 하나만 쓴다.
+
+            ★ 칸 높이를 고정한다.
+              인증서 원본은 236×242 세 장과 236×178 한 장으로 비율이 제각각이다.
+              그대로 흘리면 짧은 한 장만 캡션이 위로 올라와 줄이 어긋난다(원본 홈페이지가 그렇다).
+              정사각 액자에 object-contain 으로 담으면 비율이 달라도 액자 높이가 같아
+              네 캡션이 같은 선에서 시작한다. 잘리는 인증서도 없다.
+          */}
+          <div className="mt-10 grid grid-cols-2 items-start gap-x-6 gap-y-8 sm:grid-cols-4">
+            {IMG.credentials.map((c) => (
+              <figure key={c.src}>
+                <div className="relative aspect-square overflow-hidden rounded-xl border border-brand-100 bg-brand-50/50">
                   <Image
                     src={c.src}
                     alt={c.label}
-                    width={320}
-                    height={420}
-                    className="h-auto w-full object-contain"
+                    fill
+                    sizes="(max-width: 640px) 45vw, 260px"
+                    className="object-contain p-4"
                   />
                 </div>
-                <figcaption className="mt-3 text-[12.5px] leading-snug text-ink-soft">
-                  {CREDENTIALS[i] ?? c.label}
+                <figcaption className="mt-3.5 text-center text-[12.5px] leading-snug text-ink-soft">
+                  {c.label}
                 </figcaption>
               </figure>
             ))}

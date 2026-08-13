@@ -12,6 +12,10 @@
  *   UNVERIFIED 값은 화면에서 '확인 필요' 배지와 함께 렌더되고, JSON-LD 에서는 아예 빠진다.
  */
 
+// 인증·수료 문구는 이미지 옆(lib/assets.ts)에 붙어 있다 — CREDENTIALS 가 거기서 파생한다.
+// assets.ts 는 아무것도 import 하지 않으므로 순환은 생기지 않는다.
+import { IMG } from './assets';
+
 export const CLINIC = {
   /** VERIFIED — 정식 명칭은 '치과의원' 까지다. 간판·로고 표기와 일치시킨다. */
   name: '동그라미치과의원',
@@ -184,13 +188,16 @@ export const TREATMENT_PILLARS = [
   },
 ] as const;
 
-/** 대표원장 인증·학회 활동. 기존 홈페이지 '의료진 소개' 표기 그대로. */
-export const CREDENTIALS = [
-  '오스템임플란트 연구자문치과 위촉패',
-  'Professional implant Training course 수료패',
-  '세계근관치료학회 수료증',
-  '대한치과보존학회 회원증',
-] as const;
+/**
+ * 대표원장 인증·수료. 기존 홈페이지 '의료진 소개' 표기 그대로.
+ *
+ * ★ 문구를 여기에 다시 적지 않고 이미지 목록에서 뽑는다.
+ *   예전에는 같은 네 문구가 이 파일과 lib/assets.ts 양쪽에 각각 적혀 있었고,
+ *   의료진 페이지가 그 둘을 **인덱스로** 짝지었다(`CREDENTIALS[i]` ↔ `IMG.credentials[i]`).
+ *   한쪽 순서가 어긋나도 화면은 멀쩡해 보이므로 아무도 눈치채지 못한다 — 실제로
+ *   네 장 전부 다른 인증서 이름을 달고 있었다. 출처를 하나로 만들어 그 사고를 없앤다.
+ */
+export const CREDENTIALS = IMG.credentials.map((c) => c.label);
 
 /** 발표 논문 — 기존 홈페이지 표기 그대로. */
 export const PUBLICATION =
