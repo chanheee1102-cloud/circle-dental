@@ -115,27 +115,43 @@ export default function DoctorsPage() {
                     {d.name}
                   </h2>
 
-                  <ul className="mt-7 space-y-2">
-                    {d.career.map((c) => (
-                      <li key={c} className="text-[15px] leading-relaxed text-ink-soft">
-                        {c}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {d.societies.length > 0 && (
-                    <div className="mt-7">
-                      <span className="inline-flex rounded-lg bg-brand-500 px-3 py-1.5 text-[12.5px] font-black text-white">
-                        학회활동
-                      </span>
-                      <ul className="mt-4 space-y-2">
-                        {d.societies.map((s) => (
-                          <li key={s} className="text-[15px] leading-relaxed text-ink-soft">
-                            {s}
+                  {/*
+                    ★ 경력과 학회활동을 세로로 쌓지 않고 가로 2단으로 나눈다.
+                      쌓으면 글 높이가 사진의 두 배가 되어 사진 아래에 큰 빈 공간이 남는다
+                      (실제로 그랬다). 2단으로 나누면 글 높이가 사진 높이에 근접해 카드가 꽉 찬다.
+                    ★ 학회활동이 없는 원장(김인진)은 경력만 2단으로 흘려 같은 높이를 만든다 —
+                      한 단으로 두면 12줄이라 그 카드만 유독 길어진다.
+                  */}
+                  {d.societies.length > 0 ? (
+                    <div className="mt-7 grid gap-x-8 gap-y-7 sm:grid-cols-2">
+                      <ul className="space-y-2">
+                        {d.career.map((c) => (
+                          <li key={c} className="text-[15px] leading-relaxed text-ink-soft">
+                            {c}
                           </li>
                         ))}
                       </ul>
+                      <div>
+                        <span className="inline-flex rounded-lg bg-brand-500 px-3 py-1.5 text-[12.5px] font-black text-white">
+                          학회활동
+                        </span>
+                        <ul className="mt-4 space-y-2">
+                          {d.societies.map((s) => (
+                            <li key={s} className="text-[15px] leading-relaxed text-ink-soft">
+                              {s}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
+                  ) : (
+                    <ul className="mt-7 space-y-2 sm:columns-2 sm:gap-x-8 [&>li]:break-inside-avoid">
+                      {d.career.map((c) => (
+                        <li key={c} className="text-[15px] leading-relaxed text-ink-soft">
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
                   )}
 
                   <Link
