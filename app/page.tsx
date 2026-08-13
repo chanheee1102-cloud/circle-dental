@@ -10,7 +10,10 @@ import {
   PUBLICATION,
   OUTREACH,
 } from '@/lib/clinic';
-import { IMG, HERO_VIDEO, OUTREACH_VIDEO } from '@/lib/assets';
+import { IMG, OUTREACH_VIDEO } from '@/lib/assets';
+import { heroFacts } from '@/lib/heroFacts';
+import { HeroMedia } from '@/components/HeroMedia';
+import { Reveal } from '@/components/Reveal';
 import { DOCTORS, OUTREACH_PHOTO } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { Container, SectionHead, CardLink, ContactCta } from '@/components/ui';
@@ -53,59 +56,77 @@ export default function HomePage() {
  *   아래에 브랜드 그라데이션을 깔아 둔다.
  */
 function Hero() {
+  const facts = heroFacts();
+
   return (
-    <section className="relative min-h-[600px] overflow-hidden lg:min-h-[86vh]">
-      {/* 폴백 배경 — 영상이 로드되기 전/실패해도 화면이 비지 않는다. */}
+    /*
+     * ★ 히어로 전체가 한 화면에 들어가게 세로 배치로 짠다.
+     *   사실 띠를 뒤에 그냥 붙이면 화면 높이 뒤에 더해져 **스크롤해야 보인다.**
+     *   첫 화면에서 사실을 보여 주는 것이 이 띠의 존재 이유라 그러면 의미가 없다.
+     */
+    /*
+     * ★ 높이를 '한 화면 - 헤더' 로 정확히 잡는다.
+     *   92vh 처럼 어림으로 두면 헤더(86px)만큼 넘쳐 **사실 띠 아래가 잘린다**(실측 13px).
+     *   첫 화면에 띠 전체가 들어오는 것이 이 구성의 전제라 어림값을 쓰지 않는다.
+     */
+    <section className="relative flex min-h-[620px] flex-col overflow-hidden lg:min-h-[calc(100vh-86px)]">
+      {/* 폴백 배경 — 사진마저 늦게 뜨는 회선에서도 화면이 비지 않는다. */}
       <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-brand-700 to-brand-900" />
 
-      {/*
-        Vimeo 배경 영상 — 화면비가 다른 두 영상을 화면 크기에 따라 갈라 쓴다.
-        원본 홈페이지도 데스크톱용(16:9)과 모바일용(4:5) 영상을 따로 두고 있다.
-        하나만 쓰면 반대쪽에서 좌우 또는 상하가 크게 잘린다.
-        cover 계산은 globals.css 의 .video-cover-* 참조.
-      */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <iframe
-          src={HERO_VIDEO.desktop}
-          title=""
-          tabIndex={-1}
-          allow="autoplay"
-          className="video-cover video-cover-16x9 hidden lg:block"
-        />
-        <iframe
-          src={HERO_VIDEO.mobile}
-          title=""
-          tabIndex={-1}
-          allow="autoplay"
-          className="video-cover video-cover-4x5 block lg:hidden"
-        />
-      </div>
+      {/* 사진을 깔고 그 위로 영상이 서서히 겹친다 — components/HeroMedia.tsx 주석 참조. */}
+      <HeroMedia />
 
-      {/* 가독성 오버레이 — 영상 위 흰 글씨의 대비를 확보한다. 없으면 밝은 프레임에서 글씨가 사라진다. */}
+      {/* 가독성 오버레이 — 배경 위 흰 글씨의 대비를 확보한다. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-brand-900/60 via-brand-900/45 to-brand-900/75"
+        className="absolute inset-0 bg-gradient-to-b from-brand-900/65 via-brand-900/50 to-brand-900/80"
+      />
+      {/*
+        ★ 글자가 놓이는 가운데만 한 번 더 눌러 준다.
+          화면 전체를 균일하게 어둡게 하면 배경이 통째로 죽는다. 타원으로 가운데만 누르면
+          글자는 읽히고 영상·사진은 산다.
+      */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(34,32,29,0.5),transparent_72%)]"
       />
 
-      <Container className="relative flex min-h-[600px] flex-col justify-center py-24 text-center lg:min-h-[86vh]">
-        <p className="on-photo text-[14px] font-bold tracking-[-0.01em] text-white/90 sm:text-[17px]">
+      {/*
+        ★ 로드 시퀀스 — 눈썹 → 제목 → 설명 → 버튼 → 사실 띠 순으로 한 번 떠오른다.
+          한 번에 다 나타나는 것보다 '읽는 순서' 를 몸으로 알려 준다. 60~80ms 씩만 어긋내
+          알아채기 전에 끝난다 — 기다림으로 느껴지는 순간부터는 방해다.
+      */}
+      <Container className="relative flex flex-1 flex-col justify-center py-24 text-center">
+        <p
+          className="enter on-photo text-[13px] font-bold tracking-[0.01em] text-white/80 sm:text-[15px]"
+          style={{ animationDelay: '60ms' }}
+        >
           10년 이상 경력의 대학 병원 출신 의료진, 디지털 의료장비 활용
         </p>
 
-        <h1 className="display on-photo mt-5 text-[34px] text-white sm:text-[54px] lg:text-[66px]">
+        <h1
+          className="display enter on-photo mt-5 text-[36px] text-white sm:text-[58px] lg:text-[72px]"
+          style={{ animationDelay: '140ms' }}
+        >
           환자 중심 진료, 소통하는 치과
         </h1>
 
-        <p className="on-photo mx-auto mt-8 max-w-2xl text-[15px] leading-[1.9] text-white/85 sm:text-[17px]">
+        <p
+          className="enter on-photo mx-auto mt-7 max-w-2xl text-[15px] leading-[1.85] text-white/85 sm:text-[17px]"
+          style={{ animationDelay: '220ms' }}
+        >
           환자들의 치과에 대한 두려움을 깊이 공감하며, 최대한 아프지 않고
           <br className="hidden sm:block" /> 과잉 진료없이 편안하게 치료를 받고 가실 수 있도록
           노력합니다.
         </p>
 
-        <div className="mt-11 flex flex-wrap justify-center gap-3.5">
+        <div
+          className="enter mt-10 flex flex-wrap justify-center gap-3.5"
+          style={{ animationDelay: '300ms' }}
+        >
           <a
             href={CLINIC.phoneHref}
-            className="group inline-flex items-center gap-3 rounded-lg bg-white px-9 py-4.5 text-[18px] font-black text-brand-700 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1"
+            className="group inline-flex items-center gap-3 rounded-lg bg-white px-9 py-4.5 text-[18px] font-black tabular-nums text-brand-700 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1"
           >
             {CLINIC.phone}
             <span
@@ -123,6 +144,49 @@ function Hero() {
           </Link>
         </div>
       </Container>
+
+      {/*
+        ★★ 사실 띠 ★★
+          확인된 사실만 올라온다(lib/heroFacts.ts 주석 참조).
+          ⚠️ 여기를 홍보 문구로 메우지 말 것 — 그 순간 이 자리는 광고가 된다.
+          ⚠️ 한 칸짜리 띠는 그리지 않는다. 넓은 띠에 값 하나면 뭔가 빠진 것처럼 보인다.
+      */}
+      {facts.length >= 2 && (
+        <div
+          className="enter relative border-t border-white/15 bg-brand-900/45 backdrop-blur-sm"
+          style={{ animationDelay: '400ms' }}
+        >
+          <Container>
+            {/*
+              ⚠️ 열 수를 항목 수에 맞춘다.
+                4열에 5칸이면 마지막 하나가 다음 줄에 혼자 떨어져 빈 칸 셋이 남는다(실측).
+                항목 수는 병원이 확인해 준 사실의 개수라 미리 알 수 없으므로 계산해서 넣는다.
+            */}
+            <dl
+              className="fact-strip grid grid-cols-2 divide-x divide-white/10 sm:grid-cols-3"
+              style={{ ['--cols' as string]: facts.length }}
+            >
+              {facts.map((f, i) => (
+                /*
+                 * ⚠️ 좁은 화면에서는 앞의 넷만 — 2열이라 다섯이면 세 번째 줄에 하나만 남고
+                 *    히어로가 두 화면을 넘긴다. 넷이면 2×2 로 딱 떨어진다.
+                 */
+                <div
+                  key={f.label}
+                  className={`px-5 py-6 text-center ${i >= 4 ? 'hidden lg:block' : ''}`}
+                >
+                  <dt className="text-[10.5px] font-black tracking-[0.22em] text-white/45 uppercase">
+                    {f.label}
+                  </dt>
+                  <dd className="mt-2 text-[14px] font-bold leading-snug tabular-nums text-white/95 sm:text-[15px]">
+                    {f.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Container>
+        </div>
+      )}
     </section>
   );
 }
@@ -160,10 +224,10 @@ function PillarSection() {
 
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {TREATMENT_PILLARS.map((p, i) => (
+            <Reveal key={p.key} delay={Math.min(i, 3) * 70} className="h-full">
             <Link
-              key={p.key}
               href={p.href}
-              className="group relative flex min-h-[380px] flex-col justify-end overflow-hidden rounded-2xl shadow-[var(--shadow-soft)] transition-all hover:-translate-y-2 hover:shadow-[var(--shadow-lift)]"
+              className="group relative flex h-full min-h-[380px] flex-col justify-end overflow-hidden rounded-2xl shadow-[var(--shadow-soft)] transition-all hover:-translate-y-2 hover:shadow-[var(--shadow-lift)]"
             >
               {/*
                 alt 를 비워 두었었다. 카드에 제목이 글자로 있으니 스크린리더에는 중복이라는
@@ -196,6 +260,7 @@ function PillarSection() {
                 </span>
               </div>
             </Link>
+            </Reveal>
           ))}
         </div>
       </Container>
@@ -392,8 +457,9 @@ function InteriorSection() {
         </div>
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {IMG.interior.slice(0, 6).map((src, i) => (
-            <div
+            <Reveal
               key={src}
+              delay={Math.min(i, 2) * 70}
               className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-[var(--shadow-soft)]"
             >
               <Image
@@ -403,7 +469,7 @@ function InteriorSection() {
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
-            </div>
+            </Reveal>
           ))}
         </div>
         <div className="mt-8 text-center">
