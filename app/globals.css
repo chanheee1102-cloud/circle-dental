@@ -1,7 +1,20 @@
 @import 'tailwindcss';
 
-/* Pretendard — 한글 가독성이 시스템 폰트보다 확연히 낫다. 실패 시 시스템 폰트로 폴백. */
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+/*
+ * Pretendard — 한글 가독성이 시스템 폰트보다 확연히 낫다. 실패 시 시스템 폰트로 폴백.
+ *
+ * ★ 여기서 `@import url(https://cdn.jsdelivr.net/...)` 로 불러오지 않는다.
+ *   CSS 안의 @import 는 **직렬**이다. 브라우저가 이 파일을 다 받아서 파싱해야 비로소
+ *   남의 CDN 주소를 발견하고, 그제서야 새 오리진에 DNS→TCP→TLS 를 맺고 53KB 를 받는다.
+ *   그동안 첫 화면은 그려지지 않는다(스타일시트는 렌더 차단 자원이다).
+ *   실측: PSI 모바일 FCP 6016ms / LCP 6016ms — 두 값이 정확히 같았던 게 단서였다.
+ *   (데스크톱 실측은 LCP 256ms 라 이 문제가 보이지 않았다. 느린 회선에서만 드러난다.)
+ *
+ *   → public/fonts/pretendard/ 로 자체 호스팅하고 layout.tsx 의 <link> 로 건다.
+ *     같은 오리진이라 연결 비용이 0 이고, HTML 을 읽는 즉시 발견돼 병렬로 받는다.
+ *     unicode-range 서브셋(92조각)은 그대로라 실제로는 3~5조각(약 100KB)만 내려온다.
+ *     남의 CDN 이 죽어도 글꼴이 깨지지 않는다는 부수 효과도 있다.
+ */
 
 /**
  * 동그라미치과의원 디자인 토큰.

@@ -74,9 +74,22 @@ export function SiteFooter() {
           본 사이트의 진료 정보는 일반적인 이해를 돕기 위한 것으로 개별 진단을 대신하지 않습니다. 치료 결과는
           개인의 구강 상태와 전신 건강에 따라 다를 수 있으며, 모든 의료 행위에는 부작용이 따를 수 있습니다.
         </p>
-        <p className="mt-4 text-[11.5px] text-brand-200/40">
-          &copy; {new Date().getFullYear()} {CLINIC.name}. All rights reserved.
-        </p>
+        {/*
+          개인정보처리방침은 푸터에 둔다 — 「개인정보 보호법」 제30조가 '정보주체가 쉽게 확인할 수
+          있도록' 공개하라고 정하고 있고, 그 관행상의 자리가 푸터다. 주 메뉴에 올리면 진료 정보를
+          찾는 흐름을 방해하고, 없으면 법적으로도 AI 신뢰도 평가에서도 감점이다.
+        */}
+        <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11.5px]">
+          <Link
+            href="/privacy"
+            className="font-bold text-brand-200/80 transition-colors hover:text-white"
+          >
+            개인정보처리방침
+          </Link>
+          <span className="text-brand-200/40">
+            &copy; {new Date().getFullYear()} {CLINIC.name}. All rights reserved.
+          </span>
+        </div>
       </div>
     </footer>
   );

@@ -77,9 +77,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  // 인사이트 허브 중 nav 에 없는 것(질환 사전)을 명시적으로 넣는다.
+  // nav 에 없는 페이지를 명시적으로 넣는다. 사이트맵에 없으면 발견이 늦거나 아예 안 된다.
   const extraHubs: MetadataRoute.Sitemap = [
     { url: url('/insight/condition'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    // 개인정보처리방침은 푸터에만 있어 nav 에서 안 잡힌다. 법정 공개 의무 문서라 빠지면 안 된다.
+    { url: url('/privacy'), lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
   // Set 으로 중복 제거 — nav 에 이미 들어 있는 경로가 다시 들어오면 사이트맵이 중복 URL 을 낸다.

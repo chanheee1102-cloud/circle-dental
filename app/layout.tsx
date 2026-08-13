@@ -44,6 +44,19 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
+      <head>
+        {/*
+          글꼴을 <link> 로 건다 — globals.css 안의 @import 를 여기로 옮긴 것이다.
+          @import 는 CSS 를 다 받아 파싱한 뒤에야 발견되므로 첫 화면이 그만큼 늦는다.
+          <link> 는 HTML 을 읽는 즉시 발견돼 다른 자원과 병렬로 내려온다.
+
+          preload 는 굳이 걸지 않는다. 이 CSS 는 unicode-range 로 92조각을 가리키고
+          실제로 필요한 조각은 브라우저가 글자를 보고 고른다 — 미리 집어 주면
+          안 쓸 조각을 받아 오히려 손해다. font-display:swap 이 이미 들어 있어
+          글꼴이 늦어도 본문은 폴백으로 즉시 보인다.
+        */}
+        <link rel="stylesheet" href="/fonts/pretendard/pretendard.css" />
+      </head>
       <body>
         <JsonLd data={[clinicSchema(), websiteSchema()]} />
         {/* 키보드 사용자가 헤더 메뉴를 매번 통과하지 않고 본문으로 건너뛸 수 있게 한다. */}

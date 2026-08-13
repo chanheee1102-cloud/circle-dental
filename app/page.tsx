@@ -142,9 +142,20 @@ function PillarSection() {
           <p className="text-[12.5px] font-black tracking-[0.24em] text-brand-500 uppercase">
             Circle Dental Clinic
           </p>
+          {/*
+            ★ 제목을 질문형으로 둔다.
+              AI 검색은 문서에서 "질문과 같은 제목 + 바로 뒤에 오는 짧은 답" 을 찾아 인용한다.
+              '동그라미 치과 진료정보' 같은 명사구는 환자가 실제로 치는 문장과 매칭이 약하다.
+              단, 질문만 던지고 끝내면 안 된다 — 바로 아래 한 문장으로 답한 뒤 카드로 펼친다.
+              (진단에서 '질문형 제목 1/23' 으로 잡히던 항목이 이것이다.)
+          */}
           <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
-            동그라미 치과 진료정보
+            어떤 진료를 받을 수 있나요?
           </h2>
+          <p className="mx-auto mt-5 max-w-[62ch] text-[16px] leading-[1.85] text-ink-soft">
+            자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다. 충치·신경·잇몸
+            치료와 스케일링 같은 기본 진료도 함께 보고 있습니다.
+          </p>
         </div>
 
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -154,9 +165,16 @@ function PillarSection() {
               href={p.href}
               className="group relative flex min-h-[380px] flex-col justify-end overflow-hidden rounded-2xl shadow-[var(--shadow-soft)] transition-all hover:-translate-y-2 hover:shadow-[var(--shadow-lift)]"
             >
+              {/*
+                alt 를 비워 두었었다. 카드에 제목이 글자로 있으니 스크린리더에는 중복이라는
+                판단이었고 접근성 기준상 틀린 선택은 아니다. 다만 **AI 는 사진의 내용을
+                alt 로만 안다** — 비워 두면 이 사진이 무엇인지 아는 경로가 없다.
+                그래서 제목을 되풀이하지 않고 사진에 찍힌 것을 설명하는 문장을 넣는다.
+                두 목적이 충돌하지 않는 유일한 지점이다.
+              */}
               <Image
-                src={img[i]}
-                alt=""
+                src={img[i].src}
+                alt={img[i].alt}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -191,7 +209,13 @@ function StrengthSection() {
     <section className="border-y border-brand-200/60 bg-gradient-to-b from-white to-brand-50/50 py-24 lg:py-28">
       <Container>
         <div className="text-center">
-          <h2 className="display-sm text-[30px] text-ink sm:text-[38px]">동그라미 치과만의 특별함</h2>
+          <h2 className="display-sm text-[30px] text-ink sm:text-[38px]">
+            다른 치과와 무엇이 다른가요?
+          </h2>
+          <p className="mx-auto mt-5 max-w-[62ch] text-[16px] leading-[1.85] text-ink-soft">
+            통증을 줄이는 마취, 디지털 장비 진단, 교수 출신 대표원장과 전문의 의료진, 치료 후 보증제도,
+            그리고 기구 멸균까지 다섯 가지를 원칙으로 두고 있습니다.
+          </p>
         </div>
 
         <div className="mt-14">
@@ -254,8 +278,18 @@ function DoctorSection() {
                   href={`/about/doctors/${d.slug}`}
                   className="group flex items-center gap-3 rounded-2xl border border-brand-200/70 bg-white p-3 transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
                 >
+                  {/*
+                    인물 사진의 alt 는 '누구인지' 다. 이름이 옆에 글자로 있어도
+                    이미지 검색과 엔티티 연결은 alt 를 본다 — 의료진 사진에서는 그 값이 크다.
+                  */}
                   <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-brand-100">
-                    <Image src={d.photo} alt="" fill sizes="56px" className="object-cover object-top" />
+                    <Image
+                      src={d.photo}
+                      alt={`${d.name} ${d.role} 프로필 사진`}
+                      fill
+                      sizes="56px"
+                      className="object-cover object-top"
+                    />
                   </div>
                   <div className="min-w-0">
                     <p className="text-[11px] font-black tracking-wide text-brand-500">{d.role}</p>
@@ -488,7 +522,12 @@ function HoursSection() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <SectionHead eyebrow="진료시간 안내" title="화·목은 저녁 8시 30분까지 진료합니다" />
+            {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
+            <SectionHead
+              eyebrow="진료시간 안내"
+              title="진료시간이 어떻게 되나요?"
+              desc="평일은 오전 9시 30분에 시작합니다. 화요일과 목요일은 저녁 8시 30분까지 야간 진료를 하고, 토요일은 오후 2시까지 봅니다. 일요일과 공휴일은 쉽니다."
+            />
             <div className="mt-9 overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)]">
               {UNVERIFIED.hours.display.map((h, i) => (
                 <div
@@ -515,7 +554,12 @@ function HoursSection() {
           </div>
 
           <div>
-            <SectionHead eyebrow="오시는 길" title="화정동 현창빌딩 3층입니다" />
+            {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
+            <SectionHead
+              eyebrow="오시는 길"
+              title="어디에 있고 주차는 되나요?"
+              desc={`고양시 덕양구 화정동 ${CLINIC.address.building} 3층입니다. 주차는 ${CLINIC.parking.type}이며 ${CLINIC.parking.fee}입니다.`}
+            />
             <dl className="mt-9 space-y-6">
               <div>
                 <dt className="text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
