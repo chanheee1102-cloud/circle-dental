@@ -87,14 +87,24 @@ export default function DoctorsPage() {
               className="rounded-2xl border border-brand-200/70 bg-white p-7 shadow-[var(--shadow-soft)] lg:p-10"
             >
               {/*
-                ★ 사진을 카드 높이에 맞추지 않는다.
-                  앞서 md 이상에서 aspect 를 풀어 늘렸더니 인물이 잘렸다(머리가 위 가장자리에 닿음).
+                ★ 사진 비율을 건드리지 않는다.
+                  md 이상에서 aspect 를 풀어 카드 높이에 맞춰 늘렸더니 인물이 잘렸다(머리가 위 가장자리에 닿음).
                   인물 사진은 촬영 시 여백까지 계산된 결과물이라 비율을 바꾸면 반드시 어색해진다.
-                  → 사진은 **원본 비율(625×670) 그대로** 두고, 문구를 그 옆에 위 정렬로 배치한다.
-                    사진 아래 남는 공간은 카드 흰 배경이라 여백으로 자연스럽게 읽힌다.
-                    (원본 홈페이지 /doctor 도 같은 구성이다.)
+                  → 사진은 원본 비율(625×670) 그대로 두고, **열 폭으로** 높이를 맞춘다.
+
+                ★ 왜 하필 560px 인가 — 눈대중이 아니라 실측값이다.
+                  글 한 단의 높이는 이 폭 범위(470~590px)에서 줄바꿈이 생기지 않아 602px 로 고정이다.
+                  사진 높이 = 폭 × 670/625 = 폭 × 1.072 이므로 602px 가 되는 폭이 곧 562px 다.
+                  실측: 폭 470 → 사진 504(-98) / 530 → 568(-34) / 550 → 590(-12) / 560 → 600(-2) / 590 → 632(+30).
+                  앞서 440px 로 두었을 때 글이 132px 더 길어 사진 아래가 휑했던 것이 이 계산을 빠뜨린 결과다.
+
+                ★ 세 번째 카드(김인진 원장)만 학회활동이 없어 글이 542px 다 — 이때는 사진이 58px 더 크다.
+                  남는 공간이 글 쪽(오른쪽 아래)으로 가는 건 원본 홈페이지와 같은 모습이라 그대로 둔다.
+                  반대로 사진 아래가 비면 카드가 무너져 보인다.
+
+                ★ items-start → 사진 윗변과 '동그라미치과 대표원장' 첫 줄이 같은 선에서 시작한다.
               */}
-              <div className="grid gap-8 md:grid-cols-[minmax(0,300px)_1fr] md:items-start lg:gap-10">
+              <div className="grid gap-8 md:grid-cols-[minmax(0,560px)_1fr] md:items-start lg:gap-12">
                 <div className="overflow-hidden rounded-xl bg-brand-100">
                   <Image
                     src={d.photo}
@@ -102,7 +112,7 @@ export default function DoctorsPage() {
                     width={625}
                     height={670}
                     priority={i === 0}
-                    sizes="(max-width: 768px) 100vw, 300px"
+                    sizes="(max-width: 768px) 100vw, 560px"
                     className="h-auto w-full"
                   />
                 </div>
@@ -111,52 +121,36 @@ export default function DoctorsPage() {
                   <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-500">
                     동그라미치과 {d.role}
                   </p>
-                  <h2 className="display mt-2 text-[32px] tracking-[0.06em] text-ink sm:text-[38px]">
+                  <h2 className="display mt-2 text-[32px] tracking-[0.06em] text-ink sm:text-[36px]">
                     {d.name}
                   </h2>
 
-                  {/*
-                    ★ 경력과 학회활동을 세로로 쌓지 않고 가로 2단으로 나눈다.
-                      쌓으면 글 높이가 사진의 두 배가 되어 사진 아래에 큰 빈 공간이 남는다
-                      (실제로 그랬다). 2단으로 나누면 글 높이가 사진 높이에 근접해 카드가 꽉 찬다.
-                    ★ 학회활동이 없는 원장(김인진)은 경력만 2단으로 흘려 같은 높이를 만든다 —
-                      한 단으로 두면 12줄이라 그 카드만 유독 길어진다.
-                  */}
-                  {d.societies.length > 0 ? (
-                    <div className="mt-7 grid gap-x-8 gap-y-7 sm:grid-cols-2">
-                      <ul className="space-y-2">
-                        {d.career.map((c) => (
-                          <li key={c} className="text-[15px] leading-relaxed text-ink-soft">
-                            {c}
+                  <ul className="mt-6 space-y-[7px]">
+                    {d.career.map((c) => (
+                      <li key={c} className="text-[15px] leading-[1.65] text-ink-soft">
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {d.societies.length > 0 && (
+                    <>
+                      <span className="mt-6 inline-flex rounded-md bg-brand-500 px-3 py-1.5 text-[12.5px] font-black text-white">
+                        학회활동
+                      </span>
+                      <ul className="mt-3 space-y-[7px]">
+                        {d.societies.map((s) => (
+                          <li key={s} className="text-[15px] leading-[1.65] text-ink-soft">
+                            {s}
                           </li>
                         ))}
                       </ul>
-                      <div>
-                        <span className="inline-flex rounded-lg bg-brand-500 px-3 py-1.5 text-[12.5px] font-black text-white">
-                          학회활동
-                        </span>
-                        <ul className="mt-4 space-y-2">
-                          {d.societies.map((s) => (
-                            <li key={s} className="text-[15px] leading-relaxed text-ink-soft">
-                              {s}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  ) : (
-                    <ul className="mt-7 space-y-2 sm:columns-2 sm:gap-x-8 [&>li]:break-inside-avoid">
-                      {d.career.map((c) => (
-                        <li key={c} className="text-[15px] leading-relaxed text-ink-soft">
-                          {c}
-                        </li>
-                      ))}
-                    </ul>
+                    </>
                   )}
 
                   <Link
                     href={`/about/doctors/${d.slug}`}
-                    className="mt-8 inline-flex items-center gap-2 rounded-lg border-[1.5px] border-brand-300 px-6 py-3 text-[14.5px] font-bold text-brand-700 transition-all hover:-translate-y-0.5 hover:border-brand-400 hover:bg-brand-50"
+                    className="mt-7 inline-flex items-center gap-2 rounded-lg border-[1.5px] border-brand-300 px-6 py-3 text-[14.5px] font-bold text-brand-700 transition-all hover:-translate-y-0.5 hover:border-brand-400 hover:bg-brand-50"
                   >
                     {d.name} {d.role} 자세히 <span aria-hidden>→</span>
                   </Link>
