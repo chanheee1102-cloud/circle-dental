@@ -84,27 +84,30 @@ export default function DoctorsPage() {
           {DOCTORS.map((d, i) => (
             <article
               key={d.slug}
-              className="overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)]"
+              className="rounded-2xl border border-brand-200/70 bg-white p-7 shadow-[var(--shadow-soft)] lg:p-10"
             >
-              <div className="grid gap-0 md:grid-cols-[minmax(0,340px)_1fr]">
-                {/*
-                  ★ 모바일에서는 원본 비율(625×670)을 그대로 써서 잘림이 없게 하고,
-                    md 이상에서는 aspect 를 풀어 **카드 높이만큼 늘어나게** 한다.
-                    비율을 고정해 두면 오른쪽 경력 목록이 더 길 때 사진 아래에 빈 띠가 남는다.
-                    (grid 기본 align-items:stretch 가 높이를 맞춰 준다.)
-                */}
-                <div className="relative aspect-[625/670] bg-brand-100 md:aspect-auto md:min-h-[440px]">
+              {/*
+                ★ 사진을 카드 높이에 맞추지 않는다.
+                  앞서 md 이상에서 aspect 를 풀어 늘렸더니 인물이 잘렸다(머리가 위 가장자리에 닿음).
+                  인물 사진은 촬영 시 여백까지 계산된 결과물이라 비율을 바꾸면 반드시 어색해진다.
+                  → 사진은 **원본 비율(625×670) 그대로** 두고, 문구를 그 옆에 위 정렬로 배치한다.
+                    사진 아래 남는 공간은 카드 흰 배경이라 여백으로 자연스럽게 읽힌다.
+                    (원본 홈페이지 /doctor 도 같은 구성이다.)
+              */}
+              <div className="grid gap-8 md:grid-cols-[minmax(0,300px)_1fr] md:items-start lg:gap-10">
+                <div className="overflow-hidden rounded-xl bg-brand-100">
                   <Image
                     src={d.photo}
                     alt={`${CLINIC.name} ${d.role} ${d.name}`}
-                    fill
+                    width={625}
+                    height={670}
                     priority={i === 0}
-                    sizes="(max-width: 768px) 100vw, 340px"
-                    className="object-cover object-top"
+                    sizes="(max-width: 768px) 100vw, 300px"
+                    className="h-auto w-full"
                   />
                 </div>
 
-                <div className="p-8 lg:p-10">
+                <div>
                   <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-500">
                     동그라미치과 {d.role}
                   </p>
