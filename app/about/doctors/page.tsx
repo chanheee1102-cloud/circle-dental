@@ -87,7 +87,13 @@ export default function DoctorsPage() {
               className="overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)]"
             >
               <div className="grid gap-0 md:grid-cols-[minmax(0,340px)_1fr]">
-                <div className="relative aspect-[4/5] bg-gradient-to-b from-brand-50 to-brand-100">
+                {/*
+                  ★ 모바일에서는 원본 비율(625×670)을 그대로 써서 잘림이 없게 하고,
+                    md 이상에서는 aspect 를 풀어 **카드 높이만큼 늘어나게** 한다.
+                    비율을 고정해 두면 오른쪽 경력 목록이 더 길 때 사진 아래에 빈 띠가 남는다.
+                    (grid 기본 align-items:stretch 가 높이를 맞춰 준다.)
+                */}
+                <div className="relative aspect-[625/670] bg-brand-100 md:aspect-auto md:min-h-[440px]">
                   <Image
                     src={d.photo}
                     alt={`${CLINIC.name} ${d.role} ${d.name}`}
@@ -188,13 +194,18 @@ export default function DoctorsPage() {
                 </p>
               </div>
             </div>
-            <div className="relative min-h-[300px] bg-brand-100">
+            {/*
+              ★ 원본(768×800)은 위 60% 가 흐린 배경이고 **노트북과 논문은 아래쪽**에 있다.
+                object-top 으로 자르면 정작 논문이 화면 밖으로 밀린다(실제로 그랬다).
+                아래를 기준으로 잘라야 제목·저자까지 들어온다.
+            */}
+            <div className="relative min-h-[340px] bg-brand-100">
               <Image
                 src={PUBLICATION_DETAIL.image}
                 alt="발표 논문 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-top"
+                className="object-cover object-bottom"
               />
             </div>
           </div>

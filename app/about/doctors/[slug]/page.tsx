@@ -97,14 +97,15 @@ export default async function DoctorDetailPage({
       <article>
         <Container className="py-10 lg:py-14">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,420px)_1fr]">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gradient-to-b from-brand-50 to-brand-100 shadow-[var(--shadow-lift)]">
+            {/* 원본 비율(625×670) 그대로 — 임의 비율로 강제하면 인물이 잘리거나 여백이 생긴다. */}
+            <div className="relative aspect-[625/670] overflow-hidden rounded-2xl bg-brand-100 shadow-[var(--shadow-lift)]">
               <Image
                 src={d.photo}
                 alt={`${CLINIC.name} ${d.role} ${d.name}`}
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 420px"
-                className="object-cover object-top"
+                className="object-cover"
               />
             </div>
 
@@ -175,13 +176,17 @@ export default async function DoctorDetailPage({
                     {PUBLICATION_DETAIL.relevanceKo}
                   </p>
                 </div>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-brand-100 shadow-[var(--shadow-soft)]">
+                {/*
+                  ★ 논문 이미지는 노트북과 본문이 **아래쪽**에 있다(768×800).
+                    비율도 원본에 가깝게 잡아 논문 제목·저자·초록이 잘리지 않게 한다.
+                */}
+                <div className="relative aspect-[768/800] overflow-hidden rounded-2xl bg-brand-100 shadow-[var(--shadow-soft)]">
                   <Image
                     src={PUBLICATION_DETAIL.image}
-                    alt="발표 논문 화면"
+                    alt="발표 논문 화면 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment"
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover object-top"
+                    className="object-cover object-bottom"
                   />
                 </div>
               </div>
