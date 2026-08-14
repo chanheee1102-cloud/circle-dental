@@ -107,20 +107,27 @@ export function SiteHeader() {
             {CLINIC.phone}
           </a>
           {/*
-            ★ '상담 예약' 은 **네이버 예약**으로 보낸다 (2026-08-14 운영자).
+            ★ 누르면 **네이버 예약**으로 간다 (2026-08-14 운영자).
               예전엔 전화 걸기였는데, 그러면 옆의 전화번호 버튼과 같은 동작이라 버튼이 둘인 의미가 없다.
               지금은 '전화로 물어보기' 와 '지금 바로 시간 잡기' 로 갈린다.
               네이버 예약은 플레이스 지표로도 쌓여 지역 검색에 직접 기여한다(lib/clinic.ts 주석 참고).
+            ★ 글자는 '네이버 예약' 이 아니라 **'예약하기'** 다 (2026-08-14 운영자).
+              버튼 글자는 '어디로 가는지' 가 아니라 '무엇을 하는지' 를 말해야 한다.
+              가는 곳이 네이버라는 것은 눌러 보면 안다 — 그걸 미리 알려 주는 대가로
+              화면에서 가장 중요한 버튼이 남의 브랜드 이름을 달고 있을 이유는 없다.
+              ⚠️ 목적지는 그대로다. 글자만 바뀐 것이라 링크를 /visit 등으로 바꾸지 말 것.
             ★ 외부 도메인이라 새 창으로 열고 rel="noopener" 를 붙인다 — 없으면 열린 창이
               window.opener 로 이 페이지를 조작할 수 있다.
+            ★ aria-label 에는 목적지를 남긴다 — 새 창이 뜨는 이유를 스크린리더가 먼저 알려야 한다.
           */}
           <a
             href={CLINIC.booking.naver}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="예약하기 — 네이버 예약 새 창으로 열기"
             className="inline-flex items-center rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-2.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
           >
-            네이버 예약
+            예약하기
           </a>
           <button
             type="button"

@@ -110,8 +110,15 @@ export default async function DoctorDetailPage({
             </div>
 
             <div>
-              <p className="text-[13px] font-black tracking-[0.16em] text-brand-500">
-                동그라미치과 {d.role}
+              {/*
+                ⚠️ 병원명을 여기에 적어 두지 않는다 — 하드코딩한 '동그라미치과' 가 남아 있었다.
+                   실제 상호는 '동그라미치과의원' 이라, 자간(0.16em)까지 붙어서 읽으면
+                   '의원' 이 빠진 것처럼 보였다. 병원명은 CLINIC 한 곳에서만 온다.
+                ⚠️ 자간을 0.16em → 0.08em 으로 줄였다. 열 글자 넘는 한글에 넓은 자간을 주면
+                   낱말 사이가 벌어져 한 덩어리로 안 읽힌다.
+              */}
+              <p className="text-[13px] font-black tracking-[0.08em] text-brand-500">
+                {CLINIC.name} {d.role}
               </p>
               <h1 className="display mt-3 text-[38px] tracking-[0.06em] text-ink sm:text-[48px]">
                 {d.name}

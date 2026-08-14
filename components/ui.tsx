@@ -186,12 +186,21 @@ export function ContactCta({
             >
               {CLINIC.phone}
             </a>
-            <Link
-              href="/visit"
+            {/*
+              ★ '오시는 길' 이 아니라 '예약하기' 다 (2026-08-14 운영자).
+                여기까지 읽고 내려온 사람에게 필요한 다음 걸음은 위치가 아니라 **시간을 잡는 것**이다.
+                위치는 이미 푸터와 상단 메뉴 양쪽에 있다.
+              ★ 외부 도메인이라 새 창 + rel="noopener" — 없으면 열린 창이 window.opener 로
+                이 페이지를 조작할 수 있다.
+            */}
+            <a
+              href={CLINIC.booking.naver}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-white/45 px-8 py-4 text-[16.5px] font-bold text-white transition-all hover:-translate-y-1 hover:bg-white/10"
             >
-              오시는 길
-            </Link>
+              예약하기
+            </a>
           </div>
         </div>
       </div>
