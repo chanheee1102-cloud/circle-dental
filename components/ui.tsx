@@ -1,7 +1,14 @@
 import Link from 'next/link';
 import { CLINIC, MEDICAL_DISCLAIMER } from '@/lib/clinic';
 
-/** 페이지 폭을 한 곳에서 통제한다. 페이지마다 max-w 를 따로 적으면 반드시 어긋난다. */
+/**
+ * 페이지 폭을 한 곳에서 통제한다. 페이지마다 max-w 를 따로 적으면 반드시 어긋난다.
+ *
+ * ★ 1200 → 1320 (2026-08-14 운영자: "헤더가 너무 딱 모여 있다").
+ *   헤더에 로고·상태배지·메뉴 5개·전화·예약 버튼이 한 줄에 들어가 숨 쉴 틈이 없었다.
+ *   ⚠️ 헤더(SiteHeader)의 max-w 도 **같은 값**이어야 한다. 다르면 헤더 양끝과 본문 양끝이
+ *      어긋나 화면 전체가 미묘하게 삐뚤어져 보인다.
+ */
 export function Container({
   children,
   className = '',
@@ -9,7 +16,7 @@ export function Container({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={`mx-auto w-full max-w-[1200px] px-5 lg:px-8 ${className}`}>{children}</div>;
+  return <div className={`mx-auto w-full max-w-[1320px] px-5 lg:px-8 ${className}`}>{children}</div>;
 }
 
 /** 좁은 본문 폭 — 읽기 위한 글은 한 줄이 길면 눈이 다음 줄을 놓친다. */

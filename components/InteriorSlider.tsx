@@ -19,12 +19,15 @@ import { IMG } from '@/lib/assets';
  *   - 키보드는 좌우 화살표 버튼으로 닿는다.
  *   - 스크린리더에는 그냥 이미지 목록이다 — 가장 단순한 것이 가장 잘 읽힌다.
  *
- * ★ 자동 재생을 하지 않는다. 읽는 속도를 빼앗고, 움직임에 민감한 사용자에게는 불편이다.
+ * ★ 자동으로 넘어간다(2026-08-14 운영자). 다만 멈출 조건을 넉넉히 뒀다 —
+ *   마우스·터치·포커스·백그라운드 탭·prefers-reduced-motion. 아래 useEffect 주석 참고.
  */
 export function InteriorSlider() {
   const trackRef = useRef<HTMLUListElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  /* 사용자가 보고 있는 동안에는 자동 넘김을 멈춘다(아래 useEffect 주석 참고). */
+  const [paused, setPaused] = useState(false);
 
   /* 끝에 닿으면 화살표를 흐리게 — 눌리지 않는 버튼을 그대로 두면 고장으로 읽힌다. */
   const sync = useCallback(() => {
@@ -47,14 +50,47 @@ export function InteriorSlider() {
   }, [sync]);
 
   /* 한 번에 '보이는 폭' 만큼 민다 — 카드 폭을 계산하면 화면 크기마다 어긋난다. */
-  const move = (dir: -1 | 1) => {
+  const move = useCallback((dir: -1 | 1) => {
     const el = trackRef.current;
     if (!el) return;
     el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
-  };
+  }, []);
+
+  /**
+   * ★★ 자동으로 넘어간다 (2026-08-14 운영자: "버튼 말고 자동으로 계속 넘어가게") ★★
+   *
+   * 다만 자동 재생은 잘못 만들면 그 자체가 방해다. 네 가지를 지킨다.
+   *   ① 끝에 닿으면 **처음으로 돌아온다.** 멈춰 버리면 고장으로 읽힌다.
+   *   ② 마우스를 올리거나 손으로 만지는 동안 멈춘다 — 읽고 있는데 밀려나면 화가 난다.
+   *   ③ 탭이 뒤로 가면 멈춘다. 안 보는 화면을 계속 움직이면 배터리만 쓴다.
+   *   ④ prefers-reduced-motion 이면 아예 켜지 않는다. 움직임에 민감한 사용자에게
+   *      자동으로 움직이는 화면은 장식이 아니라 증상을 부르는 자극이다.
+   *
+   * 4.2초는 사진 한 장을 훑기에는 충분하고 기다림으로 느껴지기 직전의 값이다.
+   */
+  useEffect(() => {
+    if (paused) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const id = setInterval(() => {
+      const el = trackRef.current;
+      if (!el || document.hidden) return;
+      const atRight = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+      if (atRight) el.scrollTo({ left: 0, behavior: 'smooth' });
+      else move(1);
+    }, 4200);
+    return () => clearInterval(id);
+  }, [paused, move]);
 
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+    >
       <ul
         ref={trackRef}
         className="scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2"

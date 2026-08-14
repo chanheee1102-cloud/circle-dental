@@ -13,7 +13,7 @@ import { IMG, OUTREACH_VIDEO } from '@/lib/assets';
 import { heroFacts } from '@/lib/heroFacts';
 import { HeroMedia } from '@/components/HeroMedia';
 import { Reveal } from '@/components/Reveal';
-import { DOCTORS, OUTREACH_PHOTO } from '@/lib/doctors';
+import { DOCTORS, OUTREACH_PHOTO, OUTREACH_BROADCAST } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { Container, SectionHead, CardLink, ContactCta } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
@@ -312,7 +312,24 @@ function PillarSection() {
  * 그대로 살아 있으므로 내용이 사라지는 것은 아니다.
  */
 
-/** 의료진 — 실제 단체 사진 + 인증·논문. 원문 카피 유지. */
+/**
+ * 의료진 — 홈에서 히어로 다음으로 오는 섹션.
+ *
+ * ★★ 왜 사진을 크게 쓰는가 (2026-08-14 재설계) ★★
+ *   예전에는 단체 사진 한 장 옆에 **56px 짜리 썸네일 세 개**를 붙여 뒀다.
+ *   그런데 우리에겐 세 원장의 625×670 인물 사진이 이미 있다. 병원을 고르는 사람이
+ *   가장 오래 보는 것이 사람 얼굴인데, 그 자산을 손톱만 하게 쓰고 있었던 셈이다.
+ *   → 세 장을 같은 크기로 나란히 세우고 이름·자격·경력을 아래에 붙인다.
+ *
+ * ★ 카드마다 개별 페이지로 간다. 사람 이름은 그 자체로 검색 질의라("변석호 원장")
+ *   각자의 페이지가 있어야 그 질의에 답할 수 있다.
+ *
+ * ★ 인증·논문은 얼굴 아래로 내렸다. 먼저 읽힐 것은 아니지만 지울 것도 아니다 —
+ *   교수 출신·학회 정회원·발표 논문은 이 병원의 가장 단단한 근거다.
+ *
+ * ⚠️ 경력 문구는 lib/doctors.ts 에서만 온다. 여기서 만들지 않는다 —
+ *    의료인 경력 허위 표시는 의료법 제56조 위반이다.
+ */
 function DoctorSection() {
   return (
     <section className="relative overflow-hidden py-24 lg:py-28">
@@ -321,26 +338,81 @@ function DoctorSection() {
         className="pointer-events-none absolute -left-40 top-20 h-[520px] w-[520px] rounded-full bg-brand-100/40 blur-3xl"
       />
       <Container className="relative">
-        <div className="grid items-center gap-14 lg:grid-cols-2">
-          <div>
-            <SectionHead
-              eyebrow="의료진 소개"
-              title={
-                <>
-                  대학병원 교수출신
-                  <br />
-                  대표원장님과 의료진
-                </>
-              }
-              desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부 인정 전문의들로만 구성된 의료진이 한차원 높은 의료서비스를 제공합니다."
-            />
+        <div className="max-w-3xl">
+          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
+            의료진 소개
+          </p>
+          <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">누가 진료하나요?</h2>
+          <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
+            세 분 원장 모두 보건복지부 인정 통합치의학과 전문의입니다. 대표원장은 경희대학교
+            치의학전문대학원 외래교수이자 치의학박사입니다.
+          </p>
+        </div>
 
-            <ul className="mt-9 space-y-2.5">
+        {/* 세 장을 같은 크기로. 원본 비율(625×670)을 그대로 써 인물이 잘리지 않는다. */}
+        <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {DOCTORS.map((d, i) => (
+            <li key={d.slug}>
+              <Reveal delay={i * 70}>
+                <Link
+                  href={`/about/doctors/${d.slug}`}
+                  className="group block h-full overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+                >
+                  <div className="relative aspect-[625/670] overflow-hidden bg-brand-100">
+                    <Image
+                      src={d.photo}
+                      alt={`${CLINIC.name} ${d.role} ${d.name}`}
+                      fill
+                      priority={i === 0}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    />
+                  </div>
+
+                  <div className="p-6">
+                    <p className="text-[12px] font-black tracking-[0.08em] text-gold-600">{d.role}</p>
+                    <h3 className="display mt-2 text-[24px] tracking-[0.04em] text-ink group-hover:text-brand-700">
+                      {d.name}
+                    </h3>
+                    <p className="mt-3 text-[13.5px] font-bold text-brand-600">
+                      보건복지부 인정 통합치의학과 전문의
+                    </p>
+
+                    {/* 경력 두 줄만 — 카드에서 다 읽히지 않는다. 나머지는 개별 페이지에 있다. */}
+                    <ul className="mt-4 space-y-1.5 border-t border-brand-100 pt-4">
+                      {d.career
+                        .filter((c) => !/통합치의학과 전문의/.test(c))
+                        .slice(0, 2)
+                        .map((c) => (
+                          <li key={c} className="text-[13px] leading-relaxed text-ink-soft">
+                            {c}
+                          </li>
+                        ))}
+                    </ul>
+
+                    <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-black text-brand-700">
+                      프로필 보기
+                      <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-12 grid gap-6 rounded-2xl border border-brand-200/70 bg-brand-50/50 p-7 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-10 lg:p-9">
+          <div>
+            <p className="text-[12px] font-black tracking-[0.08em] text-brand-500">인증 · 수료</p>
+            <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
               {CREDENTIALS.map((c) => (
-                <li key={c} className="flex items-start gap-3 text-[15px] text-ink-soft">
+                <li key={c} className="flex items-center gap-2 text-[13.5px] text-ink-soft">
                   <span
                     aria-hidden
-                    className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[11px] text-white"
+                    className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[9px] text-white"
                   >
                     ✓
                   </span>
@@ -349,77 +421,18 @@ function DoctorSection() {
               ))}
             </ul>
 
-            <div className="mt-8 rounded-xl border border-brand-200/70 bg-white p-6 shadow-[var(--shadow-soft)]">
-              <p className="text-[11.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
-                발표 논문
-              </p>
-              <p className="mt-2.5 text-[14.5px] leading-relaxed text-ink">{PUBLICATION}</p>
-            </div>
-
-            {/* 원장 3인 바로가기 — 이름은 그 자체로 검색 질의라 홈에서부터 개별 페이지로 연결한다. */}
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              {DOCTORS.map((d) => (
-                <Link
-                  key={d.slug}
-                  href={`/about/doctors/${d.slug}`}
-                  className="group flex items-center gap-3 rounded-2xl border border-brand-200/70 bg-white p-3 transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
-                >
-                  {/*
-                    인물 사진의 alt 는 '누구인지' 다. 이름이 옆에 글자로 있어도
-                    이미지 검색과 엔티티 연결은 alt 를 본다 — 의료진 사진에서는 그 값이 크다.
-                  */}
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-brand-100">
-                    <Image
-                      src={d.photo}
-                      alt={`${d.name} ${d.role} 프로필 사진`}
-                      fill
-                      sizes="56px"
-                      className="object-cover object-top"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-black tracking-wide text-brand-500">{d.role}</p>
-                    <p className="text-[16px] font-black tracking-[0.04em] text-ink group-hover:text-brand-700">
-                      {d.name}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            <Link
-              href="/about/doctors"
-              className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
-            >
-              의료진 자세히 보기 <span aria-hidden>→</span>
-            </Link>
+            <p className="mt-6 text-[12px] font-black tracking-[0.08em] text-brand-500">발표 논문</p>
+            <p className="mt-2 max-w-[62ch] text-[13.5px] leading-relaxed text-ink-soft">
+              {PUBLICATION}
+            </p>
           </div>
 
-          {/*
-            ★ 원본 JPG(1284×1800 세로)는 위쪽 57% 가 거의 비어 있고(워터마크만) 인물이
-              아래쪽에 몰려 있다. 그대로 넣으면 카드 위가 휑해 보인다.
-
-              그래서 처음엔 `aspect-[4/3] + object-bottom` 으로 아래를 기준 삼아 잘랐는데,
-              **너무 많이 잘라 세 사람의 머리가 카드 위 모서리에 닿아 잘렸다**(운영자 신고).
-              가로 4:3 틀은 세로 원본에서 높이의 46% 를 버리는데, 인물이 딱 그 경계에 있다.
-
-              지금은 두 가지를 함께 바꿨다:
-                · 틀을 5:4 로 조금 세워 버리는 양을 46% → 43% 로 줄이고
-                · 기준점을 100%(맨 아래)가 아니라 92% 로 올려 머리 위에 여백을 만든다.
-              아래로 8% 를 내주는 대신 원본 자체가 허리에서 잘려 있어 손해가 거의 없다.
-
-              원본 파일은 건드리지 않는다 — 비율을 다시 손보려면 이 두 값만 바꾸면 된다.
-              /about 의 같은 사진도 같은 값을 쓴다.
-          */}
-          <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-gradient-to-b from-brand-100 to-brand-200 shadow-[var(--shadow-lift)]">
-            <Image
-              src={IMG.doctors}
-              alt="동그라미치과의원 의료진"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover object-[50%_92%]"
-            />
-          </div>
+          <Link
+            href="/about/doctors"
+            className="inline-flex w-fit items-center gap-2 rounded-lg bg-brand-700 px-7 py-3.5 text-[15px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
+          >
+            의료진 전체 보기 <span aria-hidden>→</span>
+          </Link>
         </div>
       </Container>
     </section>
@@ -512,47 +525,58 @@ function OutreachSection() {
   return (
     <section className="border-y border-brand-200/60 bg-gradient-to-br from-brand-700 to-brand-900 py-20 text-white lg:py-24">
       <Container>
+        {/*
+          ⚠️ 여기에 OUTREACH 두 줄을 다시 늘어놓지 않는다.
+            사진 아래 캡션이 이미 그 두 줄이라 위아래로 **똑같은 문장이 두 번** 나왔다(실측).
+            머리글은 '무엇을 해 왔는가' 한 줄로만 요약하고, 구체는 캡션이 맡는다.
+        */}
         <div className="text-center">
           <p className="text-[12.5px] font-black tracking-[0.24em] text-brand-200 uppercase">
             Circle Dental Clinic
           </p>
           <h2 className="display-sm mt-4 text-[28px] sm:text-[34px]">동그라미 치과 사회공헌</h2>
-          <div className="mx-auto mt-9 max-w-2xl space-y-3">
-            {OUTREACH.map((o) => (
-              <p key={o} className="text-[16px] leading-relaxed text-brand-100/90">
-                {o}
-              </p>
-            ))}
-          </div>
-        </div>
-
-        {/* 실제 봉사 현장 사진 — 문구만 있을 때보다 훨씬 힘을 받는다. */}
-        <div className="mx-auto mt-11 max-w-2xl overflow-hidden rounded-2xl shadow-[var(--shadow-lift)]">
-          <Image
-            src={OUTREACH_PHOTO.src}
-            alt={OUTREACH_PHOTO.alt}
-            width={1256}
-            height={840}
-            className="h-auto w-full object-cover"
-          />
+          <p className="mx-auto mt-6 max-w-2xl text-[16px] leading-[1.85] text-brand-100/85">
+            진료실 밖에서도 해 온 일이 있습니다. 아래 두 장이 그 기록입니다.
+          </p>
         </div>
 
         {/*
-          방영분 영상 — 여기는 배경이 아니라 '보는' 영상이다.
-          ★ 자리표시자를 두고 **누른 사람에게만** 플레이어를 붙인다(components/VideoFacade.tsx).
-            loading="lazy" 만으로는 부족하다 — 화면 근처에 오면 결국 플레이어 JS 를 통째로
-            받아 실행하고, 그 비용이 PSI 모바일 점수를 그대로 깎는다(실측: 모바일 iframe 3개).
-            페이지 아래쪽 영상은 대부분 재생되지 않으므로 값을 미리 치를 이유가 없다.
-          ★ 누르면 그 자리에서 바로 재생된다(autoplay=1). 한 번 더 눌러야 하면 짜증이 난다.
-            자동으로 소리가 나지는 않는다 — 사용자가 누른 뒤이므로 소리는 정상 동작이다.
+          ★ 두 장을 **가로로 나란히** 둔다 (2026-08-14 운영자, 원본 홈페이지도 같은 구성).
+            세로로 쌓으면 두 활동이 별개의 이야기처럼 읽히는데 실제로는 '봉사' 라는 한 갈래다.
+            설명도 사진 바로 아래에 각각 붙여 어느 사진의 이야기인지 헷갈리지 않게 한다.
+          ★ 오른쪽은 방영분 영상이다. 썸네일로 **방영 장면 사진**을 쓴다 —
+            플레이어의 검은 첫 프레임을 두면 무엇을 재생하는지 알 수 없다.
+          ★ 두 칸의 비율을 4:3 으로 맞춘다. 원본 사진이 499×420(≈6:5)이라 큰 왜곡 없이
+            같은 높이로 떨어지고, 아래 설명 줄도 같은 선에서 시작한다.
         */}
-        <div className="mx-auto mt-12 max-w-3xl">
-          <VideoFacade
-            embedSrc={`${OUTREACH_VIDEO.embed}&autoplay=1`}
-            poster={OUTREACH_PHOTO.src}
-            posterAlt={OUTREACH_PHOTO.alt}
-            label="TV조선 구조신호 시그널 24회 방영분 재생 — 동그라미치과의원 무료 틀니 제공"
-          />
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <figure>
+            <div className="overflow-hidden rounded-2xl shadow-[var(--shadow-lift)]">
+              <Image
+                src={OUTREACH_PHOTO.src}
+                alt={OUTREACH_PHOTO.alt}
+                width={1256}
+                height={840}
+                className="aspect-[4/3] w-full object-cover"
+              />
+            </div>
+            <figcaption className="mt-4 text-center text-[14.5px] leading-relaxed text-brand-100/85">
+              {OUTREACH[0]}
+            </figcaption>
+          </figure>
+
+          <figure>
+            <VideoFacade
+              embedSrc={`${OUTREACH_VIDEO.embed}&autoplay=1`}
+              poster={OUTREACH_BROADCAST.src}
+              posterAlt={OUTREACH_BROADCAST.alt}
+              label="TV조선 구조신호 시그널 24회 방영분 재생 — 동그라미치과의원 무료 틀니 제공"
+              ratio="aspect-[4/3]"
+            />
+            <figcaption className="mt-4 text-center text-[14.5px] leading-relaxed text-brand-100/85">
+              {OUTREACH[1]}
+            </figcaption>
+          </figure>
         </div>
       </Container>
     </section>

@@ -38,7 +38,7 @@ export function SiteHeader() {
       }`}
     >
       <div
-        className={`mx-auto flex max-w-[1240px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
+        className={`mx-auto flex max-w-[1320px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
           scrolled ? 'h-[68px]' : 'h-[86px]'
         }`}
       >
@@ -136,7 +136,7 @@ export function SiteHeader() {
 
       {mobileOpen && (
         <div className="border-t border-brand-200/70 bg-white lg:hidden">
-          <nav className="mx-auto max-w-[1240px] px-5 py-4" aria-label="모바일 메뉴">
+          <nav className="mx-auto max-w-[1320px] px-5 py-4" aria-label="모바일 메뉴">
             {NAV.map((item) => (
               <div key={item.href} className="border-b border-brand-50 py-3.5 last:border-0">
                 <Link
