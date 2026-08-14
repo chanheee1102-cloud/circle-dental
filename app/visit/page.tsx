@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { Container, SectionHead, Breadcrumb } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
@@ -39,6 +40,11 @@ export default function VisitPage() {
           title="화정동 현창빌딩 3층입니다"
           desc={`${CLINIC.nearestStation} 인근이며, ${CLINIC.serviceArea.slice(0, 4).join(' · ')} 에서 오십니다.`}
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/visit" />
+        </div>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {/* 위치 */}

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, articleSchema } from '@/lib/seo';
-import { KeyPoints, ArticleMeta, References, charCount } from '@/components/article';
+import { KeyPoints, ArticleMeta, References, charCount, headingId } from '@/components/article';
 import { REFS_COST } from '@/lib/references';
 
 export const metadata: Metadata = {
@@ -80,6 +80,47 @@ export default function CostPage() {
 
         <div className="mt-9 max-w-[70ch]">
           <ArticleMeta path="/insight/cost" />
+        </div>
+
+        {/*
+          ★★ "얼마인가요?" 에 정면으로 답하는 자리 (2026-08-14) ★★
+            외부 진단이 "가격 정보 없음 — 비용 검색에 노출 불가" 로 잡았다. 맞는 지적이다.
+            비용 페이지인데 정작 **'얼마'라는 낱말에 답하는 문장이 없었다.**
+
+          ⚠️⚠️ 그렇다고 금액을 지어낼 수는 없다 ⚠️⚠️
+            비급여 진료비는 의료법상 **원내 게시 금액과 일치해야** 하고(UNVERIFIED.pricing),
+            병원이 실제 금액을 주기 전에 적으면 그 자체가 거짓 표시다.
+            → 대신 **금액이 정해지는 구조**를 답한다. "왜 병원마다 다른가", "내 경우는
+              어디에 해당하는가" 는 실제로 검색하는 사람이 알고 싶어 하는 것이고,
+              금액표 하나보다 이 답이 오래 맞다.
+        */}
+        <h2
+          id={headingId('치과 치료비는 얼마인가요')}
+          className="mt-12 scroll-mt-28 text-[22px] font-black text-ink sm:text-[26px]"
+        >
+          치과 치료비는 얼마인가요?
+        </h2>
+        <div className="mt-4 max-w-[68ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
+          <p className="text-[17px] leading-[1.85] text-ink">
+            같은 이름의 치료라도 <strong className="font-black">건강보험이 적용되는지</strong>에
+            따라 부담이 크게 갈립니다. 급여 항목은 전국 어느 치과에서나 정해진 기준을 따르고
+            본인부담률도 정해져 있는 반면, 비급여 항목은 병원이 각자 정하고 원내에 게시합니다.
+            그래서 &lsquo;얼마&rsquo;는 <strong className="font-black">어떤 항목이 몇 개 필요한지</strong>가
+            정해진 뒤에야 나옵니다.
+          </p>
+        </div>
+        <div className="mt-6 max-w-[68ch] space-y-3 text-[15.5px] leading-[1.85] text-ink-soft">
+          <p>
+            아래 표에서 각 항목이 급여인지 비급여인지, 그리고 무엇이 비용을 가르는지 먼저
+            확인하실 수 있습니다. 급여 항목의 본인부담률과 만 65세 이상 임플란트·틀니 적용 조건은
+            국민건강보험공단이 정한 기준을 따르므로, 정확한 최신 기준은 아래 참고자료의
+            공단·심사평가원 문서에서 확인하시는 것이 정확합니다.
+          </p>
+          <p>
+            비급여 진료비는 검사 결과에 따라 필요한 항목이 달라져 검사 전에는 말씀드릴 수
+            없습니다. 내원하시면 촬영 사진을 함께 보며 필요한 항목과 각각의 금액을 안내드리고,
+            원내 게시된 비급여 진료비도 함께 확인하실 수 있습니다.
+          </p>
         </div>
 
         <div className="mt-9 max-w-[70ch]">

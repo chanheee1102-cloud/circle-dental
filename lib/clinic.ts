@@ -59,6 +59,16 @@ export const CLINIC = {
    */
   social: {
     instagram: 'https://www.instagram.com/circle_dental/',
+    /**
+     * 네이버 블로그 — 확인 완료(2026-08-14, HTTP 200 · 제목 "동그라미치과 : 네이버 블로그").
+     *
+     * ★ 국내에서는 **네이버 블로그 연결이 다른 채널보다 무겁다.** 네이버가 자기 생태계 안의
+     *   문서를 검색·플레이스와 함께 묶어 보기 때문에, 홈페이지 ↔ 블로그가 같은 주체라는
+     *   선언이 있어야 양쪽 신호가 한 병원으로 합쳐진다.
+     * ★ 모바일 주소(m.blog.naver.com)가 아니라 **정규 주소**를 쓴다. m 주소는 같은 글을
+     *   가리키는 별도 URL 이라 동일성 선언에는 정규 쪽이 맞다.
+     */
+    naverBlog: 'https://blog.naver.com/circledental2021',
   },
 
   address: {

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
+import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
 import Link from 'next/link';
 import { CLINIC } from '@/lib/clinic';
 import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
@@ -34,33 +36,12 @@ const TRAIL = [
  *
  * ⚠️ 여기에 '저희는~' 문장을 다시 넣지 말 것. 넣으려면 원장님 확인이 먼저다.
  */
-const FLOW = [
-  {
-    n: '01',
-    t: '접수와 문진',
-    d: '복용 중인 약과 전신 질환을 확인합니다. 혈압약, 당뇨약, 골다공증약, 항응고제는 치료 계획과 안전에 직접 영향을 주기 때문에 빠짐없이 알리는 것이 중요합니다.',
-  },
-  {
-    n: '02',
-    t: '방사선 촬영',
-    d: '전체가 보이는 파노라마 사진을 찍고 필요하면 부위별로 추가 촬영합니다. 치아 사이나 뿌리 끝처럼 눈으로 볼 수 없는 곳은 사진이 아니면 확인할 방법이 없습니다.',
-  },
-  {
-    n: '03',
-    t: '구강 검사',
-    d: '치아를 하나씩 확인하고 잇몸 주머니 깊이를 잽니다. 필요하면 씹어 보게 해서 통증이 재현되는지, 온도 자극에 어떻게 반응하는지 확인합니다.',
-  },
-  {
-    n: '04',
-    t: '설명과 계획 수립',
-    d: '촬영한 사진을 함께 보며 지금 상태를 확인합니다. 급한 것과 지켜봐도 되는 것을 나누고, 각각 하지 않았을 때 어떻게 되는지와 대안을 함께 듣는 것이 좋습니다.',
-  },
-  {
-    n: '05',
-    t: '치료와 유지관리',
-    d: '통증과 감염을 먼저 다루고 기능 회복으로 넘어가는 것이 일반적인 순서입니다. 치료를 마칠 때 다음에 언제 무엇을 확인할지 정해 두면 실제 사용 기간이 달라집니다.',
-  },
-];
+/*
+ * ★ 절차 배열은 lib/firstVisit.ts 한 곳에서 온다 (2026-08-14).
+ *   홈에도 같은 절차를 요약해 보여 주게 되면서 이 파일 안에 있던 배열을 뽑아냈다.
+ *   두 곳에 적힌 절차는 반드시 어긋난다 — 한쪽만 고치는 날이 오기 때문이다.
+ */
+const FLOW = FIRST_VISIT_FLOW;
 
 const FIRST_VISIT_QA = [
   {
@@ -124,6 +105,11 @@ export default function ProcessPage() {
           title="치과에 처음 가면 무엇을 하나요?"
           desc="무엇을 하는지 모르면 첫 방문이 부담스럽습니다. 일반적으로 어떤 순서로 진행되는지 정리했습니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/about/process" />
+        </div>
 
         <ol className="relative mt-14 space-y-0 border-l-2 border-brand-200 pl-8">
           {FLOW.map((f) => (

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CLINIC, TREATMENT_PILLARS, OUTREACH, CREDENTIALS } from '@/lib/clinic';
@@ -83,6 +84,11 @@ export default function AboutPage() {
           조건인지를 먼저 확인합니다.
         </p>
 
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/about" />
+        </div>
+
         <div className="mt-10 flex flex-wrap gap-2.5">
           {TREATMENT_PILLARS.map((p) => (
             <Link
@@ -160,13 +166,14 @@ export default function AboutPage() {
                 의료진 자세히 보기 <span aria-hidden>→</span>
               </Link>
             </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-b from-brand-100 to-brand-200 shadow-[var(--shadow-lift)]">
+            {/* 홈(app/page.tsx)의 의료진 사진과 같은 틀·같은 기준점 — 이유는 그쪽 주석 참조. */}
+            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-gradient-to-b from-brand-100 to-brand-200 shadow-[var(--shadow-lift)]">
               <Image
                 src={IMG.doctors}
                 alt="동그라미치과의원 의료진"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-bottom"
+                className="object-cover object-[50%_92%]"
               />
             </div>
           </div>

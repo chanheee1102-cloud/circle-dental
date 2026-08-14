@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import { CLINIC } from '@/lib/clinic';
 import { Container, SectionHead, Breadcrumb, MedicalNotice } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
@@ -140,6 +141,11 @@ export default function EmergencyPage() {
           title="지금 할 수 있는 것과, 하면 안 되는 것"
           desc="응급 상황에서는 좋은 뜻으로 한 행동이 결과를 바꾸기도 합니다. 병원에 오시기 전 몇 분 동안의 조치를 정리했습니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/insight/emergency" />
+        </div>
 
         {/* 전화 안내를 맨 위에 둔다 — 급한 사람이 아래까지 읽지 않는다. */}
         <div className="mt-8 flex flex-wrap items-center gap-4 rounded-2xl bg-brand-700 px-7 py-6 text-white">

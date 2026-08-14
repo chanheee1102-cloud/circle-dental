@@ -62,6 +62,24 @@ export function SiteFooter() {
                 </li>
                 <li>
                   <a
+                    href={CLINIC.social.naverBlog}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                    aria-label={`${CLINIC.name} 네이버 블로그 (새 창)`}
+                    className="group inline-flex items-center gap-2.5 rounded-lg border border-white/15 bg-white/5 px-4 py-2.5 text-[13.5px] font-bold text-brand-100 transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
+                  >
+                    <NaverMark />
+                    네이버 블로그
+                    <span
+                      aria-hidden
+                      className="text-[11px] text-brand-200/60 transition-transform group-hover:translate-x-0.5"
+                    >
+                      ↗
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
                     href={CLINIC.booking.naver}
                     target="_blank"
                     rel="noopener noreferrer me"

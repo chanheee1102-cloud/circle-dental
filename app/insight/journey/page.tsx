@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import { JOURNEYS } from '@/lib/insight';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
@@ -46,6 +47,11 @@ export default function JourneyIndexPage() {
           title="몇 번 오고, 얼마나 걸리고, 그때마다 무엇을 하는지"
           desc="치료가 길어지는 이유는 대부분 시술이 아니라 기다림입니다. 어디서 기다리는지를 알면 일정을 세우기 쉬워집니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/insight/journey" />
+        </div>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {JOURNEYS.map((j) => (

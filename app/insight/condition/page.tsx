@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import { CONDITIONS } from '@/lib/conditions';
 import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
@@ -53,6 +54,11 @@ export default function ConditionIndexPage() {
           title="진료실에서 들은 그 병명, 무엇인지부터"
           desc="증상으로 찾기가 병명을 모를 때의 입구라면, 여기는 이미 병명을 들은 분을 위한 자리입니다. 한 문장 정의부터 진행 단계와 치료 방향까지 정리했습니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/insight/condition" />
+        </div>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {CONDITIONS.map((c) => (

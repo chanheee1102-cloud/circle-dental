@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import { TREATMENTS } from '@/lib/treatments';
 import { Container, SectionHead, CardLink, Breadcrumb, ContactCta } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
@@ -31,6 +32,11 @@ export default function TreatmentIndexPage() {
           title="무엇을 하는 곳인지, 각 치료가 어떤 과정인지"
           desc="치료마다 자주 나오는 질문을 먼저 정리했습니다. 궁금한 것이 이미 적혀 있다면 진료실에서는 그다음 이야기를 할 수 있습니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/treatment" />
+        </div>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {TREATMENTS.map((t) => (

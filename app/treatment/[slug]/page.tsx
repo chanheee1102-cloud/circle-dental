@@ -17,6 +17,8 @@ import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, firstSentence } from '@/components/article';
 import { REFS_TREATMENT } from '@/lib/references';
+import { ComparisonTable } from '@/components/ComparisonTable';
+import { MISSING_TOOTH_OPTIONS, NATURAL_VS_IMPLANT } from '@/lib/comparisons';
 
 /**
  * 진료과목 상세.
@@ -137,7 +139,15 @@ export default async function TreatmentDetailPage({
           */}
           <div className="mt-10 grid gap-5 lg:grid-cols-2">
             <KeyPoints items={[t.summary, ...t.qa.slice(0, 3).map((qa) => firstSentence(qa.a))]} />
-            <TableOfContents items={t.qa.map((qa) => qa.q)} />
+            <TableOfContents
+              items={[
+                ...t.qa.map((qa) => qa.q),
+                ...(t.slug === 'implant' || t.slug === 'crown-prosthesis'
+                  ? [MISSING_TOOTH_OPTIONS.title]
+                  : []),
+                ...(t.slug === 'save-natural-tooth' ? [NATURAL_VS_IMPLANT.title] : []),
+              ]}
+            />
           </div>
         </Container>
 
@@ -162,6 +172,29 @@ export default async function TreatmentDetailPage({
             <QABlock items={t.qa} />
           </div>
         </Container>
+
+        {/*
+          ★★ 비교표 (2026-08-14) ★★
+            "임플란트랑 브릿지 중 뭐가 나아요" 는 진료실에서도 검색에서도 가장 잦은 질문인데
+            줄글로는 **비교가 안 된다** — 사람은 두 선택지를 같은 기준으로 나란히 봐야 판단한다.
+            답변 엔진도 표는 행 단위로 사실이 끊겨 그대로 인용한다.
+          ⚠️ 우열을 매기지 않는다. 표는 차이를 보여 주는 것이지 판단을 대신하지 않는다
+             (lib/comparisons.ts 주석 참고).
+        */}
+        {(t.slug === 'implant' || t.slug === 'crown-prosthesis') && (
+          <section className="border-t border-brand-200/60 bg-white py-14">
+            <Container>
+              <ComparisonTable data={MISSING_TOOTH_OPTIONS} />
+            </Container>
+          </section>
+        )}
+        {t.slug === 'save-natural-tooth' && (
+          <section className="border-t border-brand-200/60 bg-white py-14">
+            <Container>
+              <ComparisonTable data={NATURAL_VS_IMPLANT} />
+            </Container>
+          </section>
+        )}
 
         {/* 임플란트만 세부 주제를 따로 둔다 — 질의가 가장 잘게 갈라지는 영역이라(뼈이식·상악동·보험 등)
             개요 페이지 하나로는 그 검색을 잡지 못한다. */}

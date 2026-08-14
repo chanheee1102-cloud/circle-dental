@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import { TREATMENTS } from '@/lib/treatments';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
@@ -49,6 +50,11 @@ export default function FaqPage() {
           title="많이 들어오는 질문을 모았습니다"
           desc="여기에 없는 것은 전화로 물어보셔도 됩니다. 진료 전 궁금한 점을 정리해 오시면 진료실에서 더 깊은 이야기를 할 수 있습니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/faq" />
+        </div>
 
         {/* 병원 운영 관련 */}
         <section className="mt-14">

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
@@ -40,6 +41,11 @@ export default function SymptomIndexPage() {
           title="지금 느끼는 것에서 시작하세요"
           desc="어떤 치료가 필요한지는 진단의 결과입니다. 출발점은 증상이어야 합니다. 각 항목에는 가능한 원인, 내원 전 할 수 있는 것, 바로 와야 하는 신호를 함께 적었습니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/insight/symptom" />
+        </div>
 
         <div className="mt-12 space-y-3">
           {SYMPTOMS.map((s) => (

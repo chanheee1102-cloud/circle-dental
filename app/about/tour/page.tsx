@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import Image from 'next/image';
 import { IMG } from '@/lib/assets';
 import { CLINIC } from '@/lib/clinic';
@@ -43,6 +44,11 @@ export default function TourPage() {
           title="동그라미 치과 내부 둘러보기"
           desc="상담실과 진료실을 미리 보고 오시면 첫 방문이 조금 덜 낯섭니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/about/tour" />
+        </div>
 
         {/*
           ★★ 사진마다 설명을 눈에 보이게 단다 (2026-08-14) ★★

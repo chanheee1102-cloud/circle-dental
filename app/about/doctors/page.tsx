@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CLINIC } from '@/lib/clinic';
@@ -80,6 +81,11 @@ export default function DoctorsPage() {
             <>
               대학병원 교수출신
               <br />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/about/doctors" />
+        </div>
               대표원장님과 의료진
             </>
           }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArticleMeta } from '@/components/article';
 import { CLINIC } from '@/lib/clinic';
 import { Container, Breadcrumb, NeedsInfo } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
@@ -65,6 +66,11 @@ export default function PrivacyPage() {
           신속하게 처리하기 위해 다음과 같이 처리방침을 두고 있습니다. 이 방침은 {CLINIC.name} 홈페이지
           이용과 내원 진료 모두에 적용됩니다.
         </p>
+
+        {/* 개인정보처리방침은 '언제 기준인지' 가 특히 중요하다 — 개정 이력이 곧 신뢰다. */}
+        <div className="mt-8 max-w-[70ch]">
+          <ArticleMeta path="/privacy" />
+        </div>
 
         <div className="mt-14 space-y-14">
           <Article

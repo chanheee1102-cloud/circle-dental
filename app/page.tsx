@@ -15,6 +15,10 @@ import { Reveal } from '@/components/Reveal';
 import { DOCTORS, OUTREACH_PHOTO, OUTREACH_BROADCAST, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { CareListSection } from '@/components/CareListSection';
+import { TrustSection } from '@/components/TrustSection';
+import { ProcessSection } from '@/components/ProcessSection';
+import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
+import { abs } from '@/lib/seo';
 import { Container, SectionHead, CardLink, ContactCta } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { WhyUsSection } from '@/components/WhyUsSection';
@@ -63,6 +67,27 @@ export default function HomePage() {
           }),
           heroImage ? imageObjectSchema({ path: '/', ...heroImage }) : null,
           faqSchema(homeFaq, '/'),
+          /*
+            ★ 첫 방문 절차를 HowTo 로 낸다 — "치과 처음 가면 뭐 해요" 는 실제 질의이고,
+              HowTo 는 답변 엔진이 단계별로 그대로 인용하는 형식이다.
+            ⚠️ 화면에 같은 4단계가 보인다(ProcessSection). 안 보이는 절차를 마크업하면
+               구조화 데이터 정책 위반이다.
+          */
+          {
+            '@type': 'HowTo',
+            '@id': `${abs('/')}#firstvisit`,
+            name: '치과 첫 방문 진행 절차',
+            description:
+              '동그라미치과의원에 처음 오시면 접수와 문진, 방사선 촬영, 구강 검사, 설명과 계획 수립 순서로 진행합니다.',
+            totalTime: 'PT40M',
+            step: FIRST_VISIT_FLOW.map((f, i) => ({
+              '@type': 'HowToStep',
+              position: i + 1,
+              name: f.t,
+              text: f.d,
+              url: `${abs('/about/process')}#${encodeURIComponent(f.t)}`,
+            })),
+          },
         ]}
       />
       {/*
@@ -111,6 +136,21 @@ export default function HomePage() {
       <ConcernsSection />
       <WhyUsSection />
       <PillarSection />
+      {/*
+        ★★ 신뢰 지표 (2026-08-14) ★★
+          자격·인증·논문·방송이 원래 사이트 곳곳에 있었지만 **한 자리에 모여 세어지지
+          않았다.** 답변 엔진은 "전문의 3명, 인증 4건" 처럼 셀 수 있는 것을 인용한다.
+          진료(Pillar) 바로 뒤에 두는 이유는, "무슨 치료 하나" 를 본 직후가
+          "그걸 믿고 맡겨도 되나" 를 묻는 자리이기 때문이다.
+        ⚠️ 여기에 환자 후기·별점을 넣지 말 것 — 의료법 제56조 제2항 치료경험담 광고 금지.
+      */}
+      <TrustSection />
+      {/*
+        ★ 진행 절차 — "어떻게 진행하나요?" 는 결심 직전에 나오는 질문이다.
+          전에는 /about/process 에만 있어서 홈만 보는 사람에게는 없는 것과 같았다.
+          네 단계 요약만 두고 자세한 것은 그 페이지로 보낸다.
+      */}
+      <ProcessSection />
       <InteriorSection />
       <OutreachSection />
 

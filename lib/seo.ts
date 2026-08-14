@@ -19,7 +19,8 @@
  *   BreadcrumbList : 사이트 계층. 크롤러가 문서 간 관계를 이해한다.
  */
 
-import { CLINIC, UNVERIFIED } from './clinic';
+import { CLINIC, UNVERIFIED, CREDENTIALS } from './clinic';
+import { TREATMENTS } from './treatments';
 import { DOCTORS } from './doctors';
 import { contentDates } from './contentMeta';
 
@@ -51,13 +52,50 @@ export const ID = {
 export function clinicSchema() {
   const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'Dentist',
+    /*
+     * ★★ 세 타입을 함께 준다 (2026-08-14) ★★
+     *   Dentist 는 스키마 계층상 MedicalOrganization → Organization 아래이지만,
+     *   **상속은 사람이 읽는 규칙이지 파서가 자동으로 채워 주는 값이 아니다.**
+     *   실제로 여러 검사 도구가 `@type` 문자열에서 'Organization' 을 그대로 찾는다
+     *   (외부 진단: "Organization 스키마 없음"). 세 개를 명시하면
+     *   Dentist 로서의 지역·진료 신호와 Organization 으로서의 회사 기본 정보가 함께 잡힌다.
+     */
+    '@type': ['Organization', 'MedicalOrganization', 'Dentist'],
     '@id': `${BASE}/#clinic`,
     name: CLINIC.name,
+    legalName: CLINIC.name,
     alternateName: CLINIC.nameEn,
     description: CLINIC.description,
     url: BASE,
     telephone: CLINIC.phone,
+    email: CLINIC.email,
+    /** 사업자등록번호 — 법인·사업자 식별의 공식 값이다. */
+    taxID: CLINIC.bizNo,
+    /** 대표자 — Person 노드를 @id 로 가리켜 저자·검토자와 같은 사람으로 이어진다. */
+    founder: { '@id': ID.director },
+    logo: {
+      '@type': 'ImageObject',
+      '@id': `${BASE}/#logo`,
+      url: `${BASE}/icon.png`,
+      contentUrl: `${BASE}/icon.png`,
+      caption: `${CLINIC.name} 로고`,
+      width: 196,
+      height: 196,
+    },
+    image: { '@id': `${BASE}/#logo` },
+    /*
+     * 연락 창구 — 전화 하나만 두지 않고 역할을 밝힌다.
+     * "예약 전화가 따로 있나요" 같은 질의에 기계가 바로 답할 수 있다.
+     */
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        telephone: CLINIC.phone,
+        contactType: '예약 및 진료 문의',
+        areaServed: 'KR',
+        availableLanguage: ['ko'],
+      },
+    ],
     address: {
       '@type': 'PostalAddress',
       streetAddress: `${CLINIC.address.street}, ${CLINIC.address.building}`,
@@ -104,7 +142,37 @@ export function clinicSchema() {
      *   되어 오히려 신호를 해친다. 인스타그램은 운영자가 준 주소로 200 을 확인하고 넣었다
      *   (2026-08-14). 유튜브는 계정을 확인하지 못해 아직 넣지 않는다.
      */
-    sameAs: [CLINIC.booking.naver, CLINIC.booking.kakao, CLINIC.social.instagram],
+    sameAs: [
+      CLINIC.booking.naver,
+      CLINIC.booking.kakao,
+      CLINIC.social.instagram,
+      CLINIC.social.naverBlog,
+    ],
+
+    /*
+     * ★★ 신뢰 지표를 구조화한다 (2026-08-14) ★★
+     *   외부 진단이 "인증·거래처 등 신뢰 지표가 없다" 고 잡았다. 그런데 자료는 이미 있었다 —
+     *   인증패 넷, 학회 정회원, 발표 논문, 방송 출연이 전부 화면에 있는데
+     *   **기계가 읽을 형태가 아니었을 뿐**이다.
+     *
+     * ⚠️⚠️ 여기에 '고객 후기' 를 넣지 않는다 ⚠️⚠️
+     *   의료법 제56조 제2항은 **치료경험담 광고를 금지**한다. 별점·후기·전후 사진 같은
+     *   일반 업종의 신뢰 지표를 치과 홈페이지에 그대로 옮기면 그 자체가 위법이다.
+     *   의료에서 허용된 신뢰 지표는 **자격·학회·논문·언론** 쪽이고, 그래서 그것만 낸다.
+     *   (aggregateRating / review 를 절대 넣지 말 것.)
+     */
+    hasCredential: CREDENTIALS.map((c) => ({
+      '@type': 'EducationalOccupationalCredential',
+      name: c,
+      credentialCategory: '수료·인증',
+    })),
+    knowsAbout: TREATMENTS.map((t) => t.name),
+    /** 실제로 다루는 진료 영역 수 — '얼마나 넓게 보는가' 를 기계가 셀 수 있게. */
+    makesOffer: TREATMENTS.map((t) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'MedicalProcedure', name: t.name },
+      url: abs(`/treatment/${t.slug}`),
+    })),
   };
 
   // 진료시간 — 확인된 경우에만 넣는다. 틀린 영업시간은 환자를 헛걸음시킨다.
@@ -192,8 +260,30 @@ export function directorPersonSchema() {
       .filter((c) => /대학|대학원|UCLA|Upenn/.test(c))
       .map((c) => ({ '@type': 'EducationalOrganization', name: c })),
     memberOf: d.societies.map((s) => ({ '@type': 'Organization', name: s })),
+    /*
+     * 자격·수료 — 저자 권위의 근거다. 이름만 있는 저자와 "무엇을 근거로 이 사람을
+     * 믿을 수 있는가" 가 붙은 저자는 인용 판단에서 다르게 취급된다.
+     * ⚠️ 전부 lib/doctors.ts · lib/assets.ts 원문이다. 여기서 만들지 않는다.
+     */
+    hasCredential: [
+      {
+        '@type': 'EducationalOccupationalCredential',
+        name: '보건복지부 인정 통합치의학과 전문의',
+        credentialCategory: '전문의 자격',
+        recognizedBy: { '@type': 'GovernmentOrganization', name: '보건복지부' },
+      },
+      ...CREDENTIALS.map((c) => ({
+        '@type': 'EducationalOccupationalCredential',
+        name: c,
+        credentialCategory: '수료·인증',
+      })),
+    ],
     /** 저자 동일성 — 이 사람의 프로필 페이지와 병원 계정을 잇는다. */
-    sameAs: [abs(`/about/doctors/${d.slug}`), CLINIC.social.instagram],
+    sameAs: [
+      abs(`/about/doctors/${d.slug}`),
+      CLINIC.social.instagram,
+      CLINIC.social.naverBlog,
+    ],
   };
 }
 
