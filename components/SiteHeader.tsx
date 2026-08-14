@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { NAV } from '@/lib/nav';
 import { CLINIC } from '@/lib/clinic';
 import { LogoLockup } from '@/components/Logo';
-import { OpenStatusBadge } from '@/components/OpenStatusBadge';
 
 /**
  * 전역 헤더.
@@ -43,15 +42,17 @@ export function SiteHeader() {
         }`}
       >
         {/*
-          로고 옆에 진료 상태를 둔다 — 방문자가 가장 먼저 확인하는 것이 '지금 여나' 이고,
-          그 답이 화면 맨 위에 있으면 전화 한 통이 줄어든다.
-          ⚠️ 좁은 화면에서는 숨긴다. 로고와 전화 버튼 사이에 끼면 둘 다 좁아져 오히려 방해다.
+          ⚠️ 실시간 '진료 중' 배지를 뺐다 (2026-08-14 운영자: "저거 라이브도 빼줘").
+             자동으로 여닫힘을 판정하는 표시는 **공휴일·임시 휴진을 알 수 없다**
+             (lib/openStatus.ts 주석에 적어 둔 한계다). 쉬는 날 "진료 중" 이라고 떠 있으면
+             그 표시 하나가 환자를 헛걸음시킨다 — 없는 편이 낫다.
+             진료시간은 푸터와 /visit 에 정확히 적혀 있다.
+             ⚠️ 되살리려면 그 한계(공휴일 판정 불가)부터 해결할 것.
         */}
         <div className="flex items-center gap-3">
           <Link href="/" aria-label={`${CLINIC.name} 홈`} className="transition-opacity hover:opacity-80">
             <LogoLockup />
           </Link>
-          <OpenStatusBadge className="hidden sm:inline-flex" />
         </div>
 
         <nav className="hidden items-center gap-0.5 lg:flex" aria-label="주 메뉴">
@@ -147,12 +148,9 @@ export function SiteHeader() {
             ★★ 예약·전화를 메뉴 맨 위에 (2026-08-14 운영자) ★★
               헤더에서 예약 버튼을 뺐으니 그 행동이 갈 곳이 있어야 한다. 메뉴를 연 사람은
               찾으러 온 사람이라, 목록을 훑기 전에 바로 할 수 있는 두 가지를 먼저 둔다.
-            ★ 진료 상태 배지도 여기 둔다 — 헤더에서는 자리가 없어 숨겼지만
-              "지금 여나" 는 예약을 누르기 직전에 가장 알고 싶은 것이다.
           */}
           <div className="mx-auto max-w-[1320px] px-5 pt-4">
-            <OpenStatusBadge className="inline-flex sm:hidden" />
-            <div className="mt-3 grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5">
               <a
                 href={CLINIC.booking.naver}
                 target="_blank"

@@ -42,7 +42,7 @@ export function QuickMenu() {
             급한 사람이 가장 많이 누르는 버튼이다.
       */}
       <aside
-        className="fixed right-5 bottom-6 z-40 hidden flex-col items-end gap-2.5 lg:flex"
+        className="fixed right-5 bottom-7 z-40 hidden flex-col items-end gap-3 lg:flex"
         aria-label="빠른 연락"
       >
         {showTop && (
@@ -50,7 +50,7 @@ export function QuickMenu() {
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             aria-label="맨 위로"
-            className="group mb-1 flex h-11 w-11 items-center justify-center rounded-full border border-brand-200 bg-white/95 text-brand-700 shadow-[var(--shadow-lift)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-brand-400"
+            className="group mb-1 flex h-12 w-12 items-center justify-center rounded-full border border-brand-200 bg-white/95 text-brand-700 shadow-[var(--shadow-lift)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-brand-400"
           >
             <span aria-hidden className="text-[15px] leading-none transition-transform group-hover:-translate-y-0.5">
               ↑
@@ -197,12 +197,12 @@ function Fab({
       href={href}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       title={label}
-      className={`group flex h-12 items-center gap-0 rounded-full px-3.5 shadow-[var(--shadow-lift)] backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:gap-2.5 hover:pr-5 ${className}`}
+      className={`group flex h-14 items-center gap-0 rounded-full px-4 shadow-[var(--shadow-lift)] backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:gap-3 hover:pr-6 ${className}`}
     >
-      <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center">
+      <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center">
         {icon}
       </span>
-      <span className="max-w-0 overflow-hidden text-[14px] font-black whitespace-nowrap opacity-0 transition-all duration-300 group-hover:max-w-[9rem] group-hover:opacity-100">
+      <span className="max-w-0 overflow-hidden text-[15px] font-black whitespace-nowrap opacity-0 transition-all duration-300 group-hover:max-w-[10rem] group-hover:opacity-100">
         {label}
       </span>
     </a>

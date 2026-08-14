@@ -15,7 +15,6 @@ import { Reveal } from '@/components/Reveal';
 import { DOCTORS, OUTREACH_PHOTO, OUTREACH_BROADCAST, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { CareListSection } from '@/components/CareListSection';
-import { CredentialShowcase } from '@/components/CredentialShowcase';
 import { ProcessSection } from '@/components/ProcessSection';
 import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
 import { abs } from '@/lib/seo';
@@ -249,11 +248,25 @@ function Hero() {
           className="enter mt-10 flex flex-wrap justify-center gap-3.5"
           style={{ animationDelay: '300ms' }}
         >
+          {/*
+            ★★ 첫 버튼을 전화번호 → '예약하기' 로 (2026-08-14 운영자) ★★
+              첫 화면의 주 버튼은 **가장 많은 사람이 하려는 행동** 하나여야 한다.
+              전화번호를 적어 두면 '지금 전화할 수 있는 사람' 에게만 버튼이고,
+              근무 중이거나 밤에 보는 사람에게는 누를 수 없는 버튼이다.
+              예약은 시간과 무관하게 누를 수 있다.
+            ★ 전화가 사라지는 것은 아니다 — 헤더(데스크톱)·햄버거 메뉴(모바일)·
+              오른쪽 아래 버튼·푸터·하단 고정 바에 그대로 있다.
+            ★ 외부 도메인이라 새 창 + rel="noopener" — 없으면 열린 창이 window.opener 로
+              이 페이지를 조작할 수 있다.
+          */}
           <a
-            href={CLINIC.phoneHref}
-            className="group inline-flex items-center gap-2.5 rounded-lg bg-white px-6 py-3.5 text-[16px] font-black tabular-nums text-brand-700 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1 sm:gap-3 sm:px-9 sm:py-4.5 sm:text-[18px]"
+            href={CLINIC.booking.naver}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="예약하기 — 네이버 예약 새 창으로 열기"
+            className="group inline-flex items-center gap-2.5 rounded-lg bg-white px-6 py-3.5 text-[16px] font-black text-brand-700 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1 sm:gap-3 sm:px-9 sm:py-4.5 sm:text-[18px]"
           >
-            {CLINIC.phone}
+            예약하기
             <span
               aria-hidden
               className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-[13px] transition-transform group-hover:translate-x-0.5"
@@ -493,57 +506,101 @@ function DoctorSection() {
         </ul>
 
         {/*
-          ★★ 인증패를 **한 장씩 크게, 자동으로 넘기며** 보여 준다 (2026-08-14 운영자) ★★
-            전에는 네 장을 한 줄에 작게 늘어놓았다. 그러면 한 장당 폭이 좁아
-            **무엇이 적힌 인증서인지 안 보이고**, "네 개 있다" 는 인상만 남는다.
-            발급 기관 로고와 이름이 읽혀야 그게 근거가 된다.
-          ★ 사진은 이미 배경이 지워진 PNG(누끼)라 액자 없이 그대로 놓는다 —
-            테두리를 씌우면 인증서에 이미 찍힌 금색 액자와 겹쳐 액자 안의 액자가 된다.
-          ⚠️ 원본이 236×242px 다. 300px 를 넘겨 키우면 눈에 띄게 뭉개진다 —
-             더 크게 보여 주려면 원본 파일부터 다시 받아야 한다.
-        */}
-        <div className="mt-14 grid gap-10 rounded-2xl border border-brand-200/70 bg-brand-50/40 px-7 py-10 lg:grid-cols-[1fr_minmax(0,340px)] lg:items-center lg:gap-14 lg:px-12">
-          <div className="min-w-0">
-            <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-              인증 · 수료
-            </p>
-            <div className="mt-6">
-              <CredentialShowcase />
-            </div>
-          </div>
+          ★★ 원본 홈페이지와 같은 배치 — 네 장을 한 줄에 (2026-08-14 운영자) ★★
+            자동으로 넘기는 쇼케이스를 만들었다가 되돌렸다. 운영자 판단은
+            "그냥 이대로 나오게 하되 **줄이랑 규격을 맞춰라**" 다.
 
-          <div className="min-w-0">
+          ★★ 원본이 어긋나 있던 두 가지를 여기서 바로잡는다 ★★
+            원본 홈페이지는 사진을 그대로 흘려 두어서
+              ① 세 번째(세계근관치료학회, 236×178)만 다른 셋(236×242)보다 납작한데
+                 세로 가운데 정렬이라 **혼자 아래로 내려앉고**,
+              ② 그 바람에 캡션도 혼자 한참 아래에 찍힌다.
+            → 같은 높이의 칸에 `object-contain` + **아래 정렬**로 담는다.
+              비율이 달라도 네 장의 **밑변이 한 선에 서고**, 캡션도 같은 줄에서 시작한다.
+              잘리는 인증서는 없다.
+
+          ★ 액자를 씌우지 않는다 — 인증서 사진에 이미 금색 액자가 찍혀 있어
+            테두리를 더하면 액자 안의 액자가 되고 그 여백만큼 인증서가 작아진다.
+            그림자만 옅게 깔아 바탕에서 떠 보이게 한다.
+          ⚠️ 원본이 236px 라 그보다 크게 늘리면 뭉개진다. 칸 높이를 200px 선에서 멈춘다.
+        */}
+        <div className="mt-14 rounded-2xl border border-brand-200/70 bg-brand-50/40 px-7 py-10 lg:px-12">
+          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
+            인증 · 수료
+          </p>
+
+          <ul className="mt-9 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+            {IMG.credentials.map((c) => (
+              <li key={c.src} className="flex flex-col">
+                {/* 밑변 정렬 — 비율이 달라도 네 장이 같은 선 위에 선다. */}
+                <div className="flex h-[170px] items-end justify-center sm:h-[200px]">
+                  <Image
+                    src={c.src}
+                    alt={c.label}
+                    width={236}
+                    height={242}
+                    loading="lazy"
+                    sizes="(max-width: 640px) 40vw, 220px"
+                    className="h-auto max-h-full w-auto drop-shadow-[0_10px_26px_rgba(58,33,26,0.18)]"
+                  />
+                </div>
+                {/*
+                  캡션 자리를 두 줄 높이로 고정한다 — 이름 길이가 달라 한 줄/두 줄이 오가면
+                  카드 아래 선이 어긋난다(원본이 정확히 그랬다).
+                */}
+                <p className="mt-5 flex min-h-[2.9rem] items-start justify-center text-center text-[13px] leading-snug text-ink-soft">
+                  {c.label}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          {/*
+            발표 논문 — 원본도 인증패 아래에 가로로 긴 배너로 뒀다.
+            제목만 적어 두면 '있다는 말' 로만 읽히므로 실물 화면을 함께 보여 준다.
+          */}
+          <div className="mt-12 border-t border-brand-200/70 pt-10">
             <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
               발표 논문
             </p>
-            <p className="mt-4 text-[14.5px] leading-relaxed font-bold text-ink">
-              {PUBLICATION_DETAIL.title}
-            </p>
-            <p className="mt-2 text-[13px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
+            <div className="mt-6 grid gap-7 lg:grid-cols-[1fr_minmax(0,420px)] lg:items-center">
+              <div className="min-w-0">
+                <p className="text-[16px] leading-relaxed font-bold text-ink">
+                  {PUBLICATION_DETAIL.title}
+                </p>
+                <p className="mt-2.5 text-[13.5px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
+                <div className="mt-7 flex flex-wrap gap-2.5">
+                  <Link
+                    href="/about/trust"
+                    className="group inline-flex items-center gap-2 rounded-lg bg-brand-700 px-6 py-3 text-[14.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
+                  >
+                    근거 · 인증 전체 보기
+                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
+                  </Link>
+                  <Link
+                    href="/about/doctors"
+                    className="inline-flex items-center gap-2 rounded-lg border border-brand-300 bg-white px-6 py-3 text-[14.5px] font-black text-brand-700 transition-colors hover:border-brand-400"
+                  >
+                    의료진 소개
+                  </Link>
+                </div>
+              </div>
 
-            {/*
-              ★ 자격·논문·방송을 한자리에 모은 페이지로 보낸다 (2026-08-14 운영자).
-                홈에 표까지 늘어놓으니 아무것도 눈에 안 들어왔다. 홈은 "그런 근거가 있다"
-                까지만 하고, 실제 표와 목록은 /about/trust 가 맡는다.
-            */}
-            <div className="mt-7 flex flex-wrap gap-2.5">
-              <Link
-                href="/about/trust"
-                className="group inline-flex items-center gap-2 rounded-lg bg-brand-700 px-6 py-3 text-[14.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
-              >
-                근거 · 인증 전체 보기
-                <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </Link>
-              <Link
-                href="/about/doctors"
-                className="inline-flex items-center gap-2 rounded-lg border border-brand-300 bg-white px-6 py-3 text-[14.5px] font-black text-brand-700 transition-colors hover:border-brand-400"
-              >
-                의료진 소개
-              </Link>
+              <div className="relative aspect-[768/430] overflow-hidden rounded-xl border border-brand-200/70 bg-white">
+                <Image
+                  src={PUBLICATION_DETAIL.image}
+                  alt="발표 논문 화면 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment"
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 1024px) 100vw, 420px"
+                  /* 원본은 위 60%가 흐린 배경이고 노트북·논문이 아래쪽에 있다 — 아래를 기준으로 자른다. */
+                  className="object-cover object-bottom"
+                />
+              </div>
             </div>
           </div>
         </div>
