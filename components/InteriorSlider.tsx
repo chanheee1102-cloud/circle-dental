@@ -124,8 +124,17 @@ export function InteriorSlider() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-brand-100 shadow-[var(--shadow-soft)]">
               <Image
                 src={shot.src}
-                /* 두 번째 벌은 이음매용 사본이라 빈 alt — 같은 설명을 두 번 읽지 않게. */
-                alt={i < shots.length ? shot.alt : ''}
+                /*
+                 * 두 벌 다 같은 설명을 단다.
+                 *
+                 * ★ 예전엔 두 번째 벌에 빈 alt 를 줬다. 같은 사진을 두 번 읽지 않게 하려던 건데,
+                 *   그 일은 이미 <li> 의 aria-hidden 이 하고 있다 — aria-hidden 은 요소를 접근성
+                 *   트리에서 통째로 빼므로 alt 가 뭐든 스크린리더는 읽지 않는다. 빈 alt 는 겹치는
+                 *   방어였고, 대신 **ARIA 를 안 보는 쪽**에는 설명 없는 사진 열두 장으로 남았다.
+                 *   AI 크롤러 대부분이 그렇다(HTML 만 읽고 접근성 트리를 만들지 않는다).
+                 * ⚠️ 되돌리지 말 것 — 화면에 읽히는 내용은 그대로고, 기계가 읽을 설명만 생겼다.
+                 */
+                alt={shot.alt}
                 fill
                 sizes="(max-width: 640px) 78vw, (max-width: 1024px) 46vw, 32vw"
                 /* 앞 세 장만 미리 받는다. 스물넷을 한꺼번에 받으면 첫 화면이 느려진다. */
