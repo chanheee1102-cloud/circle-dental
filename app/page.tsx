@@ -22,6 +22,10 @@ import { HomeFaqSection } from '@/components/HomeFaqSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
 import { InteriorSlider } from '@/components/InteriorSlider';
 import { VideoFacade } from '@/components/VideoFacade';
+import { JsonLd } from '@/components/JsonLd';
+import { medicalWebPageSchema, faqSchema, imageObjectSchema } from '@/lib/seo';
+import { CLINIC_QA, HOME_FAQ_COUNT } from '@/lib/faq';
+import { imageMeta } from '@/lib/imageSize';
 
 export const metadata: Metadata = {
   title: `${CLINIC.name} | 고양시 덕양구 화정동 치과`,
@@ -31,8 +35,36 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  /*
+   * ★★ 홈에도 FAQPage 를 낸다 (2026-08-14) ★★
+   *   전에는 "/faq 가 이미 같은 문답으로 내고 있어 두 URL 이 다투게 된다" 는 이유로
+   *   홈에서는 일부러 안 냈다. 다시 보면 그건 과한 조심이었다 — 구글이 금지하는 것은
+   *   **화면에 없는 문답을 마크업하는 것**이지, 같은 문답이 두 문서에 보이는 것이 아니다.
+   *   홈의 여섯 개는 아래 FAQ 섹션이 실제로 화면에 그린다.
+   *
+   *   ⚠️⚠️ 여기 배열은 반드시 **화면이 그리는 것과 같은 slice** 여야 한다 ⚠️⚠️
+   *      숫자를 여기서 새로 만들지 않고 lib/faq.ts 의 HOME_FAQ_COUNT 를 그대로 쓴다.
+   *      화면은 6개인데 마크업에 12개를 넣는 순간 구조화 데이터 정책 위반이고
+   *      수동 조치 대상이 된다.
+   */
+  const homeFaq = CLINIC_QA.slice(0, HOME_FAQ_COUNT);
+  /** 대표 이미지 — 크기는 파일에서 직접 읽는다. 손으로 적으면 사진 교체 순간 거짓값이 된다. */
+  const heroImage = imageMeta(IMG.interior[0].src, IMG.interior[0].alt);
+
   return (
     <>
+      <JsonLd
+        data={[
+          medicalWebPageSchema({
+            title: `${CLINIC.name} — 고양시 덕양구 화정동 치과`,
+            description: metadata.description as string,
+            path: '/',
+            image: heroImage,
+          }),
+          heroImage ? imageObjectSchema({ path: '/', ...heroImage }) : null,
+          faqSchema(homeFaq, '/'),
+        ]}
+      />
       {/*
         ★★ 순서 재설계 (2026-08-14 운영자: "중요한 것부터, 질문·진료 목록은 좀 내리자") ★★
 

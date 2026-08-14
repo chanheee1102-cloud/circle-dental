@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { CONDITIONS } from '@/lib/conditions';
 import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema } from '@/lib/seo';
+import { breadcrumbSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '질환 사전',
@@ -30,7 +30,15 @@ export default function ConditionIndexPage() {
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
-          faqSchema(CONDITIONS.map((c) => ({ q: `${c.name}(${c.aka[0]})이란?`, a: c.definition }))),
+          /*
+            ⚠️⚠️ 여기에 FAQPage 를 내지 않는다 (2026-08-14, 실측으로 발견) ⚠️⚠️
+              전에는 `${c.name}(${c.aka[0]})이란?` 15문항을 마크업하고 있었다. 그런데
+              **그 질문 문장은 화면 어디에도 없다** — 이 페이지는 질환 이름과 정의를 늘어놓는
+              목록이지 문답이 아니다. 질문을 코드에서 만들어 붙인 것이라 실측에서
+              '화면에 없는 문답 15건' 으로 잡혔다.
+              화면에 없는 문답을 마크업하는 것은 구글 구조화 데이터 정책 위반이고
+              수동 조치 대상이다. 문답은 각 질환 상세 페이지가 이미 제대로 내고 있다.
+          */
         ]}
       />
 

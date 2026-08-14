@@ -6,7 +6,8 @@ import { DOCTORS, doctorBySlug, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { CLINIC } from '@/lib/clinic';
 import { Container, Breadcrumb, ContactCta } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, abs, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, abs, medicalWebPageSchema, og, imageObjectSchema } from '@/lib/seo';
+import { imageMeta } from '@/lib/imageSize';
 
 export function generateStaticParams() {
   return DOCTORS.map((d) => ({ slug: d.slug }));
@@ -26,7 +27,12 @@ export async function generateMetadata({
     description: desc,
     keywords: [d.name, `${d.name} 원장`, `화정동 치과 ${d.name}`],
     alternates: { canonical: `/about/doctors/${d.slug}` },
-    openGraph: { title: `${d.name} ${d.role} | ${CLINIC.name}`, description: desc, images: [{ url: d.photo }] },
+    openGraph: og({
+      title: `${d.name} ${d.role} | ${CLINIC.name}`,
+      description: desc,
+      path: `/about/doctors/${d.slug}`,
+      images: [{ url: d.photo, width: 625, height: 670, alt: `${CLINIC.name} ${d.role} ${d.name}` }],
+    }),
   };
 }
 
@@ -58,9 +64,18 @@ export default async function DoctorDetailPage({
   /** 논문 저자 목록에 이 원장이 포함되는지 — 변석호(SH Byun)만 해당한다. */
   const hasPublication = d.slug === 'byun-seokho';
 
+  /** 대표 이미지 — 크기는 파일에서 직접 읽는다(lib/imageSize.ts 주석 참고). */
+  const heroImage = imageMeta(d.photo, `${CLINIC.name} ${d.role} ${d.name}`);
+
   const physician = {
     '@context': 'https://schema.org',
-    '@type': 'Physician',
+    /*
+     * ★ Person 과 Physician 두 타입을 함께 준다.
+     *   Physician 만 주면 '저자(author)' 로 쓸 수 없다 — 스키마에서 author 가 받는 것은
+     *   Person 또는 Organization 이다. 실측에서 두 페이지의 Person 노드가 사라졌던 이유가
+     *   이것이다(@id 가 같아 병합될 때 Physician 이 Person 을 덮었다).
+     */
+    '@type': ['Person', 'Physician'],
     '@id': `${CLINIC.url}/about/doctors/${d.slug}#physician`,
     name: `${d.name} ${d.role}`,
     givenName: d.name,
@@ -85,7 +100,11 @@ export default async function DoctorDetailPage({
             title: `${d.name} ${d.role}`,
             description: `${CLINIC.name} ${d.role} ${d.name}`,
             path: `/about/doctors/${d.slug}`,
+            image: heroImage,
           }),
+          heroImage
+            ? imageObjectSchema({ path: `/about/doctors/${d.slug}`, ...heroImage })
+            : null,
           physician,
         ]}
       />

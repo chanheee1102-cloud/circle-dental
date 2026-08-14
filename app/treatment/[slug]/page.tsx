@@ -14,7 +14,9 @@ import {
   Prose,
 } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
+import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, firstSentence } from '@/components/article';
+import { REFS_TREATMENT } from '@/lib/references';
 
 /**
  * 진료과목 상세.
@@ -39,7 +41,11 @@ export async function generateMetadata({
     title: t.name,
     description: t.summary,
     alternates: { canonical: `/treatment/${t.slug}` },
-    openGraph: { title: `${t.name} | 동그라미치과`, description: t.summary },
+    openGraph: og({
+      title: `${t.name} | 동그라미치과`,
+      description: t.summary,
+      path: `/treatment/${t.slug}`,
+    }),
   };
 }
 
@@ -60,6 +66,10 @@ export default async function TreatmentDetailPage({
 
   const related = t.relatedSymptoms.map(symptomBySlug).filter(Boolean);
 
+  const TPATH = `/treatment/${t.slug}`;
+  /** 대표 이미지 — 사진이 없는 문서는 그 페이지 전용 공유 카드를 쓴다(lib/seo.ts pageImage 주석). */
+  const docImage = pageImage(undefined, `${t.name} 진료 안내 — 동그라미치과의원`);
+
   return (
     <>
       <JsonLd
@@ -68,10 +78,20 @@ export default async function TreatmentDetailPage({
           medicalWebPageSchema({
             title: t.name,
             description: t.summary,
-            path: `/treatment/${t.slug}`,
+            path: TPATH,
             about: { type: 'MedicalProcedure', name: t.name },
+            image: docImage,
           }),
-          faqSchema(t.qa),
+          imageObjectSchema({ path: TPATH, ...docImage }),
+          articleSchema({
+            path: `/treatment/${t.slug}`,
+            title: `${t.name} — 진료 안내`,
+            description: t.summary,
+            wordCount: charCount(t.intro, t.qa.map((q) => q.q + q.a).join('')),
+            keywords: [t.name, ...t.whoFor],
+            hasImage: true,
+          }),
+          faqSchema(t.qa, `/treatment/${t.slug}`),
         ]}
       />
 
@@ -98,6 +118,27 @@ export default async function TreatmentDetailPage({
               </span>
             ))}
           </div>
+
+          {/*
+            ★★ 저자·검토자·최종 수정일 (2026-08-14) ★★
+              구조화 데이터에만 적어 두면 '기계용으로만 써 둔 값' 이다. 사람이 읽는 자리에도
+              같은 값이 있어야 그 선언이 사실로 받아들여진다.
+            ⚠️ '원장이 직접 작성' 이 아니라 **검토**다 — 작성 주체를 부풀리면 거짓 표시가 된다.
+          */}
+          <div className="mt-10 max-w-[70ch]">
+            <ArticleMeta path={`/treatment/${t.slug}`} />
+          </div>
+
+          {/*
+            ★★ 한눈에 보기 + 목차 ★★
+              요약은 새로 쓰지 않는다 — 문답의 **첫 문장**을 그대로 뽑는다. 이 사이트의 답은
+              애초에 첫 문장에서 끝나도록 쓰여 있어(lib/treatments.ts) 그대로가 요약이 된다.
+              지어내지 않으면서 답변 엔진이 인용할 결론 블록이 생긴다.
+          */}
+          <div className="mt-10 grid gap-5 lg:grid-cols-2">
+            <KeyPoints items={[t.summary, ...t.qa.slice(0, 3).map((qa) => firstSentence(qa.a))]} />
+            <TableOfContents items={t.qa.map((qa) => qa.q)} />
+          </div>
         </Container>
 
         <section className="border-y border-brand-100 bg-white py-14">
@@ -109,8 +150,17 @@ export default async function TreatmentDetailPage({
         </section>
 
         <Container className="py-14 lg:py-16">
-          <h2 className="sr-only">{t.name}에 대해 자주 묻는 질문</h2>
-          <QABlock items={t.qa} />
+          {/*
+            ⚠️ 예전에는 여기 h2 가 sr-only 였다. 그러면 화면에는 없고 구조에만 있는 헤딩이라
+               목차가 걸 곳이 없고, 답변 엔진이 보는 구조와 사람이 보는 화면이 어긋난다.
+               문답 하나하나가 이미 h2 이므로 이 자리는 눈썹 한 줄로 충분하다.
+          */}
+          <p className="text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
+            {t.name} 자주 묻는 질문
+          </p>
+          <div className="mt-8">
+            <QABlock items={t.qa} />
+          </div>
         </Container>
 
         {/* 임플란트만 세부 주제를 따로 둔다 — 질의가 가장 잘게 갈라지는 영역이라(뼈이식·상악동·보험 등)
@@ -118,7 +168,9 @@ export default async function TreatmentDetailPage({
         {t.slug === 'implant' && (
           <section className="border-t border-brand-200/60 bg-brand-50/40 py-14">
             <Container>
-              <h2 className="display-sm text-[22px] text-ink sm:text-[26px]">임플란트, 더 자세히</h2>
+              <h2 id="임플란트-더-자세히" className="display-sm scroll-mt-28 text-[22px] text-ink sm:text-[26px]">
+                임플란트, 더 자세히
+              </h2>
               <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
                 뼈가 부족할 때, 위턱 어금니일 때, 65세 이상 보험을 쓸 때처럼 상황마다 달라지는 부분을
                 따로 정리했습니다.
@@ -144,7 +196,9 @@ export default async function TreatmentDetailPage({
         {related.length > 0 && (
           <section className="border-t border-brand-100 bg-white py-14">
             <Container>
-              <h2 className="text-[20px] font-black text-ink">이런 증상이라면 함께 보세요</h2>
+              <h2 id="이런-증상이라면-함께-보세요" className="scroll-mt-28 text-[20px] font-black text-ink">
+                이런 증상이라면 함께 보세요
+              </h2>
               <p className="mt-2 text-[15px] text-ink-soft">
                 아래 증상은 {t.name}으로 이어지는 경우가 있습니다.
               </p>
@@ -168,7 +222,11 @@ export default async function TreatmentDetailPage({
           </section>
         )}
 
-        <Container>
+        <Container className="pt-4">
+          {/* 참고자료 — 본문이 실제로 근거로 삼는 공식 출처만(lib/references.ts 주석 참고). */}
+          <div className="max-w-[70ch]">
+            <References items={REFS_TREATMENT} />
+          </div>
           <MedicalNotice extra={NO_GUARANTEE_NOTE} />
         </Container>
       </article>

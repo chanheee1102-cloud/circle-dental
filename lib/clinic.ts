@@ -48,6 +48,19 @@ export const CLINIC = {
     kakao: 'https://pf.kakao.com/_psxkqb',
   },
 
+  /**
+   * 공식 소셜 계정.
+   *
+   * ★ VERIFIED — 운영자가 직접 준 주소이고 HTTP 200 을 확인했다(2026-08-14).
+   * ★★ 여기 적힌 주소는 푸터 링크로만 쓰이는 것이 아니라 **sameAs 에 그대로 들어간다** ★★
+   *   sameAs 는 "이 홈페이지와 저 계정이 같은 병원" 이라고 기계에게 선언하는 자리다.
+   *   확인 못 한 계정을 넣으면 404 를 가리키는 동일성 선언이 되어 지식패널 신호를 해친다.
+   *   ⚠️ 새 계정을 추가할 때는 반드시 실제 주소를 먼저 확인할 것.
+   */
+  social: {
+    instagram: 'https://www.instagram.com/circle_dental/',
+  },
+
   address: {
     /** VERIFIED */
     full: '경기도 고양시 덕양구 화신로260번길 51, 3층 301·302·303호',

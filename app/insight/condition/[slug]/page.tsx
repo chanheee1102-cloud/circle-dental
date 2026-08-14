@@ -6,7 +6,9 @@ import { symptomBySlug } from '@/lib/symptoms';
 import { treatmentBySlug } from '@/lib/treatments';
 import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, abs } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage} from '@/lib/seo';
+import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
+import { REFS_CONDITION } from '@/lib/references';
 
 export function generateStaticParams() {
   return CONDITIONS.map((c) => ({ slug: c.slug }));
@@ -36,7 +38,11 @@ export async function generateMetadata({
     description,
     keywords: [c.name, ...c.aka],
     alternates: { canonical: `/insight/condition/${c.slug}` },
-    openGraph: { title: `${c.name} — ${c.aka[0]}`, description },
+    openGraph: og({
+      title: `${c.name} — ${c.aka[0]}`,
+      description,
+      path: `/insight/condition/${c.slug}`,
+    }),
   };
 }
 
@@ -75,6 +81,10 @@ export default async function ConditionDetailPage({
     possibleTreatment: treatments.map((t) => ({ '@type': 'MedicalProcedure', name: t!.name })),
   };
 
+  const CPATH = `/insight/condition/${c.slug}`;
+  /** 대표 이미지 — 사진이 없는 문서는 그 페이지 전용 공유 카드를 쓴다(lib/seo.ts pageImage 주석). */
+  const docImage = pageImage(undefined, `${c.name}(${c.aka[0]}) 설명 — 동그라미치과의원`);
+
   return (
     <>
       <JsonLd
@@ -83,11 +93,24 @@ export default async function ConditionDetailPage({
           medicalWebPageSchema({
             title: `${c.name} (${c.aka[0]})`,
             description: c.definition,
-            path: `/insight/condition/${c.slug}`,
+            path: CPATH,
             about: { type: 'MedicalCondition', name: c.name },
+            image: docImage,
           }),
+          imageObjectSchema({ path: CPATH, ...docImage }),
           conditionSchema,
-          faqSchema([{ q: `${c.name}이란 무엇인가요?`, a: c.definition }, ...c.faq]),
+          articleSchema({
+            path: `/insight/condition/${c.slug}`,
+            title: `${c.name} (${c.aka[0]}) — 증상·원인·치료`,
+            description: c.definition,
+            wordCount: charCount(c.definition, c.signs.join(''), c.causes.join('')),
+            keywords: [c.name, ...c.aka],
+            hasImage: true,
+          }),
+          faqSchema(
+            [{ q: `${c.name}이란 무엇인가요?`, a: c.definition }, ...c.faq],
+            `/insight/condition/${c.slug}`,
+          ),
         ]}
       />
 
@@ -101,8 +124,46 @@ export default async function ConditionDetailPage({
           <h1 className="display mt-4 text-[32px] text-ink sm:text-[46px]">{c.name}</h1>
           <p className="mt-3 text-[15.5px] font-semibold text-ink-muted">{c.aka.join(' · ')}</p>
 
-          {/* 정의 블록 — AI 가 인용하는 자리. 한 문장으로 끝난다. */}
-          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
+          <div className="mt-8 max-w-[70ch]">
+            <ArticleMeta path={`/insight/condition/${c.slug}`} />
+          </div>
+
+          {/* 요약 — 정의 한 줄 + 주요 증상 + 원인. 전부 아래 본문에 그대로 있는 값이다. */}
+          <div className="mt-8 grid gap-5 lg:grid-cols-2">
+            <KeyPoints
+              items={[
+                c.definition,
+                `주요 증상: ${c.signs.slice(0, 3).join(', ')}`,
+                `주요 원인: ${c.causes.slice(0, 3).join(', ')}`,
+              ]}
+            />
+            <TableOfContents
+              items={[
+                `${c.name}이란 무엇인가요?`,
+                '이런 증상이 나타납니다',
+                '원인과 위험 요인',
+                '방치하면 이렇게 진행합니다',
+                '일반적인 치료 방향',
+                '자주 묻는 질문',
+              ]}
+            />
+          </div>
+
+          {/*
+            ★★ 정의 블록 — AI 가 인용하는 자리. 한 문장으로 끝난다 ★★
+              ⚠️ 헤딩을 반드시 화면에 보이게 둔다. 전에는 FAQPage 마크업에만
+                 "${c.name}이란 무엇인가요?" 를 넣고 화면에는 정의만 있었다.
+                 화면에 없는 문답을 마크업하는 것은 구조화 데이터 정책 위반이다
+                 (실측: 질환 상세 15개 페이지에서 각 1건씩 잡혔다).
+                 질문 자체가 실제 검색어이기도 해서, 보이게 두는 편이 원래 맞다.
+          */}
+          <h2
+            id={headingId(`${c.name}이란 무엇인가요`)}
+            className="mt-10 scroll-mt-28 text-[20px] font-black text-ink sm:text-[23px]"
+          >
+            {c.name}이란 무엇인가요?
+          </h2>
+          <div className="mt-4 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
             <p className="text-[17.5px] leading-[1.85] text-ink">{c.definition}</p>
           </div>
 
@@ -114,7 +175,9 @@ export default async function ConditionDetailPage({
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
-                <h2 className="display-sm text-[22px] text-ink">이런 증상이 나타납니다</h2>
+                <h2 id={headingId('이런 증상이 나타납니다')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+                  이런 증상이 나타납니다
+                </h2>
                 <ul className="mt-6 space-y-3">
                   {c.signs.map((s) => (
                     <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
@@ -128,7 +191,9 @@ export default async function ConditionDetailPage({
                 </ul>
               </div>
               <div>
-                <h2 className="display-sm text-[22px] text-ink">원인과 위험 요인</h2>
+                <h2 id={headingId('원인과 위험 요인')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+                  원인과 위험 요인
+                </h2>
                 <ul className="mt-6 space-y-3">
                   {c.causes.map((s) => (
                     <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
@@ -147,7 +212,9 @@ export default async function ConditionDetailPage({
 
         {/* 진행 단계 — '언제 가야 하나'를 스스로 가늠하게 해 준다. */}
         <Container className="py-14">
-          <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">방치하면 이렇게 진행합니다</h2>
+          <h2 id={headingId('방치하면 이렇게 진행합니다')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
+            방치하면 이렇게 진행합니다
+          </h2>
           <ol className="relative mt-10 space-y-0 border-l-2 border-brand-200 pl-8">
             {c.stages.map((st, i) => (
               <li key={st.step} className="relative pb-8 last:pb-0">
@@ -169,13 +236,17 @@ export default async function ConditionDetailPage({
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
-                <h2 className="display-sm text-[22px] text-ink">일반적인 치료 방향</h2>
+                <h2 id={headingId('일반적인 치료 방향')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+                  일반적인 치료 방향
+                </h2>
                 <p className="mt-5 max-w-[62ch] text-[15.5px] leading-[1.85] text-ink-soft">
                   {c.treatment}
                 </p>
               </div>
               <div>
-                <h2 className="display-sm text-[22px] text-ink">예방과 관리</h2>
+                <h2 id={headingId('예방과 관리')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+                  예방과 관리
+                </h2>
                 <ul className="mt-5 space-y-3">
                   {c.prevention.map((p) => (
                     <li key={p} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
@@ -196,7 +267,9 @@ export default async function ConditionDetailPage({
 
         {/* FAQ */}
         <Container className="py-14">
-          <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">자주 묻는 질문</h2>
+          <h2 id={headingId('자주 묻는 질문')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
+            자주 묻는 질문
+          </h2>
           <div className="mt-8 divide-y divide-brand-100 border-t border-brand-100">
             {c.faq.map((f) => (
               <article key={f.q} className="py-6">
@@ -260,6 +333,9 @@ export default async function ConditionDetailPage({
         )}
 
         <Container>
+          <div className="max-w-[70ch]">
+            <References items={REFS_CONDITION} />
+          </div>
           <MedicalNotice />
         </Container>
       </article>

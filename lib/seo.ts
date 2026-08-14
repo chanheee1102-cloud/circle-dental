@@ -20,10 +20,32 @@
  */
 
 import { CLINIC, UNVERIFIED } from './clinic';
+import { DOCTORS } from './doctors';
+import { contentDates } from './contentMeta';
 
 const BASE = CLINIC.url;
 
 export const abs = (path: string) => (path === '/' ? BASE : `${BASE}${path}`);
+
+/**
+ * 노드 @id 규칙 — 한 곳에 모아 둔다.
+ *
+ * ★★ 왜 @id 가 필요한가 ★★
+ *   스키마를 따로따로 내면 크롤러 입장에서는 **서로 남남인 조각들**이다.
+ *   "이 문서의 발행자" 와 "이 병원" 이 같은 존재라는 것을 알 방법이 없다.
+ *   @id 로 URI 를 붙여 두면 `publisher: { '@id': '…/#clinic' }` 한 줄로 이어진다.
+ *   지식패널은 이렇게 이어진 **엔티티 그래프**를 보고 만들어진다.
+ */
+export const ID = {
+  clinic: `${BASE}/#clinic`,
+  website: `${BASE}/#website`,
+  /** 대표원장 — 모든 의료 문서의 검토자. 원장 개별 페이지의 Physician 노드와 같은 URI 다. */
+  director: `${BASE}/about/doctors/${DOCTORS[0].slug}#physician`,
+  page: (path: string) => `${abs(path)}#webpage`,
+  article: (path: string) => `${abs(path)}#article`,
+  breadcrumb: (path: string) => `${abs(path)}#breadcrumb`,
+  image: (path: string) => `${abs(path)}#primaryimage`,
+} as const;
 
 /** 병원 본체 스키마. 사이트 전 페이지에 1회 주입한다. */
 export function clinicSchema() {
@@ -78,10 +100,11 @@ export function clinicSchema() {
      *   sameAs 는 엔티티 동일성을 선언하는 자리라 지식패널·지역 검색이 이 값을 본다.
      *   (진단에서 'sameAs 미설정' 으로 잡히던 항목이 이것이다 — 데이터는 이미 있었다.)
      *
-     * ★ 있는 채널만 넣는다. 유튜브·인스타그램은 실제 계정을 확인하지 못해 넣지 않는다.
-     *   없는 주소를 sameAs 에 적으면 404 를 가리키는 동일성 선언이 되어 오히려 신호를 해친다.
+     * ★ 있는 채널만 넣는다. 없는 주소를 sameAs 에 적으면 404 를 가리키는 동일성 선언이
+     *   되어 오히려 신호를 해친다. 인스타그램은 운영자가 준 주소로 200 을 확인하고 넣었다
+     *   (2026-08-14). 유튜브는 계정을 확인하지 못해 아직 넣지 않는다.
      */
-    sameAs: [CLINIC.booking.naver, CLINIC.booking.kakao],
+    sameAs: [CLINIC.booking.naver, CLINIC.booking.kakao, CLINIC.social.instagram],
   };
 
   // 진료시간 — 확인된 경우에만 넣는다. 틀린 영업시간은 환자를 헛걸음시킨다.
@@ -107,50 +130,121 @@ export function clinicSchema() {
   return schema;
 }
 
-/** 의료 정보 문서. 시술·증상 페이지에 붙인다. */
-export function medicalWebPageSchema(opts: {
+/**
+ * 페이지별 Open Graph 블록.
+ *
+ * ★★ 왜 헬퍼가 필요한가 (2026-08-14 실측으로 발견) ★★
+ *   Next.js 의 metadata 병합에서 `openGraph` 는 **통째로 교체**된다. 그래서 페이지가
+ *   `openGraph: { title, description }` 만 적으면 루트 레이아웃이 준 `url`·`images` 가
+ *   **사라진다.** 실측 결과 89개 중 og 4종을 다 갖춘 페이지가 16개뿐이었다.
+ *   카카오톡에 주소를 붙여 넣었을 때 이미지가 안 뜨던 이유가 이것이다.
+ *
+ * ★ images 를 생략하면 `app/opengraph-image.tsx` 가 만든 1200×630 카드가 자동으로 붙는다.
+ *   사람 사진처럼 그 페이지 고유의 이미지가 있으면 그것을 넘긴다.
+ */
+export function og(opts: {
   title: string;
   description: string;
   path: string;
-  /** 문서가 다루는 주제 — 시술이면 MedicalProcedure, 증상이면 MedicalCondition. */
-  about?: { type: 'MedicalProcedure' | 'MedicalCondition'; name: string };
+  images?: Array<{ url: string; width?: number; height?: number; alt?: string }>;
 }) {
-  const schema: Record<string, unknown> = {
-    '@context': 'https://schema.org',
-    '@type': 'MedicalWebPage',
-    name: opts.title,
+  return {
+    type: 'article' as const,
+    locale: 'ko_KR',
+    siteName: CLINIC.name,
+    title: opts.title,
     description: opts.description,
     url: abs(opts.path),
-    inLanguage: 'ko-KR',
-    isPartOf: { '@id': `${BASE}/#website` },
-    publisher: { '@id': `${BASE}/#clinic` },
-    /** 마지막 검토 주체를 밝히면 의료 정보의 신뢰 신호가 된다(E-E-A-T). */
-    reviewedBy: { '@type': 'Person', name: `${CLINIC.director} 원장`, jobTitle: '치과의사' },
+    /*
+     * ★★ images 를 반드시 채운다 (2026-08-14 실측) ★★
+     *   페이지가 openGraph 를 직접 선언하면 `app/opengraph-image.tsx` 가 자동으로 붙여 주던
+     *   카드가 **사라진다**(실측: og 4종을 다 갖춘 페이지가 89개 중 24개뿐이었다).
+     *   그래서 고유 이미지가 없으면 루트 OG 카드 주소를 명시적으로 넣는다.
+     *   metadataBase 가 있어 상대 경로도 절대 주소로 나간다.
+     */
+    images: opts.images ?? [
+      { url: '/opengraph-image', width: 1200, height: 630, alt: `${CLINIC.name} 대표 이미지` },
+    ],
   };
-  if (opts.about) {
-    schema.about = { '@type': opts.about.type, name: opts.about.name };
-  }
-  return schema;
 }
 
-/** 질문–답변 쌍. AI 답변에 가장 직접적으로 인용되는 형식이다. */
-export function faqSchema(items: Array<{ q: string; a: string }>) {
+/**
+ * 대표원장 Person 노드.
+ *
+ * ★ 모든 의료 문서의 `author` / `reviewedBy` 가 이 하나를 @id 로 가리킨다.
+ *   문서마다 이름만 적어 두면 크롤러는 **같은 이름의 서로 다른 사람 여럿**으로 읽는다.
+ *   하나의 URI 로 모으면 "이 사람이 쓴 글이 이만큼" 이라는 저자 권위가 누적된다.
+ * ★ 경력·학회는 lib/doctors.ts 원문 그대로다 — 여기서 만들지 않는다(의료법 제56조).
+ */
+export function directorPersonSchema() {
+  const d = DOCTORS[0];
   return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: items.map((it) => ({
-      '@type': 'Question',
-      name: it.q,
-      acceptedAnswer: { '@type': 'Answer', text: it.a },
-    })),
+    '@type': ['Person', 'Physician'],
+    '@id': ID.director,
+    name: d.name,
+    jobTitle: `치과의사 · ${d.role}`,
+    medicalSpecialty: 'Dentistry',
+    url: abs(`/about/doctors/${d.slug}`),
+    image: abs(d.photo),
+    worksFor: { '@id': ID.clinic },
+    knowsAbout: d.focus,
+    alumniOf: d.career
+      .filter((c) => /대학|대학원|UCLA|Upenn/.test(c))
+      .map((c) => ({ '@type': 'EducationalOrganization', name: c })),
+    memberOf: d.societies.map((s) => ({ '@type': 'Organization', name: s })),
+    /** 저자 동일성 — 이 사람의 프로필 페이지와 병원 계정을 잇는다. */
+    sameAs: [abs(`/about/doctors/${d.slug}`), CLINIC.social.instagram],
   };
+}
+
+/** 대표 이미지 노드. contentUrl · caption · width · height 를 갖춰야 리치 결과 대상이 된다. */
+export function imageObjectSchema(opts: {
+  path: string;
+  src: string;
+  caption: string;
+  width: number;
+  height: number;
+}) {
+  return {
+    '@type': 'ImageObject',
+    '@id': ID.image(opts.path),
+    contentUrl: abs(opts.src),
+    url: abs(opts.src),
+    caption: opts.caption,
+    width: opts.width,
+    height: opts.height,
+  };
+}
+
+/**
+ * 이 문서의 대표 이미지.
+ *
+ * ★★ 왜 사진이 없는 페이지에도 필요한가 ★★
+ *   Article 은 image 를 요구한다 — 없으면 리치 결과 대상에서 빠진다. 그런데 질환·증상
+ *   설명처럼 **사진이 없는 것이 옳은 문서**가 있다(관련 없는 사진을 억지로 넣으면
+ *   그게 더 나쁘다). 그런 문서에는 그 페이지 전용으로 생성되는 1200×630 공유 카드를
+ *   대표 이미지로 쓴다. 실제로 존재하고, 실제로 그 문서를 대표하는 이미지다.
+ * ⚠️ 관련 없는 병원 사진을 아무거나 붙이지 말 것 — 검색 결과에 엉뚱한 그림이 나간다.
+ */
+export function pageImage(
+  photo: { src: string; caption: string; width: number; height: number } | undefined,
+  fallbackCaption: string,
+) {
+  return (
+    photo ?? {
+      src: '/opengraph-image',
+      caption: fallbackCaption,
+      width: 1200,
+      height: 630,
+    }
+  );
 }
 
 /** 사이트 계층. 크롤러가 문서 간 관계를 이해하게 한다. */
 export function breadcrumbSchema(trail: Array<{ name: string; path: string }>) {
   return {
-    '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
+    '@id': ID.breadcrumb(trail[trail.length - 1]?.path ?? '/'),
     itemListElement: trail.map((t, i) => ({
       '@type': 'ListItem',
       position: i + 1,
@@ -162,13 +256,116 @@ export function breadcrumbSchema(trail: Array<{ name: string; path: string }>) {
 
 export function websiteSchema() {
   return {
-    '@context': 'https://schema.org',
     '@type': 'WebSite',
-    '@id': `${BASE}/#website`,
+    '@id': ID.website,
     url: BASE,
     name: CLINIC.name,
     inLanguage: 'ko-KR',
-    publisher: { '@id': `${BASE}/#clinic` },
+    publisher: { '@id': ID.clinic },
+  };
+}
+
+/**
+ * 의료 정보 문서 노드.
+ *
+ * ★ 예전에는 여기서 `@context` 를 달고 독립 스크립트로 나갔다. 이제는 @graph 안의
+ *   한 노드라 @context 는 바깥에서 한 번만 붙는다(components/JsonLd.tsx).
+ * ★ datePublished / dateModified / reviewedBy 가 붙는다 — 의료 정보에서 "언제 기준 글인가"
+ *   와 "누가 검토했나" 는 인용 여부를 가르는 두 축이다.
+ */
+export function medicalWebPageSchema(opts: {
+  title: string;
+  description: string;
+  path: string;
+  /** 문서가 다루는 주제 — 시술이면 MedicalProcedure, 증상이면 MedicalCondition. */
+  about?: { type: 'MedicalProcedure' | 'MedicalCondition'; name: string };
+  /** 목록·허브가 아니라 읽을 본문이 있는 문서인가. 대표 이미지가 있으면 함께 잇는다. */
+  image?: { src: string; caption: string; width: number; height: number };
+}) {
+  const { published, modified } = contentDates(opts.path);
+  const schema: Record<string, unknown> = {
+    '@type': 'MedicalWebPage',
+    '@id': ID.page(opts.path),
+    name: opts.title,
+    description: opts.description,
+    url: abs(opts.path),
+    inLanguage: 'ko-KR',
+    isPartOf: { '@id': ID.website },
+    publisher: { '@id': ID.clinic },
+    breadcrumb: { '@id': ID.breadcrumb(opts.path) },
+    datePublished: published,
+    dateModified: modified,
+    /** 마지막 검토 주체를 밝히면 의료 정보의 신뢰 신호가 된다(E-E-A-T). */
+    reviewedBy: { '@id': ID.director },
+    lastReviewed: modified,
+  };
+  if (opts.about) {
+    schema.about = { '@type': opts.about.type, name: opts.about.name };
+  }
+  if (opts.image) {
+    schema.primaryImageOfPage = { '@id': ID.image(opts.path) };
+  }
+  return schema;
+}
+
+/**
+ * 본문형 문서의 Article 노드.
+ *
+ * ★★ headline · datePublished · dateModified · author 네 개가 핵심이다 ★★
+ *   이 중 하나라도 비면 Article 로 인정받지 못한다. 특히 author 는 이름 문자열이 아니라
+ *   **Person 노드를 @id 로 가리켜야** 저자 권위가 한 사람에게 누적된다.
+ * ⚠️ 목록·허브 페이지에는 붙이지 않는다. 읽을 본문이 없는 Article 은 빈 껍데기라
+ *    오히려 품질 신호를 깎는다.
+ */
+export function articleSchema(opts: {
+  path: string;
+  title: string;
+  description: string;
+  /** 본문 전체 글자수 — 있으면 넣는다(문서 깊이 신호). */
+  wordCount?: number;
+  hasImage?: boolean;
+  /** 이 글이 다루는 주제어. 검색 질의와 문서를 잇는다. */
+  keywords?: string[];
+}) {
+  const { published, modified } = contentDates(opts.path);
+  const node: Record<string, unknown> = {
+    '@type': 'Article',
+    '@id': ID.article(opts.path),
+    isPartOf: { '@id': ID.page(opts.path) },
+    mainEntityOfPage: { '@id': ID.page(opts.path) },
+    headline: opts.title,
+    description: opts.description,
+    inLanguage: 'ko-KR',
+    datePublished: published,
+    dateModified: modified,
+    author: { '@id': ID.director },
+    publisher: { '@id': ID.clinic },
+  };
+  if (opts.hasImage) node.image = { '@id': ID.image(opts.path) };
+  if (opts.wordCount) node.wordCount = opts.wordCount;
+  if (opts.keywords?.length) node.keywords = opts.keywords.join(', ');
+  return node;
+}
+
+/**
+ * 질문–답변 쌍. AI 답변에 가장 직접적으로 인용되는 형식이다.
+ *
+ * ⚠️⚠️ **화면에 실제로 보이는 문답만** 넣는다 ⚠️⚠️
+ *    접혀 있어도 HTML 안에 있으면 되지만, 화면 어디에도 없는 질문을 마크업하면
+ *    구글 구조화 데이터 정책 위반이고 수동 조치 대상이다.
+ *    그래서 이 함수는 항상 **그 페이지가 렌더하는 배열 그대로** 받는다.
+ */
+export function faqSchema(items: Array<{ q: string; a: string }>, path?: string) {
+  const base = path ? abs(path) : '';
+  return {
+    '@type': 'FAQPage',
+    ...(path ? { '@id': `${base}#faq`, isPartOf: { '@id': ID.page(path) } } : {}),
+    mainEntity: items.map((it, i) => ({
+      '@type': 'Question',
+      ...(path ? { '@id': `${base}#faq-${i + 1}` } : {}),
+      name: it.q,
+      acceptedAnswer: { '@type': 'Answer', text: it.a },
+    })),
   };
 }
 

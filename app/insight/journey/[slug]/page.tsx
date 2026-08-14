@@ -6,7 +6,9 @@ import { treatmentBySlug } from '@/lib/treatments';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, abs } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage} from '@/lib/seo';
+import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
+import { REFS_TREATMENT } from '@/lib/references';
 
 /**
  * 치료 여정 상세.
@@ -33,7 +35,11 @@ export async function generateMetadata({
     title: j.question,
     description: j.answer.slice(0, 155),
     alternates: { canonical: `/insight/journey/${j.slug}` },
-    openGraph: { title: j.question, description: j.answer.slice(0, 155) },
+    openGraph: og({
+      title: j.question,
+      description: j.answer.slice(0, 155),
+      path: `/insight/journey/${j.slug}`,
+    }),
   };
 }
 
@@ -70,6 +76,10 @@ export default async function JourneyDetailPage({
     })),
   };
 
+  const JPATH = `/insight/journey/${j.slug}`;
+  /** 대표 이미지 — 사진이 없는 문서는 그 페이지 전용 공유 카드를 쓴다(lib/seo.ts pageImage 주석). */
+  const docImage = pageImage(undefined, `${j.question} — 동그라미치과의원 설명`);
+
   return (
     <>
       <JsonLd
@@ -78,11 +88,21 @@ export default async function JourneyDetailPage({
           medicalWebPageSchema({
             title: j.question,
             description: j.answer,
-            path: `/insight/journey/${j.slug}`,
+            path: JPATH,
             about: { type: 'MedicalProcedure', name: j.treatment },
+            image: docImage,
           }),
+          imageObjectSchema({ path: JPATH, ...docImage }),
           howTo,
-          faqSchema([{ q: j.question, a: j.answer }]),
+          articleSchema({
+            path: `/insight/journey/${j.slug}`,
+            title: j.question,
+            description: j.answer,
+            wordCount: charCount(j.answer, j.steps.map((st) => st.label + st.what).join('')),
+            keywords: [j.treatment, '치료 기간', '내원 횟수'],
+            hasImage: true,
+          }),
+          faqSchema([{ q: j.question, a: j.answer }], `/insight/journey/${j.slug}`),
         ]}
       />
 
@@ -115,11 +135,32 @@ export default async function JourneyDetailPage({
               <dd className="mt-2 text-[19px] font-black text-ink">{j.duration}</dd>
             </div>
           </dl>
+
+          <div className="mt-9 max-w-[70ch]">
+            <ArticleMeta path={`/insight/journey/${j.slug}`} />
+          </div>
+
+          {/* 요약은 이 문서가 이미 가진 값(횟수·기간·첫 단계)을 그대로 옮긴다. */}
+          <div className="mt-8 grid gap-5 lg:grid-cols-2">
+            <KeyPoints
+              items={[
+                j.answer,
+                `내원 횟수 ${j.visits} · 전체 기간 ${j.duration}`,
+                `첫 회차: ${j.steps[0]?.label ?? ''}`,
+              ].filter(Boolean)}
+            />
+            <TableOfContents items={['회차별로 하는 일', '이럴 때 더 걸립니다']} />
+          </div>
         </Container>
 
         <section className="border-y border-brand-200/60 bg-white py-14">
           <Container>
-            <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">회차별로 하는 일</h2>
+            <h2
+              id={headingId('회차별로 하는 일')}
+              className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]"
+            >
+              회차별로 하는 일
+            </h2>
             <ol className="relative mt-10 space-y-0 border-l-2 border-brand-200 pl-8">
               {j.steps.map((st, i) => (
                 <li key={st.label} className="relative pb-8 last:pb-0">
@@ -140,7 +181,12 @@ export default async function JourneyDetailPage({
         </section>
 
         <Container className="py-14">
-          <h2 className="display-sm text-[22px] text-ink">이럴 때 더 걸립니다</h2>
+          <h2
+            id={headingId('이럴 때 더 걸립니다')}
+            className="display-sm scroll-mt-28 text-[22px] text-ink"
+          >
+            이럴 때 더 걸립니다
+          </h2>
           <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
             위 회차는 일반적인 경우입니다. 아래에 해당하면 단계가 추가되거나 기다리는 기간이 늘어납니다.
           </p>
@@ -165,6 +211,9 @@ export default async function JourneyDetailPage({
             </Link>
           )}
 
+          <div className="max-w-[70ch]">
+            <References items={REFS_TREATMENT} />
+          </div>
           <MedicalNotice extra={NO_GUARANTEE_NOTE} />
         </Container>
       </article>

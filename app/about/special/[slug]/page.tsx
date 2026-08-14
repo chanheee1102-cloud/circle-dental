@@ -7,7 +7,9 @@ import { CLINIC } from '@/lib/clinic';
 import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
 import { StrengthIcon } from '@/components/StrengthIcons';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, og, imageObjectSchema } from '@/lib/seo';
+import { KeyPoints, TableOfContents, ArticleMeta, headingId, charCount } from '@/components/article';
+import { imageMeta } from '@/lib/imageSize';
 
 export function generateStaticParams() {
   return SPECIALS.map((s) => ({ slug: s.slug }));
@@ -21,15 +23,24 @@ export async function generateMetadata({
   const { slug } = await params;
   const s = specialBySlug(slug);
   if (!s) return {};
+  /*
+   * ★ 설명이 짧으면 본문의 첫 소제목을 이어 붙인다 (2026-08-14 실측).
+   *   body 한 줄만 쓰면 항목에 따라 42자밖에 안 돼 검색 결과에서 한 줄로 끝난다
+   *   (실측: digital-diagnosis 42자). 45자 미만은 스니펫으로서 제 역할을 못 한다.
+   *   ⚠️ 새 문장을 짓지 않는다 — 본문에 이미 있는 context 의 소제목을 그대로 잇는다.
+   */
+  const description =
+    s.body.length >= 60 ? s.body : `${s.body}. ${s.context.map((c) => c.h).slice(0, 2).join(', ')} 등을 정리했습니다.`;
   return {
     title: s.title,
-    description: s.body,
+    description,
     alternates: { canonical: `/about/special/${s.slug}` },
-    openGraph: {
+    openGraph: og({
       title: `${s.title} | ${CLINIC.name}`,
-      description: s.body,
-      images: [{ url: s.image }],
-    },
+      description,
+      path: `/about/special/${s.slug}`,
+      images: [{ url: s.image, alt: s.alt }],
+    }),
   };
 }
 
@@ -58,13 +69,29 @@ export default async function SpecialDetailPage({
 
   const others = SPECIALS.filter((o) => o.slug !== s.slug);
 
+  const SPATH = `/about/special/${s.slug}`;
+  const heroImage = imageMeta(s.image, s.alt);
+
   return (
     <>
       <JsonLd
         data={[
           breadcrumbSchema(trail),
-          medicalWebPageSchema({ title: s.title, description: s.body, path: `/about/special/${s.slug}` }),
-          faqSchema(s.faq),
+          medicalWebPageSchema({
+            title: s.title,
+            description: s.body,
+            path: SPATH,
+            image: heroImage,
+          }),
+          heroImage ? imageObjectSchema({ path: SPATH, ...heroImage }) : null,
+          articleSchema({
+            path: SPATH,
+            title: s.title,
+            description: s.body,
+            wordCount: charCount(s.body, s.context.map((c) => c.h + c.p).join('')),
+            keywords: [s.title, ...s.context.map((c) => c.h)],
+          }),
+          faqSchema(s.faq, SPATH),
         ]}
       />
 
@@ -96,6 +123,10 @@ export default async function SpecialDetailPage({
 
               {/* 원문 그대로 — AI 인용 대상 */}
               <p className="mt-7 max-w-[58ch] text-[17px] leading-[1.9] text-ink-soft">{s.body}</p>
+
+              <div className="mt-8">
+                <ArticleMeta path={SPATH} />
+              </div>
             </div>
 
             <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-[var(--shadow-lift)] lg:aspect-[16/11]">
@@ -117,10 +148,18 @@ export default async function SpecialDetailPage({
             <p className="text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
               알아 두면 좋은 것
             </p>
+            <div className="mb-10 max-w-[70ch]">
+              <KeyPoints items={[s.body, ...s.context.slice(0, 2).map((c) => c.h + ' — ' + c.p.slice(0, 70) + '…')]} />
+            </div>
+            <div className="mb-10 max-w-[70ch]">
+              <TableOfContents items={[...s.context.map((c) => c.h), '자주 묻는 질문']} />
+            </div>
             <div className="mt-8 divide-y divide-brand-100">
               {s.context.map((c) => (
                 <div key={c.h} className="py-7 first:pt-0 last:pb-0">
-                  <h2 className="display-sm text-[19px] text-ink sm:text-[21px]">{c.h}</h2>
+                  <h2 id={headingId(c.h)} className="display-sm scroll-mt-28 text-[19px] text-ink sm:text-[21px]">
+                    {c.h}
+                  </h2>
                   <p className="mt-3.5 max-w-[70ch] text-[16px] leading-[1.85] text-ink-soft">{c.p}</p>
                 </div>
               ))}
@@ -129,7 +168,9 @@ export default async function SpecialDetailPage({
         </section>
 
         <Container className="py-14">
-          <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">자주 묻는 질문</h2>
+          <h2 id={headingId('자주 묻는 질문')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
+            자주 묻는 질문
+          </h2>
           <div className="mt-8 divide-y divide-brand-100 border-t border-brand-100">
             {s.faq.map((f) => (
               <article key={f.q} className="py-6">

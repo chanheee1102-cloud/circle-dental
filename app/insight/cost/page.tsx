@@ -10,7 +10,9 @@ import {
   ContactCta,
 } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, articleSchema } from '@/lib/seo';
+import { KeyPoints, ArticleMeta, References, charCount } from '@/components/article';
+import { REFS_COST } from '@/lib/references';
 
 export const metadata: Metadata = {
   title: '비용 가이드 — 무엇이 보험이고 무엇이 아닌가',
@@ -49,7 +51,18 @@ export default function CostPage() {
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
-          faqSchema(COST_TOPICS.map((c) => ({ q: c.title, a: c.answer }))),
+          articleSchema({
+            path: '/insight/cost',
+            title: '치과 비용 — 건강보험 적용 항목과 비급여 항목',
+            description:
+              '같은 치료라도 건강보험이 되는 부분과 안 되는 부분이 나뉩니다. 그 경계와 비용을 가르는 요인을 정리했습니다.',
+            wordCount: charCount(COST_TOPICS.map((c) => c.title + c.answer + c.detail).join('')),
+            keywords: ['치과 비용', '건강보험', '비급여', '임플란트 보험'],
+          }),
+          faqSchema(
+            COST_TOPICS.map((c) => ({ q: c.title, a: c.answer })),
+            '/insight/cost',
+          ),
         ]}
       />
 
@@ -64,6 +77,75 @@ export default function CostPage() {
           title="금액보다 먼저 알아야 하는 것들"
           desc="같은 치료라도 보험이 되는 부분과 안 되는 부분이 나뉘고, 그 경계가 최종 비용을 가장 크게 좌우합니다. 여기서는 그 경계를 설명합니다."
         />
+
+        <div className="mt-9 max-w-[70ch]">
+          <ArticleMeta path="/insight/cost" />
+        </div>
+
+        <div className="mt-9 max-w-[70ch]">
+          <KeyPoints
+            items={[
+              `전체 ${COST_TOPICS.length}개 항목 중 건강보험이 적용되는 항목은 ${
+                COST_TOPICS.filter((c) => c.covered === 'insurance').length
+              }개, 조건부 적용이 ${COST_TOPICS.filter((c) => c.covered === 'partial').length}개,
+              비급여가 ${COST_TOPICS.filter((c) => c.covered === 'private').length}개입니다.`,
+              '같은 치료라도 보험이 되는 부분과 안 되는 부분이 나뉘고, 그 경계가 최종 비용을 가장 크게 좌우합니다.',
+              '검사 없이 나온 금액은 견적이 아닙니다 — 어떤 항목이 필요한지 정해져야 비용이 나옵니다.',
+            ]}
+          />
+        </div>
+
+        {/*
+          ★★ 비교표 (2026-08-14) ★★
+            같은 정보를 카드로만 두면 "내가 알아보려는 치료가 보험이 되나" 를 한눈에 못 본다.
+            항목 × 보험 적용 × 비용을 가르는 요인 세 열이면 그 비교가 한 화면에서 끝난다.
+            표는 답변 엔진이 특히 잘 인용하는 형식이기도 하다(행 단위로 사실이 끊긴다).
+          ⚠️ 금액은 넣지 않는다 — 비급여 진료비는 확인된 값이 없고, 확인 없이 적는 순간
+             의료광고법상 거짓 표시가 된다(UNVERIFIED.pricing 주석 참고).
+          ⚠️ 좁은 화면에서 표는 가로로 넘친다. 감싼 div 가 자기 안에서만 스크롤되게 한다 —
+             페이지 본문이 통째로 가로 스크롤되면 그건 고장으로 보인다.
+        */}
+        <div className="mt-10 overflow-x-auto rounded-2xl border border-brand-200/70">
+          <table className="w-full min-w-[640px] border-collapse text-left">
+            <caption className="sr-only">
+              치과 진료 항목별 건강보험 적용 여부와 비용을 가르는 요인
+            </caption>
+            <thead>
+              <tr className="bg-brand-50/70">
+                <th scope="col" className="px-6 py-4 text-[13px] font-black text-ink">
+                  항목
+                </th>
+                <th scope="col" className="px-6 py-4 text-[13px] font-black text-ink">
+                  건강보험 적용
+                </th>
+                <th scope="col" className="px-6 py-4 text-[13px] font-black text-ink">
+                  비용을 가르는 요인
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {COST_TOPICS.map((c) => (
+                <tr key={c.slug} className="border-t border-brand-100">
+                  <th scope="row" className="px-6 py-4 align-top text-[14.5px] font-bold text-ink">
+                    <a href={`#${c.slug}`} className="hover:text-brand-700 hover:underline">
+                      {c.title}
+                    </a>
+                  </th>
+                  <td className="px-6 py-4 align-top">
+                    <span
+                      className={`inline-flex rounded-full px-3 py-1 text-[11.5px] font-black ${BADGE[c.covered]}`}
+                    >
+                      {COST_LABEL[c.covered]}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 align-top text-[14px] leading-relaxed text-ink-soft">
+                    {c.factors.join(' · ')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <div className="mt-12 space-y-4">
           {COST_TOPICS.map((c) => (
@@ -100,6 +182,10 @@ export default function CostPage() {
           {UNVERIFIED.pricing.verified ? null : (
             <NeedsInfo label={UNVERIFIED.pricing.label} note={UNVERIFIED.pricing.note} />
           )}
+        </div>
+
+        <div className="mt-10 max-w-[70ch]">
+          <References items={REFS_COST} />
         </div>
 
         <MedicalNotice extra="비급여 진료비는 병원마다 다르며, 정확한 금액은 검사 후 개별 상태에 따라 안내드립니다. 원내 게시된 비급여 진료비를 함께 확인하실 수 있습니다." />

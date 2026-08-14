@@ -6,7 +6,9 @@ import { treatmentBySlug } from '@/lib/treatments';
 import { CLINIC } from '@/lib/clinic';
 import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
+import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
+import { REFS_CONDITION } from '@/lib/references';
 
 export function generateStaticParams() {
   return SYMPTOMS.map((s) => ({ slug: s.slug }));
@@ -25,7 +27,11 @@ export async function generateMetadata({
     // 메타 설명에 즉답을 그대로 쓴다 — 검색 결과 스니펫이 곧 답이 되게 한다.
     description: s.answer.slice(0, 155),
     alternates: { canonical: `/insight/symptom/${s.slug}` },
-    openGraph: { title: s.title, description: s.answer.slice(0, 155) },
+    openGraph: og({
+      title: s.title,
+      description: s.answer.slice(0, 155),
+      path: `/insight/symptom/${s.slug}`,
+    }),
   };
 }
 
@@ -47,6 +53,10 @@ export default async function SymptomDetailPage({
 
   const treatments = s.relatedTreatments.map(treatmentBySlug).filter(Boolean);
 
+  const SYPATH = `/insight/symptom/${s.slug}`;
+  /** 대표 이미지 — 사진이 없는 문서는 그 페이지 전용 공유 카드를 쓴다(lib/seo.ts pageImage 주석). */
+  const docImage = pageImage(undefined, `${s.title} — 동그라미치과의원 설명`);
+
   return (
     <>
       <JsonLd
@@ -55,10 +65,20 @@ export default async function SymptomDetailPage({
           medicalWebPageSchema({
             title: s.title,
             description: s.answer,
-            path: `/insight/symptom/${s.slug}`,
+            path: SYPATH,
             about: { type: 'MedicalCondition', name: s.short },
+            image: docImage,
           }),
-          faqSchema([{ q: s.title, a: s.answer }]),
+          imageObjectSchema({ path: SYPATH, ...docImage }),
+          articleSchema({
+            path: `/insight/symptom/${s.slug}`,
+            title: s.title,
+            description: s.answer,
+            wordCount: charCount(s.answer, s.causes.map((c) => c.name + c.detail).join('')),
+            keywords: [s.short, ...s.causes.map((c) => c.name)],
+            hasImage: true,
+          }),
+          faqSchema([{ q: s.title, a: s.answer }], `/insight/symptom/${s.slug}`),
         ]}
       />
 
@@ -78,12 +98,36 @@ export default async function SymptomDetailPage({
           <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6">
             <p className="text-[17px] leading-[1.85] text-ink">{s.answer}</p>
           </div>
+
+          <div className="mt-8 max-w-[70ch]">
+            <ArticleMeta path={`/insight/symptom/${s.slug}`} />
+          </div>
+
+          {/*
+            한눈에 보기 — 지어내지 않는다. 응급 신호와 확인된 원인 이름을 그대로 옮긴다.
+            이 페이지에서 가장 먼저 읽혀야 할 것이 '지금 가야 하나' 라 그 줄을 맨 위에 둔다.
+          */}
+          <div className="mt-8 grid gap-5 lg:grid-cols-2">
+            <KeyPoints
+              items={[
+                s.answer,
+                `지금 병원에 가야 하는 신호: ${s.urgent.slice(0, 2).join(', ')}`,
+                `흔한 원인: ${s.causes.map((c) => c.name).join(', ')}`,
+              ]}
+            />
+            <TableOfContents
+              items={['이럴 때는 미루지 마세요', '가능한 원인', '내원 전에 해볼 수 있는 것']}
+            />
+          </div>
         </Container>
 
         {/* 응급 신호를 원인보다 먼저 둔다 — 지금 병원에 가야 할 사람이 아래까지 안 읽고 나갈 수 있다. */}
         <section className="border-y border-gold-400/40 bg-gold-400/8 py-12">
           <Container>
-            <h2 className="flex items-center gap-2.5 text-[19px] font-black text-ink">
+            <h2
+              id={headingId('이럴 때는 미루지 마세요')}
+              className="flex scroll-mt-28 items-center gap-2.5 text-[19px] font-black text-ink"
+            >
               <span
                 aria-hidden
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-[14px] font-black text-white"
@@ -110,7 +154,10 @@ export default async function SymptomDetailPage({
         </section>
 
         <Container className="py-14">
-          <h2 className="text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]">
+          <h2
+            id={headingId('가능한 원인')}
+            className="scroll-mt-28 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]"
+          >
             가능한 원인
           </h2>
           <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
@@ -129,7 +176,10 @@ export default async function SymptomDetailPage({
 
         <section className="border-t border-brand-100 bg-white py-14">
           <Container>
-            <h2 className="text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]">
+            <h2
+              id={headingId('내원 전에 해볼 수 있는 것')}
+              className="scroll-mt-28 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]"
+            >
               내원 전에 해볼 수 있는 것
             </h2>
             <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
@@ -174,7 +224,10 @@ export default async function SymptomDetailPage({
           </Container>
         )}
 
-        <Container>
+        <Container className="pt-4">
+          <div className="max-w-[70ch]">
+            <References items={REFS_CONDITION} />
+          </div>
           <MedicalNotice />
         </Container>
       </article>

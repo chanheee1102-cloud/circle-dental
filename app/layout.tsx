@@ -3,8 +3,6 @@ import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { QuickMenu } from '@/components/QuickMenu';
-import { JsonLd } from '@/components/JsonLd';
-import { clinicSchema, websiteSchema } from '@/lib/seo';
 import { CLINIC } from '@/lib/clinic';
 
 /**
@@ -25,8 +23,14 @@ import { CLINIC } from '@/lib/clinic';
  *   apple-icon.png 만 흰 바탕으로 다시 합성했다. iOS 는 홈 화면 아이콘의 투명 영역을
  *   **검게** 채우는데, 원본 마크가 짙은 회색이라 검정 위에 얹히면 형체가 사라진다.
  *   모서리를 iOS 가 깎으므로 안쪽 여백도 함께 뒀다.
- * ★ 병원 스키마(Dentist)는 여기서 1회만 주입한다. 페이지마다 중복 주입하면
- *   같은 @id 가 여러 번 나와 크롤러가 어느 쪽을 믿을지 혼란스러워진다.
+ * ★★ 구조화 데이터는 여기서 내지 않는다 (2026-08-14) ★★
+ *   예전에는 병원(Dentist)·사이트(WebSite)를 레이아웃에서 한 번 내고, 페이지가 자기
+ *   스키마를 또 따로 냈다. 그러면 한 문서에 스크립트가 **둘 이상**이 되고,
+ *   크롤러 입장에서 그 조각들은 서로 남남이라 "이 문서의 발행자 = 이 병원" 이라는
+ *   관계가 이어지지 않는다.
+ *   → 이제 `components/JsonLd.tsx` 가 병원·사이트·대표원장 노드를 자동으로 앞에 붙여
+ *     **페이지마다 @graph 하나짜리 스크립트 한 개**를 낸다. 그쪽 주석 참고.
+ *   ⚠️ 여기에 JsonLd 를 다시 넣지 말 것 — 넣는 순간 모든 페이지가 스크립트 2개가 된다.
  */
 export const metadata: Metadata = {
   metadataBase: new URL(CLINIC.url),
@@ -71,7 +75,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="/fonts/pretendard/pretendard.css" />
       </head>
       <body>
-        <JsonLd data={[clinicSchema(), websiteSchema()]} />
         {/* 키보드 사용자가 헤더 메뉴를 매번 통과하지 않고 본문으로 건너뛸 수 있게 한다. */}
         <a
           href="#main"

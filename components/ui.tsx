@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { CLINIC, MEDICAL_DISCLAIMER } from '@/lib/clinic';
+import { headingId } from '@/components/article';
 
 /**
  * 페이지 폭을 한 곳에서 통제한다. 페이지마다 max-w 를 따로 적으면 반드시 어긋난다.
@@ -59,12 +60,19 @@ export function SectionHead({
           {eyebrow}
         </p>
       )}
-      {/* 페이지 제목은 한 단계 크게 — 문서의 머리라는 것이 눈으로도 보여야 한다. */}
+      {/*
+        페이지 제목은 한 단계 크게 — 문서의 머리라는 것이 눈으로도 보여야 한다.
+        ★★ 제목이 문자열이면 앵커 id 를 자동으로 붙인다 (2026-08-14) ★★
+          id 가 있어야 목차가 걸리고, 답변 엔진이 문서 전체가 아니라 그 구간을 지목해
+          인용할 수 있다. 손으로 붙이면 반드시 빠뜨리는 페이지가 생기므로 여기서 만든다.
+          (title 이 JSX 인 경우는 문자열을 뽑을 수 없어 건너뛴다.)
+      */}
       <H
+        id={typeof title === 'string' ? headingId(title) : undefined}
         className={
           as === 'h1'
-            ? 'display-sm mt-4 text-[32px] text-ink sm:text-[42px]'
-            : 'display-sm mt-4 text-[28px] text-ink sm:text-[36px]'
+            ? 'display-sm mt-4 scroll-mt-28 text-[32px] text-ink sm:text-[42px]'
+            : 'display-sm mt-4 scroll-mt-28 text-[28px] text-ink sm:text-[36px]'
         }
       >
         {title}
@@ -108,12 +116,25 @@ export function Breadcrumb({ trail }: { trail: Array<{ name: string; path: strin
  *   환자가 실제로 치는 문장을 그대로 제목에 쓰는 것이 핵심이다.
  * ★ 답은 첫 단락에서 끝난다. 답을 세 문단 뒤에 두면 인용되지 않는다.
  */
+/**
+ * 문답 블록.
+ *
+ * ★★ 헤딩마다 id 를 단다 (2026-08-14) ★★
+ *   id 가 없으면 목차가 걸 곳이 없고, 답변 엔진도 문서 전체만 가리킬 수 있다.
+ *   id 가 있으면 **그 질문 하나**를 URL 로 지목해 인용할 수 있다
+ *   (예: /treatment/implant#임플란트는-몇-번-와야-하나요).
+ *   id 는 헤딩 문자열에서 기계적으로 만든다 — 손으로 붙이면 목차와 어긋난다.
+ * ★ `scroll-mt` 를 준다. 고정 헤더가 86px 이라 앵커로 뛰면 제목이 헤더 뒤로 숨는다.
+ */
 export function QABlock({ items }: { items: Array<{ q: string; a: string }> }) {
   return (
     <div className="divide-y divide-brand-100">
       {items.map((it) => (
         <article key={it.q} className="py-7 first:pt-0 last:pb-0">
-          <h2 className="text-[19px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[21px]">
+          <h2
+            id={headingId(it.q)}
+            className="scroll-mt-28 text-[19px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[21px]"
+          >
             {it.q}
           </h2>
           <p className="mt-3 max-w-[70ch] text-[16px] leading-[1.85] text-ink-soft">{it.a}</p>

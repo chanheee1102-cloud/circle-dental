@@ -32,7 +32,13 @@ const TRAIL = [
 export default function DoctorsPage() {
   const physicians = DOCTORS.map((d) => ({
     '@context': 'https://schema.org',
-    '@type': 'Physician',
+    /*
+     * ★ Person 과 Physician 두 타입을 함께 준다.
+     *   Physician 만 주면 '저자(author)' 로 쓸 수 없다 — 스키마에서 author 가 받는 것은
+     *   Person 또는 Organization 이다. 실측에서 두 페이지의 Person 노드가 사라졌던 이유가
+     *   이것이다(@id 가 같아 병합될 때 Physician 이 Person 을 덮었다).
+     */
+    '@type': ['Person', 'Physician'],
     '@id': `${CLINIC.url}/about/doctors/${d.slug}#physician`,
     name: `${d.name} ${d.role}`,
     givenName: d.name,

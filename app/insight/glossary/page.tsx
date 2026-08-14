@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { GLOSSARY } from '@/lib/insight';
 import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, abs } from '@/lib/seo';
+import { breadcrumbSchema, abs, articleSchema } from '@/lib/seo';
+import { ArticleMeta, References, charCount } from '@/components/article';
+import { REFS_CONDITION } from '@/lib/references';
 
 export const metadata: Metadata = {
   title: '치과 용어 사전',
@@ -43,7 +45,19 @@ export default function GlossaryPage() {
 
   return (
     <>
-      <JsonLd data={[breadcrumbSchema(TRAIL), definedTermSet]} />
+      <JsonLd
+        data={[
+          breadcrumbSchema(TRAIL),
+          definedTermSet,
+          articleSchema({
+            path: '/insight/glossary',
+            title: '치과 용어 사전 — 진료실에서 듣는 말 풀이',
+            description: '크라운, 인레이, 치수염처럼 진료실에서 듣는 말을 한두 문장으로 풀었습니다.',
+            wordCount: charCount(GLOSSARY.map((t) => t.term + t.def).join('')),
+            keywords: GLOSSARY.slice(0, 8).map((t) => t.term),
+          }),
+        ]}
+      />
 
       <Container className="pt-10">
         <Breadcrumb trail={TRAIL} />
@@ -63,10 +77,24 @@ export default function GlossaryPage() {
               key={t.term}
               className="rounded-2xl border border-brand-100 bg-white p-6 transition-colors hover:border-brand-200"
             >
+              {/*
+                ★★ <abbr title> 로 감싼다 (2026-08-14) ★★
+                  전문용어는 **처음 만나는 자리에서** 풀려 있어야 한다. abbr 의 title 은
+                  마우스를 올리면 뜨고, 스크린리더는 읽어 주며, 검색엔진은 그 용어의
+                  정의로 읽는다. 화면에 없는 설명을 숨겨 두는 것이 아니라
+                  바로 아래 dd 에 있는 정의를 기계도 읽을 수 있게 잇는 것이다.
+                ★ 일상어(reading)가 있으면 괄호로 함께 보여 준다 — '근관치료(신경치료)' 처럼
+                  검색하는 말과 진료실에서 쓰는 말을 한 줄에 두면 둘 다로 찾을 수 있다.
+              */}
               <dt className="flex flex-wrap items-baseline gap-2">
-                <span className="text-[17px] font-black text-ink">{t.term}</span>
+                <abbr
+                  title={t.def}
+                  className="text-[17px] font-black text-ink no-underline decoration-transparent"
+                >
+                  {t.term}
+                </abbr>
                 {t.reading && (
-                  <span className="text-[13px] font-semibold text-ink-muted">{t.reading}</span>
+                  <span className="text-[13px] font-semibold text-ink-muted">({t.reading})</span>
                 )}
               </dt>
               <dd className="mt-2.5 text-[14.5px] leading-relaxed text-ink-soft">
@@ -86,6 +114,14 @@ export default function GlossaryPage() {
             </div>
           ))}
         </dl>
+
+        <div className="mt-10 max-w-[70ch]">
+          <ArticleMeta path="/insight/glossary" />
+        </div>
+
+        <div className="mt-8 max-w-[70ch]">
+          <References items={REFS_CONDITION} />
+        </div>
 
         <MedicalNotice />
       </Container>
