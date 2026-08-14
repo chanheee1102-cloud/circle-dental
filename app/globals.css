@@ -267,3 +267,16 @@ time,
     transition-duration: 0.01ms !important;
   }
 }
+
+/*
+ * 가로 슬라이드의 스크롤바를 숨긴다.
+ * ⚠️ 스크롤 자체는 살아 있어야 한다 — overflow:hidden 으로 막으면 터치로도 못 민다.
+ *   막대만 감추고 동작은 그대로 두는 것이 목적이다.
+ */
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 구형 Edge */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

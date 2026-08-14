@@ -73,20 +73,22 @@ export function SiteHeader() {
 
               {item.children && openMenu === item.label && (
                 <div className="absolute left-1/2 top-full w-[268px] -translate-x-1/2 pt-2.5">
+                  {/*
+                    ★ 보조설명(desc)을 렌더하지 않는다 (2026-08-14 운영자).
+                      메뉴는 '어디로 가는지' 만 알면 되는 자리다. 항목마다 한 줄씩 설명이 붙으면
+                      드롭다운이 두 배로 길어지고 훑는 속도가 오히려 떨어진다.
+                      설명은 그 페이지에 들어가서 읽으면 된다.
+                      (lib/nav.ts 의 desc 는 지우지 않는다 — 사이트맵·검색 설명 등에 쓸 수 있다.)
+                  */}
                   <div className="overflow-hidden rounded-xl border border-brand-200/70 bg-white p-2 shadow-[var(--shadow-lift)]">
                     {item.children.map((c) => (
                       <Link
                         key={c.href}
                         href={c.href}
-                        className="block rounded-lg px-3.5 py-2.5 transition-colors hover:bg-brand-50"
+                        className="block rounded-lg px-3.5 py-2 text-[14.5px] font-bold text-ink transition-colors hover:bg-brand-50 hover:text-brand-700"
                         onBlur={() => setOpenMenu(null)}
                       >
-                        <span className="block text-[14.5px] font-bold text-ink">{c.label}</span>
-                        {c.desc && (
-                          <span className="mt-0.5 block text-[12px] leading-snug text-ink-muted">
-                            {c.desc}
-                          </span>
-                        )}
+                        {c.label}
                       </Link>
                     ))}
                   </div>
@@ -104,11 +106,21 @@ export function SiteHeader() {
             <PhoneIcon />
             {CLINIC.phone}
           </a>
+          {/*
+            ★ '상담 예약' 은 **네이버 예약**으로 보낸다 (2026-08-14 운영자).
+              예전엔 전화 걸기였는데, 그러면 옆의 전화번호 버튼과 같은 동작이라 버튼이 둘인 의미가 없다.
+              지금은 '전화로 물어보기' 와 '지금 바로 시간 잡기' 로 갈린다.
+              네이버 예약은 플레이스 지표로도 쌓여 지역 검색에 직접 기여한다(lib/clinic.ts 주석 참고).
+            ★ 외부 도메인이라 새 창으로 열고 rel="noopener" 를 붙인다 — 없으면 열린 창이
+              window.opener 로 이 페이지를 조작할 수 있다.
+          */}
           <a
-            href={CLINIC.phoneHref}
+            href={CLINIC.booking.naver}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-2.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
           >
-            상담 예약
+            네이버 예약
           </a>
           <button
             type="button"

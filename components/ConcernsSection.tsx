@@ -26,10 +26,10 @@ export function ConcernsSection() {
         <div className="max-w-3xl">
           <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-gold-400 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-400" />
-            Your Concerns
+            망설임
           </p>
           <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px]">
-            혹시 이런 고민, 하고 계셨나요?
+            이런 마음으로 미뤄오셨다면
           </h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-brand-200/85">
             치과를 미루는 이유는 대개 치료가 아니라 망설임입니다. 자주 듣는 이야기와 저희가 하는 일을

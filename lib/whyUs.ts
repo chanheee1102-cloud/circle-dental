@@ -27,7 +27,7 @@ export interface WhyUsCard {
 }
 
 export interface WhyUsGroup {
-  /** 영문 라벨 — 카드 위 작은 글씨. */
+  /** 갈래 이름 — 카드 위 작은 글씨. 우리말로 둔다(영문 약어는 읽는 사람에게 정보가 0이다). */
   key: string;
   /** 한국어 부제. */
   label: string;
@@ -55,7 +55,7 @@ const 변석호 = DOCTORS[0];
 
 export const WHY_US: WhyUsGroup[] = [
   {
-    key: 'PEOPLE',
+    key: '의료진',
     label: '누가 진료하나',
     cards: [
       {
@@ -84,7 +84,7 @@ export const WHY_US: WhyUsGroup[] = [
     ],
   },
   {
-    key: 'TECHNOLOGY',
+    key: '진단·장비',
     label: '무엇으로 보나',
     cards: [
       {
@@ -110,7 +110,7 @@ export const WHY_US: WhyUsGroup[] = [
     ],
   },
   {
-    key: 'CARE',
+    key: '내원 편의',
     label: '오시기 편하게',
     cards: [
       {

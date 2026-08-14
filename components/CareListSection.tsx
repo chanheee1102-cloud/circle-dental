@@ -27,7 +27,7 @@ export function CareListSection() {
         <div className="max-w-3xl">
           <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-            Our Care
+            진료 영역
           </p>
           <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
             어떤 경우에 어떤 진료를 하나요?

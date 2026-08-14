@@ -26,14 +26,14 @@ export function WhyUsSection() {
         <div className="max-w-3xl">
           <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-            Why Us
+            무엇이 다른가
           </p>
           {/*
             질문형 제목 + 즉답. 이 사이트가 전체적으로 쓰는 형식이다 —
             AI 검색이 "질문과 같은 제목 + 바로 뒤의 짧은 답" 을 찾아 인용한다.
           */}
           <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
-            왜 동그라미치과인가요?
+            동그라미치과는 무엇이 다른가요?
           </h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
             {/* ⚠️ 숫자 앞에 {' '} 이 필요하다 — 없으면 JSX 가 줄바꿈을 삼켜 "것들을12가지" 로 붙는다(실측). */}
@@ -46,9 +46,9 @@ export function WhyUsSection() {
           {WHY_US.map((group, gi) => (
             <Reveal key={group.key} delay={gi * 80}>
               <div>
-                {/* 갈래 머리 — 영문 키와 한국어 부제를 한 줄에. 이고운 구조와 같은 리듬이다. */}
+                {/* 갈래 머리 — 갈래 이름과 부제를 한 줄에. 얇은 선으로만 나눠 카드와 위계를 만든다. */}
                 <div className="flex items-baseline gap-3 border-b border-brand-200/70 pb-3.5">
-                  <span className="text-[12px] font-black tracking-[0.22em] text-gold-600 uppercase">
+                  <span className="text-[13px] font-black tracking-[0.06em] text-gold-600">
                     {group.key}
                   </span>
                   <span aria-hidden className="text-brand-300">·</span>
@@ -61,7 +61,7 @@ export function WhyUsSection() {
                       key={c.title}
                       className="group flex h-full flex-col rounded-xl border border-brand-200/70 bg-white p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
                     >
-                      <p className="text-[11px] font-black tracking-[0.16em] text-brand-400 uppercase">
+                      <p className="text-[11px] font-black tracking-[0.06em] text-brand-400">
                         {group.key} {String(i + 1).padStart(2, '0')}
                       </p>
                       <h3 className="display-sm mt-3 text-[16.5px] leading-snug text-ink">

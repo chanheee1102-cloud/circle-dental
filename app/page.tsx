@@ -21,6 +21,7 @@ import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
 import { CareListSection } from '@/components/CareListSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
+import { InteriorSlider } from '@/components/InteriorSlider';
 
 export const metadata: Metadata = {
   title: `${CLINIC.name} | 고양시 덕양구 화정동 치과`,
@@ -33,22 +34,43 @@ export default function HomePage() {
   return (
     <>
       {/*
-        ★ 순서에는 이유가 있다 — 병원을 고르는 사람이 묻는 순서다.
-          무엇을 하나(진료) → 왜 여기인가(WhyUs) → 누가 하나(의료진) → 내 증상은(Symptom)
-          → 어떤 곳인가(내부·사회공헌) → 궁금한 것(FAQ) → 언제·어디로(진료시간) → 연락.
-        ★ WhyUs 를 StrengthSection 뒤에 두지 않고 **대신** 넣었다.
-          '특별함 5가지' 와 'WHY US 12가지' 는 같은 말을 두 번 하는 것이라
-          둘 다 두면 어느 쪽도 안 읽힌다. 특별함 원문은 /about/special 에 그대로 남아 있다.
+        ★★ 순서 재설계 (2026-08-14 운영자: "중요한 것부터, 질문·진료 목록은 좀 내리자") ★★
+
+        예전 순서는 진료(PillarSection·CareList)가 2·3번이었다. AEO 를 생각하면 시술명이
+        위에 있는 게 유리해 보이지만, **사람은 그 순서로 읽지 않는다.**
+        병원을 처음 보는 사람은 "무슨 치료 하나" 보다 "여기 믿을 만한가" 를 먼저 판단한다.
+        그 판단이 서기 전에는 시술 목록이 아무리 길어도 눈에 안 들어온다.
+
+        그래서 **신뢰 → 공감 → 근거 → 구체 → 확인 → 행동** 으로 세웠다.
+
+          1 Hero          누구이고 지금 갈 수 있는가
+          2 Doctor        누가 보는가 — 병원 선택에서 가장 강한 신호
+          3 Concerns      내 망설임이 여기 있는가 (아직 결심 안 한 사람을 붙잡는 자리)
+          4 WhyUs         그래서 무엇이 다른가 — 12가지 구체 근거
+          5 Pillar        무엇을 하는가 (사진 네 갈래)
+          6 Interior      어떤 공간인가 (슬라이드)
+          7 Outreach      어떤 곳인가 — 사회공헌
+          8 CareList      진료 영역 전체 (여기부터는 '찾아보는' 구간)
+          9 Symptom       내 증상으로 찾기
+         10 Insight       더 읽을거리
+         11 FAQ           궁금증 해소
+         12 Hours         언제·어디로
+         13 Cta           연락
+
+        ★ 검색·AI 는 순서보다 **문서에 있는가**를 본다. 아래로 내려도 같은 페이지 안이라
+          인용 가능성은 그대로다. 반대로 사람은 순서에 그대로 영향을 받는다.
+        ★ StrengthSection('특별함 5가지')은 WhyUs 와 같은 말이라 제거했다.
+          원문은 /about 과 /about/special 에 그대로 있다.
       */}
       <Hero />
-      <PillarSection />
-      <CareListSection />
-      <WhyUsSection />
       <DoctorSection />
-      <SymptomEntry />
       <ConcernsSection />
+      <WhyUsSection />
+      <PillarSection />
       <InteriorSection />
       <OutreachSection />
+      <CareListSection />
+      <SymptomEntry />
       <InsightPromo />
       <HomeFaqSection />
       <HoursSection />
@@ -455,37 +477,28 @@ function InteriorSection() {
   return (
     <section className="py-24 lg:py-28">
       <Container>
-        <div className="text-center">
-          <p className="text-[12.5px] font-black tracking-[0.24em] text-brand-500 uppercase">
-            Circle Dental Clinic
+        <div className="max-w-3xl">
+          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
+            공간
           </p>
           <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
-            동그라미 치과 내부 둘러보기
+            어떤 공간에서 진료하나요?
           </h2>
+          <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
+            상담실과 진료실, 소독실까지 실제 사진입니다. 옆으로 넘겨 보실 수 있습니다.
+          </p>
         </div>
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {IMG.interior.slice(0, 6).map((src, i) => (
-            <Reveal
-              key={src}
-              delay={Math.min(i, 2) * 70}
-              className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-[var(--shadow-soft)]"
-            >
-              <Image
-                src={src}
-                alt={`동그라미치과의원 내부 ${i + 1}`}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-            </Reveal>
-          ))}
+        {/* 격자 대신 슬라이드 — 열두 장을 한 줄 자리로 다 보여 준다(components/InteriorSlider.tsx). */}
+        <div className="mt-12">
+          <InteriorSlider />
         </div>
-        <div className="mt-8 text-center">
+        <div className="mt-10">
           <Link
             href="/about/tour"
-            className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-brand-300 bg-white px-7 py-3.5 text-[15.5px] font-bold text-brand-700 transition-all hover:-translate-y-1 hover:border-brand-400"
+            className="inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
           >
-            전체 사진 보기 <span aria-hidden>→</span>
+            둘러보기 페이지에서 전체 보기 <span aria-hidden>→</span>
           </Link>
         </div>
       </Container>
