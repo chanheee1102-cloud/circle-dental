@@ -4,7 +4,6 @@ import type { Metadata } from 'next';
 import {
   CLINIC,
   UNVERIFIED,
-  STRENGTHS,
   TREATMENT_PILLARS,
   CREDENTIALS,
   PUBLICATION,
@@ -17,8 +16,9 @@ import { Reveal } from '@/components/Reveal';
 import { DOCTORS, OUTREACH_PHOTO } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { Container, SectionHead, CardLink, ContactCta } from '@/components/ui';
-import { SpecialGrid } from '@/components/SpecialGrid';
 import { ClinicMap } from '@/components/ClinicMap';
+import { WhyUsSection } from '@/components/WhyUsSection';
+import { HomeFaqSection } from '@/components/HomeFaqSection';
 
 export const metadata: Metadata = {
   title: `${CLINIC.name} | 고양시 덕양구 화정동 치과`,
@@ -30,14 +30,23 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      {/*
+        ★ 순서에는 이유가 있다 — 병원을 고르는 사람이 묻는 순서다.
+          무엇을 하나(진료) → 왜 여기인가(WhyUs) → 누가 하나(의료진) → 내 증상은(Symptom)
+          → 어떤 곳인가(내부·사회공헌) → 궁금한 것(FAQ) → 언제·어디로(진료시간) → 연락.
+        ★ WhyUs 를 StrengthSection 뒤에 두지 않고 **대신** 넣었다.
+          '특별함 5가지' 와 'WHY US 12가지' 는 같은 말을 두 번 하는 것이라
+          둘 다 두면 어느 쪽도 안 읽힌다. 특별함 원문은 /about/special 에 그대로 남아 있다.
+      */}
       <Hero />
       <PillarSection />
-      <StrengthSection />
+      <WhyUsSection />
       <DoctorSection />
       <SymptomEntry />
       <InteriorSection />
       <OutreachSection />
       <InsightPromo />
+      <HomeFaqSection />
       <HoursSection />
       <ContactCta />
     </>
@@ -268,28 +277,13 @@ function PillarSection() {
   );
 }
 
-/** 동그라미 치과만의 특별함 — 원문 5개 항목. */
-function StrengthSection() {
-  return (
-    <section className="border-y border-brand-200/60 bg-gradient-to-b from-white to-brand-50/50 py-24 lg:py-28">
-      <Container>
-        <div className="text-center">
-          <h2 className="display-sm text-[30px] text-ink sm:text-[38px]">
-            다른 치과와 무엇이 다른가요?
-          </h2>
-          <p className="mx-auto mt-5 max-w-[62ch] text-[16px] leading-[1.85] text-ink-soft">
-            통증을 줄이는 마취, 디지털 장비 진단, 교수 출신 대표원장과 전문의 의료진, 치료 후 보증제도,
-            그리고 기구 멸균까지 다섯 가지를 원칙으로 두고 있습니다.
-          </p>
-        </div>
-
-        <div className="mt-14">
-          <SpecialGrid />
-        </div>
-      </Container>
-    </section>
-  );
-}
+/*
+ * (2026-08-14) StrengthSection 제거 — WhyUsSection 이 대신한다.
+ *
+ * '특별함 5가지' 와 'WHY US 12가지' 는 같은 사실을 두 번 말하는 것이라 둘 다 두면
+ * 어느 쪽도 끝까지 안 읽힌다. 특별함 원문(SpecialGrid)은 /about 과 /about/special 에
+ * 그대로 살아 있으므로 내용이 사라지는 것은 아니다.
+ */
 
 /** 의료진 — 실제 단체 사진 + 인증·논문. 원문 카피 유지. */
 function DoctorSection() {
@@ -380,13 +374,13 @@ function DoctorSection() {
               삼아 잘라 인물이 화면을 채우게 한다. 원본 파일은 건드리지 않는다 —
               나중에 다른 비율이 필요하면 이 클래스만 바꾸면 된다.
           */}
-          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-b from-brand-100 to-brand-200 shadow-[var(--shadow-lift)]">
+          <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-gradient-to-b from-brand-100 to-brand-200 shadow-[var(--shadow-lift)]">
             <Image
               src={IMG.doctors}
               alt="동그라미치과의원 의료진"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover object-bottom"
+              className="object-cover object-[50%_92%]"
             />
           </div>
         </div>
