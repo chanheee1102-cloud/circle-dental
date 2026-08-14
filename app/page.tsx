@@ -15,7 +15,7 @@ import { Reveal } from '@/components/Reveal';
 import { DOCTORS, OUTREACH_PHOTO, OUTREACH_BROADCAST, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { CareListSection } from '@/components/CareListSection';
-import { TrustSection } from '@/components/TrustSection';
+import { CredentialShowcase } from '@/components/CredentialShowcase';
 import { ProcessSection } from '@/components/ProcessSection';
 import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
 import { abs } from '@/lib/seo';
@@ -137,14 +137,14 @@ export default function HomePage() {
       <WhyUsSection />
       <PillarSection />
       {/*
-        ★★ 신뢰 지표 (2026-08-14) ★★
-          자격·인증·논문·방송이 원래 사이트 곳곳에 있었지만 **한 자리에 모여 세어지지
-          않았다.** 답변 엔진은 "전문의 3명, 인증 4건" 처럼 셀 수 있는 것을 인용한다.
-          진료(Pillar) 바로 뒤에 두는 이유는, "무슨 치료 하나" 를 본 직후가
-          "그걸 믿고 맡겨도 되나" 를 묻는 자리이기 때문이다.
-        ⚠️ 여기에 환자 후기·별점을 넣지 말 것 — 의료법 제56조 제2항 치료경험담 광고 금지.
+        ★★ 신뢰 지표를 /about/trust 로 옮겼다 (2026-08-14 운영자) ★★
+          숫자 여섯 + 인증표 다섯 줄 + 논문 + 방송 + 진료시간을 홈 한 화면에 몰아넣으니
+          **아무것도 눈에 안 들어왔다**(운영자: "가시성 가독성 떨어진다").
+          홈은 의료진 섹션의 인증패 쇼케이스로 "그런 근거가 있다" 까지만 하고,
+          실제 표와 목록은 전용 페이지가 맡는다.
+        ⚠️ 홈에서 뺐다고 링크까지 빼면 안 된다 — 의료진 섹션 안에 '근거 · 인증 전체 보기'
+           버튼을 두었고 주 메뉴에도 올렸다.
       */}
-      <TrustSection />
       {/*
         ★ 진행 절차 — "어떻게 진행하나요?" 는 결심 직전에 나오는 질문이다.
           전에는 /about/process 에만 있어서 홈만 보는 사람에게는 없는 것과 같았다.
@@ -493,66 +493,58 @@ function DoctorSection() {
         </ul>
 
         {/*
-          ★ 인증패·논문을 **글자가 아니라 사진으로** 보여 준다 (2026-08-14 운영자).
-            "오스템임플란트 연구자문치과 위촉패" 라고 적어 두는 것과 실제 위촉패를 보여 주는 것은
-            받는 인상이 다르다. 앞의 것은 주장이고 뒤의 것은 증거다. 원본 홈페이지도 사진으로 뒀다.
-          ★ 다만 크게 늘어놓지 않는다 — 홈은 이미 길다. 작은 액자 네 개를 한 줄에 두고,
-            자세히 보고 싶은 사람은 의료진 페이지로 간다(거기엔 크게 있다).
-          ★ 액자를 정사각으로 고정한다. 인증서 원본 비율이 제각각(236×242 셋 + 236×178 하나)이라
-            그대로 흘리면 캡션 줄이 어긋난다 — 의료진 페이지에서 이미 겪은 문제다.
+          ★★ 인증패를 **한 장씩 크게, 자동으로 넘기며** 보여 준다 (2026-08-14 운영자) ★★
+            전에는 네 장을 한 줄에 작게 늘어놓았다. 그러면 한 장당 폭이 좁아
+            **무엇이 적힌 인증서인지 안 보이고**, "네 개 있다" 는 인상만 남는다.
+            발급 기관 로고와 이름이 읽혀야 그게 근거가 된다.
+          ★ 사진은 이미 배경이 지워진 PNG(누끼)라 액자 없이 그대로 놓는다 —
+            테두리를 씌우면 인증서에 이미 찍힌 금색 액자와 겹쳐 액자 안의 액자가 된다.
+          ⚠️ 원본이 236×242px 다. 300px 를 넘겨 키우면 눈에 띄게 뭉개진다 —
+             더 크게 보여 주려면 원본 파일부터 다시 받아야 한다.
         */}
-        <div className="mt-12 rounded-2xl border border-brand-200/70 bg-brand-50/50 p-7 lg:p-9">
-          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-12">
-            <div>
-              <p className="text-[12px] font-black tracking-[0.08em] text-brand-500">인증 · 수료</p>
-              <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                {IMG.credentials.map((c) => (
-                  <li key={c.src}>
-                    <div className="relative aspect-square overflow-hidden rounded-lg border border-brand-200/70 bg-white">
-                      <Image
-                        src={c.src}
-                        alt={c.label}
-                        fill
-                        sizes="(max-width: 640px) 45vw, 150px"
-                        loading="lazy"
-                        className="object-contain p-2.5"
-                      />
-                    </div>
-                    <p className="mt-2 text-center text-[11.5px] leading-snug text-ink-muted">
-                      {c.label}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 논문 — 표지 이미지와 제목을 함께. 제목만 있으면 '있다는 말' 로만 읽힌다. */}
-            <div className="lg:w-[300px]">
-              <p className="text-[12px] font-black tracking-[0.08em] text-brand-500">발표 논문</p>
-              <div className="mt-4 overflow-hidden rounded-lg border border-brand-200/70 bg-white">
-                <div className="relative aspect-[768/430]">
-                  <Image
-                    src={PUBLICATION_DETAIL.image}
-                    alt="발표 논문 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 300px"
-                    loading="lazy"
-                    /* 원본은 위 60%가 흐린 배경이고 노트북·논문이 아래쪽에 있다 — 아래를 기준으로 자른다. */
-                    className="object-cover object-bottom"
-                  />
-                </div>
-              </div>
-              <p className="mt-3 text-[12.5px] leading-relaxed text-ink-soft">{PUBLICATION}</p>
+        <div className="mt-14 grid gap-10 rounded-2xl border border-brand-200/70 bg-brand-50/40 px-7 py-10 lg:grid-cols-[1fr_minmax(0,340px)] lg:items-center lg:gap-14 lg:px-12">
+          <div className="min-w-0">
+            <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
+              인증 · 수료
+            </p>
+            <div className="mt-6">
+              <CredentialShowcase />
             </div>
           </div>
 
-          <div className="mt-8 border-t border-brand-200/70 pt-6">
-            <Link
-              href="/about/doctors"
-              className="inline-flex w-fit items-center gap-2 rounded-lg bg-brand-700 px-7 py-3.5 text-[15px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
-            >
-              의료진 · 인증 자세히 보기 <span aria-hidden>→</span>
-            </Link>
+          <div className="min-w-0">
+            <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
+              발표 논문
+            </p>
+            <p className="mt-4 text-[14.5px] leading-relaxed font-bold text-ink">
+              {PUBLICATION_DETAIL.title}
+            </p>
+            <p className="mt-2 text-[13px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
+
+            {/*
+              ★ 자격·논문·방송을 한자리에 모은 페이지로 보낸다 (2026-08-14 운영자).
+                홈에 표까지 늘어놓으니 아무것도 눈에 안 들어왔다. 홈은 "그런 근거가 있다"
+                까지만 하고, 실제 표와 목록은 /about/trust 가 맡는다.
+            */}
+            <div className="mt-7 flex flex-wrap gap-2.5">
+              <Link
+                href="/about/trust"
+                className="group inline-flex items-center gap-2 rounded-lg bg-brand-700 px-6 py-3 text-[14.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
+              >
+                근거 · 인증 전체 보기
+                <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+              <Link
+                href="/about/doctors"
+                className="inline-flex items-center gap-2 rounded-lg border border-brand-300 bg-white px-6 py-3 text-[14.5px] font-black text-brand-700 transition-colors hover:border-brand-400"
+              >
+                의료진 소개
+              </Link>
+            </div>
           </div>
         </div>
       </Container>

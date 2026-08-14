@@ -21,10 +21,15 @@ import { headingId } from '@/components/article';
  * ★ 숫자는 전부 저장소 데이터를 센 값이다(lib/trustSignals.ts). 손으로 적은 값이 없어
  *   원장이 늘거나 인증이 추가되면 화면이 저절로 따라온다.
  */
-export function TrustSection() {
+export function TrustSection({ headless = false }: { headless?: boolean }) {
   return (
-    <section className="border-y border-brand-200/60 bg-white py-24 lg:py-28">
+    <section className={headless ? 'pb-20' : 'border-y border-brand-200/60 bg-white py-24 lg:py-28'}>
       <Container>
+        {/*
+          ★ headless — 전용 페이지(/about/trust)는 이미 h1 으로 같은 질문을 걸어 두었다.
+            여기서 h2 로 한 번 더 쓰면 같은 문장이 화면에 두 번 나오고 헤딩 구조도 흐려진다.
+        */}
+        {!headless && (
         <Reveal className="max-w-3xl">
           <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
@@ -40,6 +45,7 @@ export function TrustSection() {
             <Sentences text="병원이 스스로 좋다고 말하는 것은 근거가 아닙니다. 아래는 제3자가 준 자격과 인증, 학술지에 실린 논문, 방송에 나간 기록입니다. 실물 사진은 의료진 페이지에 있습니다." />
           </p>
         </Reveal>
+        )}
 
         {/* ── 숫자 ── */}
         <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-200/70 lg:grid-cols-3">
