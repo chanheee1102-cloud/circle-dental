@@ -12,6 +12,7 @@ import {
   MedicalNotice,
   ContactCta,
   Prose,
+  Sentences,
 } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
@@ -108,7 +109,7 @@ export default async function TreatmentDetailPage({
             {t.name}
           </h1>
           {/* 요약을 제목 바로 아래 둔다 — AI 가 문서 주제를 파악하는 첫 단락이다. */}
-          <p className="mt-6 max-w-[62ch] text-[17.5px] leading-[1.8] text-ink-soft">{t.summary}</p>
+          <p className="mt-6 max-w-[62ch] text-[17.5px] leading-[1.8] text-ink-soft"><Sentences text={t.summary} /></p>
 
           <div className="mt-9 flex flex-wrap gap-2">
             {t.whoFor.map((w) => (

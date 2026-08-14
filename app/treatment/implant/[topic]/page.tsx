@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { IMPLANT_TOPICS, implantTopicBySlug } from '@/lib/implantTopics';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
-import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, headingId, charCount } from '@/components/article';
@@ -102,10 +102,10 @@ export default async function ImplantTopicPage({
           <p className="mt-3 text-[16px] font-semibold text-ink-muted">{t.tagline}</p>
 
           <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
-            <p className="text-[17px] leading-[1.85] text-ink">{t.answer}</p>
+            <p className="text-[17px] leading-[1.85] text-ink"><Sentences text={t.answer} /></p>
           </div>
 
-          <p className="mt-7 max-w-[66ch] text-[16px] leading-[1.85] text-ink-soft">{t.detail}</p>
+          <p className="mt-7 max-w-[66ch] text-[16px] leading-[1.85] text-ink-soft"><Sentences text={t.detail} /></p>
 
           <div className="mt-9 max-w-[70ch]">
             <ArticleMeta path={BUILDPATH} />

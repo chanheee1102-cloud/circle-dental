@@ -25,6 +25,46 @@ export function Prose({ children }: { children: React.ReactNode }) {
   return <div className="prose-body max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{children}</div>;
 }
 
+/**
+ * 문장 단위로 줄을 나눈다.
+ *
+ * ★★ 왜 필요한가 (2026-08-14 운영자) ★★
+ *   `word-break: keep-all` 만으로는 **낱말 중간**에서만 안 끊길 뿐, 줄이 어디서 끝날지는
+ *   여전히 상자 폭이 정한다. 그래서 이런 일이 생겼다.
+ *
+ *     … 사랑니 발치까지 진료합니다. 충치·
+ *     신경·잇몸 치료와 스케일링 …
+ *
+ *   앞 문장이 끝났는데 뒷문장의 첫 낱말이 같은 줄에 매달리고, 그 낱말이 또 가운데서
+ *   잘렸다. 읽는 사람은 문장이 어디서 끝났는지 눈으로 못 찾는다.
+ *
+ * ★★ 어떻게 고치나 ★★
+ *   문장을 각각 `block` 으로 만든다. 그러면 **마침표에서 반드시 줄이 바뀌고**,
+ *   한 문장이 한 줄에 안 들어가면 그 안에서만 어절 단위로 접힌다.
+ *   운영자가 말한 "마침표 기준으로, 안 되면 말 쉬는 타이밍에" 가 정확히 이 동작이다.
+ *
+ * ★ `<br>` 를 손으로 넣지 않는 이유
+ *   화면 폭마다 알맞은 자리가 달라진다. 데스크톱에서 예쁜 `<br>` 는 모바일에서
+ *   외톨이 줄을 만든다. 문장 단위 block 은 폭과 무관하게 항상 맞다.
+ *
+ * ⚠️ 마침표 뒤에 공백이 오거나 문장이 끝날 때만 자른다 — `0.5초`, `Dr.` 처럼
+ *    마침표가 숫자·약어 안에 있는 경우를 자르면 문장이 깨진다.
+ * ⚠️ 문장이 하나뿐이면 아무것도 하지 않는다(불필요한 span 을 만들지 않는다).
+ */
+export function Sentences({ text }: { text: string }) {
+  const parts = text.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g)?.map((s) => s.trim()).filter(Boolean);
+  if (!parts || parts.length < 2) return <>{text}</>;
+  return (
+    <>
+      {parts.map((s, i) => (
+        <span key={`${i}-${s.slice(0, 8)}`} className="block">
+          {s}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export function SectionHead({
   eyebrow,
   title,
@@ -77,7 +117,16 @@ export function SectionHead({
       >
         {title}
       </H>
-      {desc && <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">{desc}</p>}
+      {/*
+        설명은 **문장 단위로** 줄을 나눈다 (2026-08-14 운영자: "전 페이지로 해").
+        마침표에서 줄이 바뀌고, 한 문장이 한 줄에 안 들어가면 그 안에서만
+        어절 단위로 접힌다(Sentences 주석 참고).
+      */}
+      {desc && (
+        <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
+          <Sentences text={desc} />
+        </p>
+      )}
     </div>
   );
 }

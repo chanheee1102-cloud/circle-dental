@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { JOURNEYS, journeyBySlug } from '@/lib/insight';
 import { treatmentBySlug } from '@/lib/treatments';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
-import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
@@ -118,7 +118,7 @@ export default async function JourneyDetailPage({
           <h1 className="display mt-4 max-w-3xl text-[30px] text-ink sm:text-[42px]">{j.question}</h1>
 
           <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
-            <p className="text-[17px] leading-[1.85] text-ink">{j.answer}</p>
+            <p className="text-[17px] leading-[1.85] text-ink"><Sentences text={j.answer} /></p>
           </div>
 
           <dl className="mt-9 grid max-w-2xl gap-px overflow-hidden rounded-xl border border-brand-200/70 bg-brand-200/70 sm:grid-cols-2">

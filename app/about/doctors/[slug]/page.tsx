@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { DOCTORS, doctorBySlug, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { CLINIC } from '@/lib/clinic';
-import { Container, Breadcrumb, ContactCta } from '@/components/ui';
+import { Container, Breadcrumb, ContactCta, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, medicalWebPageSchema, og, imageObjectSchema } from '@/lib/seo';
 import { imageMeta } from '@/lib/imageSize';
@@ -199,7 +199,7 @@ export default async function DoctorDetailPage({
                   </h2>
                   <p className="mt-4 text-[14px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
                   <p className="mt-5 max-w-[58ch] text-[15px] leading-[1.85] text-ink-soft">
-                    {PUBLICATION_DETAIL.relevanceKo}
+                    <Sentences text={PUBLICATION_DETAIL.relevanceKo} />
                   </p>
                 </div>
                 {/*

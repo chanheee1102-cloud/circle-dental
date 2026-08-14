@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { CONCERNS } from '@/lib/concerns';
-import { Container } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
 
 /**
@@ -32,8 +32,7 @@ export function ConcernsSection() {
             이런 마음으로 미뤄오셨다면
           </h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-brand-200/85">
-            치과를 미루는 이유는 대개 치료가 아니라 망설임입니다. 자주 듣는 이야기와 저희가 하는 일을
-            정리했습니다.
+            <Sentences text="치과를 미루는 이유는 대개 치료가 아니라 망설임입니다. 자주 듣는 이야기와 저희가 하는 일을 정리했습니다." />
           </p>
         </div>
 

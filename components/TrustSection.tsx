@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { TRUST_STATS, CREDENTIAL_ROWS, MEDIA_APPEARANCES, ACCESS_FACTS } from '@/lib/trustSignals';
 import { PUBLICATION_DETAIL } from '@/lib/doctors';
-import { Container } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
 import { headingId } from '@/components/article';
 
@@ -37,8 +37,7 @@ export function TrustSection() {
             무엇을 근거로 믿을 수 있나요?
           </h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
-            병원이 스스로 좋다고 말하는 것은 근거가 아닙니다. 아래는 제3자가 준 자격과 인증,
-            학술지에 실린 논문, 방송에 나간 기록입니다. 실물 사진은 의료진 페이지에 있습니다.
+            <Sentences text="병원이 스스로 좋다고 말하는 것은 근거가 아닙니다. 아래는 제3자가 준 자격과 인증, 학술지에 실린 논문, 방송에 나간 기록입니다. 실물 사진은 의료진 페이지에 있습니다." />
           </p>
         </Reveal>
 
@@ -57,8 +56,13 @@ export function TrustSection() {
         </dl>
 
         <div className="mt-14 grid gap-12 lg:grid-cols-[1.35fr_1fr]">
-          {/* ── 인증·자격 표 ── */}
-          <div>
+          {/*
+            ⚠️ min-w-0 을 반드시 둔다 — 그리드 자식은 기본이 `min-width: auto` 라
+               내용의 최소 폭 아래로 줄지 않는다. 이 칸 안의 min-w-[520px] 표 때문에
+               390px 화면에서 **문서 전체가 153px 가로 스크롤**됐다(실측).
+               넘친 것은 표가 아니라 표를 담은 칸이었다.
+          */}
+          <div className="min-w-0">
             <h3
               id={headingId('인증과 자격은 어디서 받았나요')}
               className="scroll-mt-28 text-[19px] font-black text-ink"
@@ -105,7 +109,7 @@ export function TrustSection() {
           </div>
 
           {/* ── 논문 · 언론 · 접근성 ── */}
-          <div className="space-y-8">
+          <div className="min-w-0 space-y-8">
             <div>
               <h3
                 id={headingId('학술 활동이 있나요')}

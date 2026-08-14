@@ -43,7 +43,12 @@ export function OpenStatusBadge({ className = '' }: { className?: string }) {
     <Link
       href="/visit"
       title={`${status.label}${status.detail ? ` · ${status.detail}` : ''} · 일요일과 공휴일은 휴진입니다`}
-      className={`inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-white/70 py-1 pr-3 pl-2.5 text-[12px] font-bold text-ink-soft transition-colors hover:border-brand-400 hover:text-brand-700 ${className}`}
+      /*
+       * ⚠️ 여기서 display 를 정하지 않는다 — Tailwind 는 class 문자열 순서가 아니라
+       *    CSS 파일 순서로 이긴다. 기본값에 inline-flex 를 두면 호출부의 hidden 을 눌러
+       *    390px 화면에서도 배지가 떠서 "진료"/"중" 두 줄로 쪼개졌다(실측).
+       */
+      className={`items-center gap-1.5 whitespace-nowrap rounded-full border border-brand-200 bg-white/70 py-1 pr-3 pl-2.5 text-[12px] font-bold text-ink-soft transition-colors hover:border-brand-400 hover:text-brand-700 ${className}`}
     >
       <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${dot}`} />
       {status.label}

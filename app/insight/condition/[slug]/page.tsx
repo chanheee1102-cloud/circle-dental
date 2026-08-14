@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { CONDITIONS, conditionBySlug } from '@/lib/conditions';
 import { symptomBySlug } from '@/lib/symptoms';
 import { treatmentBySlug } from '@/lib/treatments';
-import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
@@ -164,10 +164,10 @@ export default async function ConditionDetailPage({
             {c.name}이란 무엇인가요?
           </h2>
           <div className="mt-4 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
-            <p className="text-[17.5px] leading-[1.85] text-ink">{c.definition}</p>
+            <p className="text-[17.5px] leading-[1.85] text-ink"><Sentences text={c.definition} /></p>
           </div>
 
-          <p className="mt-7 max-w-[66ch] text-[16px] leading-[1.85] text-ink-soft">{c.detail}</p>
+          <p className="mt-7 max-w-[66ch] text-[16px] leading-[1.85] text-ink-soft"><Sentences text={c.detail} /></p>
         </Container>
 
         {/* 증상 · 원인 */}

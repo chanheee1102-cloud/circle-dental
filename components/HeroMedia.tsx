@@ -111,12 +111,22 @@ export function HeroMedia() {
   return (
     <>
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/*
+          ★★ 이 사진이 모바일 LCP 다. sizes 를 실제 필요한 폭보다 작게 적는다 ★★
+            브라우저는 `sizes` 값에 **DPR 을 곱해서** 후보를 고른다. `100vw` 를 두면
+            390px 화면이 DPR 3 에서 1920px 짜리를 받아 간다(실측).
+            이 사진은 배경이다 — 위에 어두운 그라데이션 두 겹과 방사형 오버레이가 덮이고
+            그 위에 흰 글씨가 얹힌다. 사람은 이 사진의 화소를 보지 않는다.
+          ⚠️ 이 요령을 내용을 보여 주는 사진에 쓰지 말 것 — 인증서·의료진·내부 사진은
+             흐려지면 그대로 손해다. 오버레이에 덮이는 배경에만 쓴다.
+        */}
         <Image
           src={IMG.hero}
           alt=""
           fill
           priority
-          sizes="100vw"
+          quality={55}
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 75vw, 1920px"
           className="object-cover object-center"
         />
       </div>

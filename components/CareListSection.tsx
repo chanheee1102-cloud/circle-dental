@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { TREATMENTS } from '@/lib/treatments';
-import { Container } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
 
 /**
@@ -33,8 +33,9 @@ export function CareListSection() {
             어떤 경우에 어떤 진료를 하나요?
           </h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
-            {TREATMENTS.length}가지 진료 영역을 &lsquo;이런 경우에 봅니다&rsquo; 기준으로 정리했습니다.
-            자기 상황과 가까운 줄을 눌러 보세요.
+            <Sentences
+              text={`${TREATMENTS.length}가지 진료 영역을 ‘이런 경우에 봅니다’ 기준으로 정리했습니다. 자기 상황과 가까운 줄을 눌러 보세요.`}
+            />
           </p>
         </div>
 

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
-import { Container } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
 import { headingId } from '@/components/article';
 
@@ -33,8 +33,7 @@ export function ProcessSection() {
             처음 오시면 어떻게 진행하나요?
           </h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
-            문진 → 촬영 → 검사 → 설명 순으로 진행합니다. 통증이나 감염처럼 급한 상황이면 그날
-            응급 처치를 먼저 하고, 급하지 않으면 계획을 세운 뒤 다음 방문부터 치료를 시작합니다.
+            <Sentences text="문진 → 촬영 → 검사 → 설명 순으로 진행합니다. 통증이나 감염처럼 급한 상황이면 그날 응급 처치를 먼저 하고, 급하지 않으면 계획을 세운 뒤 다음 방문부터 치료를 시작합니다." />
           </p>
         </Reveal>
 

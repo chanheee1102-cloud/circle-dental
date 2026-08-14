@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { SYMPTOMS, symptomBySlug } from '@/lib/symptoms';
 import { treatmentBySlug } from '@/lib/treatments';
 import { CLINIC } from '@/lib/clinic';
-import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
@@ -96,7 +96,7 @@ export default async function SymptomDetailPage({
 
           {/* 즉답 블록 — AI 가 인용하는 자리. 제목 바로 아래에서 답이 끝난다. */}
           <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6">
-            <p className="text-[17px] leading-[1.85] text-ink">{s.answer}</p>
+            <p className="text-[17px] leading-[1.85] text-ink"><Sentences text={s.answer} /></p>
           </div>
 
           <div className="mt-8 max-w-[70ch]">

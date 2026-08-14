@@ -19,7 +19,7 @@ import { TrustSection } from '@/components/TrustSection';
 import { ProcessSection } from '@/components/ProcessSection';
 import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
 import { abs } from '@/lib/seo';
-import { Container, SectionHead, CardLink, ContactCta } from '@/components/ui';
+import { Container, SectionHead, CardLink, ContactCta, Sentences } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
@@ -189,7 +189,12 @@ function Hero() {
      *   92vh 처럼 어림으로 두면 헤더(86px)만큼 넘쳐 **사실 띠 아래가 잘린다**(실측 13px).
      *   첫 화면에 띠 전체가 들어오는 것이 이 구성의 전제라 어림값을 쓰지 않는다.
      */
-    <section className="relative flex min-h-[620px] flex-col overflow-hidden lg:min-h-[calc(100vh-86px)]">
+    /*
+     * ★ 모바일 높이를 '한 화면 − 헤더(60) − 하단 고정 바(66)' 로 잡는다.
+     *   620px 고정이라 기기마다 어중간하게 남거나 잘렸다.
+     *   ⚠️ vh 가 아니라 dvh — 주소창이 접히며 vh 가 변해 화면이 한 번 출렁인다.
+     */
+    <section className="relative flex min-h-[calc(100dvh-126px)] flex-col overflow-hidden sm:min-h-[620px] lg:min-h-[calc(100vh-86px)]">
       {/* 폴백 배경 — 사진마저 늦게 뜨는 회선에서도 화면이 비지 않는다. */}
       <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-brand-700 to-brand-900" />
 
@@ -246,7 +251,7 @@ function Hero() {
         >
           <a
             href={CLINIC.phoneHref}
-            className="group inline-flex items-center gap-3 rounded-lg bg-white px-9 py-4.5 text-[18px] font-black tabular-nums text-brand-700 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1"
+            className="group inline-flex items-center gap-2.5 rounded-lg bg-white px-6 py-3.5 text-[16px] font-black tabular-nums text-brand-700 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1 sm:gap-3 sm:px-9 sm:py-4.5 sm:text-[18px]"
           >
             {CLINIC.phone}
             <span
@@ -258,7 +263,7 @@ function Hero() {
           </a>
           <Link
             href="/insight/symptom"
-            className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-white/60 bg-white/10 px-8 py-4.5 text-[17px] font-bold text-white backdrop-blur transition-all hover:-translate-y-1 hover:bg-white/20"
+            className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-white/60 bg-white/10 px-5 py-3.5 text-[15px] font-bold text-white backdrop-blur transition-all hover:-translate-y-1 hover:bg-white/20 sm:px-8 sm:py-4.5 sm:text-[17px]"
           >
             증상으로 찾아보기 <span aria-hidden>→</span>
           </Link>
@@ -337,8 +342,7 @@ function PillarSection() {
             어떤 진료를 받을 수 있나요?
           </h2>
           <p className="mx-auto mt-5 max-w-[62ch] text-[16px] leading-[1.85] text-ink-soft">
-            자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다. 충치·신경·잇몸
-            치료와 스케일링 같은 기본 진료도 함께 보고 있습니다.
+            <Sentences text="자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다. 충치·신경·잇몸 치료와 스케일링 같은 기본 진료도 함께 보고 있습니다." />
           </p>
         </div>
 
@@ -430,8 +434,7 @@ function DoctorSection() {
           </p>
           <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">누가 진료하나요?</h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
-            세 분 원장 모두 보건복지부 인정 통합치의학과 전문의입니다. 대표원장은 경희대학교
-            치의학전문대학원 외래교수이자 치의학박사입니다.
+            <Sentences text="세 분 원장 모두 보건복지부 인정 통합치의학과 전문의입니다. 대표원장은 경희대학교 치의학전문대학원 외래교수이자 치의학박사입니다." />
           </p>
         </div>
 
@@ -695,7 +698,7 @@ function InteriorSection() {
             어떤 공간에서 진료하나요?
           </h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
-            상담실과 진료실, 소독실까지 실제 사진입니다. 옆으로 넘겨 보실 수 있습니다.
+            <Sentences text="상담실과 진료실, 소독실까지 실제 사진입니다. 옆으로 넘겨 보실 수 있습니다." />
           </p>
         </Reveal>
         {/* 격자 대신 슬라이드 — 열두 장을 한 줄 자리로 다 보여 준다(components/InteriorSlider.tsx). */}
@@ -800,7 +803,7 @@ function HoursSection() {
           <div>
             {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
             <SectionHead
-              eyebrow="진료시간 안내"
+                eyebrow="진료시간 안내"
               title="진료시간이 어떻게 되나요?"
               desc="평일은 오전 9시 30분에 시작합니다. 화요일과 목요일은 저녁 8시 30분까지 야간 진료를 하고, 토요일은 오후 2시까지 봅니다. 일요일과 공휴일은 쉽니다."
             />
@@ -832,7 +835,7 @@ function HoursSection() {
           <div>
             {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
             <SectionHead
-              eyebrow="오시는 길"
+                eyebrow="오시는 길"
               title="어디에 있고 주차는 되나요?"
               desc={`고양시 덕양구 화정동 ${CLINIC.address.building} 3층입니다. 주차는 ${CLINIC.parking.type}이며 ${CLINIC.parking.fee}입니다.`}
             />

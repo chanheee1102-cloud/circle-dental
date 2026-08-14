@@ -39,7 +39,7 @@ export function SiteHeader() {
     >
       <div
         className={`mx-auto flex max-w-[1320px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
-          scrolled ? 'h-[68px]' : 'h-[86px]'
+          scrolled ? 'h-[52px] sm:h-[68px]' : 'h-[60px] sm:h-[86px]'
         }`}
       >
         {/*
@@ -125,14 +125,14 @@ export function SiteHeader() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-            className="inline-flex items-center rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-2.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
+            className="hidden items-center rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-2.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5 sm:inline-flex"
           >
             예약하기
           </a>
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-300 text-brand-700 lg:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand-300 text-brand-700 sm:h-10 sm:w-10 lg:hidden"
             aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
             aria-expanded={mobileOpen}
           >
@@ -143,6 +143,37 @@ export function SiteHeader() {
 
       {mobileOpen && (
         <div className="border-t border-brand-200/70 bg-white lg:hidden">
+          {/*
+            ★★ 예약·전화를 메뉴 맨 위에 (2026-08-14 운영자) ★★
+              헤더에서 예약 버튼을 뺐으니 그 행동이 갈 곳이 있어야 한다. 메뉴를 연 사람은
+              찾으러 온 사람이라, 목록을 훑기 전에 바로 할 수 있는 두 가지를 먼저 둔다.
+            ★ 진료 상태 배지도 여기 둔다 — 헤더에서는 자리가 없어 숨겼지만
+              "지금 여나" 는 예약을 누르기 직전에 가장 알고 싶은 것이다.
+          */}
+          <div className="mx-auto max-w-[1320px] px-5 pt-4">
+            <OpenStatusBadge className="inline-flex sm:hidden" />
+            <div className="mt-3 grid grid-cols-2 gap-2.5">
+              <a
+                href={CLINIC.booking.naver}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileOpen(false)}
+                aria-label="예약하기 — 네이버 예약 새 창으로 열기"
+                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-4 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)]"
+              >
+                예약하기
+              </a>
+              <a
+                href={CLINIC.phoneHref}
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-brand-300 bg-white px-4 py-3.5 text-[15.5px] font-black text-brand-700"
+              >
+                <PhoneIcon />
+                {CLINIC.phone}
+              </a>
+            </div>
+          </div>
+
           <nav className="mx-auto max-w-[1320px] px-5 py-4" aria-label="모바일 메뉴">
             {NAV.map((item) => (
               <div key={item.href} className="border-b border-brand-50 py-3.5 last:border-0">

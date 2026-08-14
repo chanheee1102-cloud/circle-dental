@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { SPECIALS, specialBySlug } from '@/lib/specials';
 import { CLINIC } from '@/lib/clinic';
-import { Container, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
 import { StrengthIcon } from '@/components/StrengthIcons';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, og, imageObjectSchema } from '@/lib/seo';
@@ -122,7 +122,7 @@ export default async function SpecialDetailPage({
               <h1 className="display mt-7 text-[30px] text-ink sm:text-[42px]">{s.title}</h1>
 
               {/* 원문 그대로 — AI 인용 대상 */}
-              <p className="mt-7 max-w-[58ch] text-[17px] leading-[1.9] text-ink-soft">{s.body}</p>
+              <p className="mt-7 max-w-[58ch] text-[17px] leading-[1.9] text-ink-soft"><Sentences text={s.body} /></p>
 
               <div className="mt-8">
                 <ArticleMeta path={SPATH} />
