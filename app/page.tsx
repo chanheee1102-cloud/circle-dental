@@ -19,6 +19,8 @@ import { Container, SectionHead, CardLink, ContactCta } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
+import { CareListSection } from '@/components/CareListSection';
+import { ConcernsSection } from '@/components/ConcernsSection';
 
 export const metadata: Metadata = {
   title: `${CLINIC.name} | 고양시 덕양구 화정동 치과`,
@@ -40,9 +42,11 @@ export default function HomePage() {
       */}
       <Hero />
       <PillarSection />
+      <CareListSection />
       <WhyUsSection />
       <DoctorSection />
       <SymptomEntry />
+      <ConcernsSection />
       <InteriorSection />
       <OutreachSection />
       <InsightPromo />
@@ -369,10 +373,20 @@ function DoctorSection() {
           </div>
 
           {/*
-            ★ 원본 PNG 는 위쪽 60% 가 거의 비어 있고(워터마크만) 인물이 아래쪽에 몰려 있다.
-              그대로 넣으면 카드 위가 휑해 보인다. 4:3 틀에 object-bottom 으로 아래를 기준
-              삼아 잘라 인물이 화면을 채우게 한다. 원본 파일은 건드리지 않는다 —
-              나중에 다른 비율이 필요하면 이 클래스만 바꾸면 된다.
+            ★ 원본 JPG(1284×1800 세로)는 위쪽 57% 가 거의 비어 있고(워터마크만) 인물이
+              아래쪽에 몰려 있다. 그대로 넣으면 카드 위가 휑해 보인다.
+
+              그래서 처음엔 `aspect-[4/3] + object-bottom` 으로 아래를 기준 삼아 잘랐는데,
+              **너무 많이 잘라 세 사람의 머리가 카드 위 모서리에 닿아 잘렸다**(운영자 신고).
+              가로 4:3 틀은 세로 원본에서 높이의 46% 를 버리는데, 인물이 딱 그 경계에 있다.
+
+              지금은 두 가지를 함께 바꿨다:
+                · 틀을 5:4 로 조금 세워 버리는 양을 46% → 43% 로 줄이고
+                · 기준점을 100%(맨 아래)가 아니라 92% 로 올려 머리 위에 여백을 만든다.
+              아래로 8% 를 내주는 대신 원본 자체가 허리에서 잘려 있어 손해가 거의 없다.
+
+              원본 파일은 건드리지 않는다 — 비율을 다시 손보려면 이 두 값만 바꾸면 된다.
+              /about 의 같은 사진도 같은 값을 쓴다.
           */}
           <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-gradient-to-b from-brand-100 to-brand-200 shadow-[var(--shadow-lift)]">
             <Image

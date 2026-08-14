@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { NAV } from '@/lib/nav';
 import { CLINIC } from '@/lib/clinic';
 import { LogoLockup } from '@/components/Logo';
+import { OpenStatusBadge } from '@/components/OpenStatusBadge';
 
 /**
  * 전역 헤더.
@@ -41,9 +42,17 @@ export function SiteHeader() {
           scrolled ? 'h-[68px]' : 'h-[86px]'
         }`}
       >
-        <Link href="/" aria-label={`${CLINIC.name} 홈`} className="transition-opacity hover:opacity-80">
-          <LogoLockup />
-        </Link>
+        {/*
+          로고 옆에 진료 상태를 둔다 — 방문자가 가장 먼저 확인하는 것이 '지금 여나' 이고,
+          그 답이 화면 맨 위에 있으면 전화 한 통이 줄어든다.
+          ⚠️ 좁은 화면에서는 숨긴다. 로고와 전화 버튼 사이에 끼면 둘 다 좁아져 오히려 방해다.
+        */}
+        <div className="flex items-center gap-3">
+          <Link href="/" aria-label={`${CLINIC.name} 홈`} className="transition-opacity hover:opacity-80">
+            <LogoLockup />
+          </Link>
+          <OpenStatusBadge className="hidden sm:inline-flex" />
+        </div>
 
         <nav className="hidden items-center gap-0.5 lg:flex" aria-label="주 메뉴">
           {NAV.map((item) => (
