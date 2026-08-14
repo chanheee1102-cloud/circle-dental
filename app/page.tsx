@@ -14,7 +14,7 @@ import { HeroMedia } from '@/components/HeroMedia';
 import { Reveal } from '@/components/Reveal';
 import { DOCTORS, OUTREACH_PHOTO, OUTREACH_BROADCAST, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
-import { CareListSection } from '@/components/CareListSection';
+import { TREATMENTS } from '@/lib/treatments';
 import { Container, SectionHead, CardLink, ContactCta, Sentences } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { CopyButton } from '@/components/CopyButton';
@@ -137,7 +137,14 @@ export default function HomePage() {
       <InteriorSection />
       <OutreachSection />
 
-      <CareListSection />
+      {/*
+        ★★ 진료 영역 열 줄 목록을 /treatment 로 옮겼다 (2026-08-14 운영자) ★★
+          위 PillarSection 이 이미 '어떤 진료를 받을 수 있나요?' 에 사진 카드로 답하는데
+          그 바로 아래에서 같은 질문에 열 줄로 다시 답하고 있었다. 홈만 길어지고
+          어느 쪽도 끝까지 안 읽힌다.
+        ⚠️ 링크는 살아 있다 — PillarSection 아래 '전체 진료과목' 버튼과 주 메뉴(진료),
+           그리고 헤더 메가메뉴의 진료 목록이 그 길이다.
+      */}
       <SymptomEntry />
       <InsightPromo />
       <HomeFaqSection />
@@ -243,26 +250,41 @@ function Hero() {
             ★ 외부 도메인이라 새 창 + rel="noopener" — 없으면 열린 창이 window.opener 로
               이 페이지를 조작할 수 있다.
           */}
+          {/*
+            ★★ 두 버튼의 규격을 맞춘다 (2026-08-14 운영자) ★★
+              전에는 글자 크기(18/17)·좌우 여백(px-9/px-8)·모서리가 서로 달랐고,
+              첫 버튼에만 동그란 화살표가 붙어 있었다. 나란히 선 버튼 둘의 규격이 어긋나면
+              **디자인이 아니라 실수처럼 보인다**.
+              → 높이와 폭을 **못 박는다**(h/w). 모서리는 완전한 알약형(rounded-full) —
+                병원 이름이 '동그라미'라 원형 모티프가 버튼에서도 이어진다.
+            ★ 둘의 차이는 규격이 아니라 **무게**로 만든다. 주 버튼은 흰 면으로 채우고,
+              보조 버튼은 테두리만 둔다. 사진 위라 흰 면이 가장 강하게 읽힌다.
+            ⚠️ 여백(px/py)으로 크기를 맞추려 하지 말 것. 실제로 그렇게 해 봤더니
+               ① '예약하기'(4자)와 '증상으로 찾아보기'(9자)의 폭이 190 vs 205 로 어긋났고
+               ② 보조 버튼에만 있는 1.5px 테두리 때문에 높이가 56 vs 58 로 달라졌다.
+               모바일에서 둘이 위아래로 쌓이면 그 15px 차이가 그대로 보인다.
+               높이·폭을 직접 지정해야 어느 화면에서도 정확히 같은 크기로 선다.
+          */}
           <a
             href={CLINIC.booking.naver}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-            className="group inline-flex items-center gap-2.5 rounded-lg bg-white px-6 py-3.5 text-[16px] font-black text-brand-700 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1 sm:gap-3 sm:px-9 sm:py-4.5 sm:text-[18px]"
+            className="group inline-flex h-[54px] w-[228px] items-center justify-center gap-2.5 rounded-full bg-white text-[16px] font-black text-brand-800 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1 sm:h-[64px] sm:w-[236px] sm:text-[17px]"
           >
             예약하기
-            <span
-              aria-hidden
-              className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-[13px] transition-transform group-hover:translate-x-0.5"
-            >
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
               →
             </span>
           </a>
           <Link
             href="/insight/symptom"
-            className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-white/60 bg-white/10 px-5 py-3.5 text-[15px] font-bold text-white backdrop-blur transition-all hover:-translate-y-1 hover:bg-white/20 sm:px-8 sm:py-4.5 sm:text-[17px]"
+            className="group inline-flex h-[54px] w-[228px] items-center justify-center gap-2.5 rounded-full border-[1.5px] border-white/70 text-[16px] font-black text-white backdrop-blur-[2px] transition-all hover:-translate-y-1 hover:border-white hover:bg-white/15 sm:h-[64px] sm:w-[236px] sm:text-[17px]"
           >
-            증상으로 찾아보기 <span aria-hidden>→</span>
+            증상으로 찾아보기
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
           </Link>
         </div>
       </Container>
@@ -385,6 +407,23 @@ function PillarSection() {
           ))}
         </div>
 
+        {/*
+          ★ 홈에서 열 줄 목록을 뺀 대신 여기로 길을 낸다 (2026-08-14).
+            카드 넷은 '무엇을 잘하는가' 를 보여 주지만 나머지 여섯(신경·잇몸·충치·보철·
+            스케일링·어린이)으로 가는 길이 이 섹션 안에 없었다. 링크가 없으면 그 여섯은
+            홈에서 존재하지 않는 것과 같다.
+        */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/treatment"
+            className="group inline-flex items-center gap-2.5 rounded-lg border border-brand-300 bg-white px-7 py-3.5 text-[15px] font-black text-brand-700 transition-colors hover:border-brand-400 hover:bg-brand-50"
+          >
+            전체 진료과목 {TREATMENTS.length}가지 보기
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
+          </Link>
+        </div>
       </Container>
     </section>
   );
