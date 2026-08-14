@@ -22,6 +22,7 @@ import { HomeFaqSection } from '@/components/HomeFaqSection';
 import { CareListSection } from '@/components/CareListSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
 import { InteriorSlider } from '@/components/InteriorSlider';
+import { VideoFacade } from '@/components/VideoFacade';
 
 export const metadata: Metadata = {
   title: `${CLINIC.name} | 고양시 덕양구 화정동 치과`,
@@ -537,20 +538,21 @@ function OutreachSection() {
         </div>
 
         {/*
-          방영분 영상 — 여기는 배경이 아니라 '보는' 영상이라 컨트롤을 남기고 자동재생하지 않는다.
-          자동으로 소리가 나면 그 자체로 이탈 사유가 된다.
-          16:9 틀에 맞춰 letterbox 없이 들어간다(원본이 2:1 이라 위아래 여백은 플레이어가 처리).
+          방영분 영상 — 여기는 배경이 아니라 '보는' 영상이다.
+          ★ 자리표시자를 두고 **누른 사람에게만** 플레이어를 붙인다(components/VideoFacade.tsx).
+            loading="lazy" 만으로는 부족하다 — 화면 근처에 오면 결국 플레이어 JS 를 통째로
+            받아 실행하고, 그 비용이 PSI 모바일 점수를 그대로 깎는다(실측: 모바일 iframe 3개).
+            페이지 아래쪽 영상은 대부분 재생되지 않으므로 값을 미리 치를 이유가 없다.
+          ★ 누르면 그 자리에서 바로 재생된다(autoplay=1). 한 번 더 눌러야 하면 짜증이 난다.
+            자동으로 소리가 나지는 않는다 — 사용자가 누른 뒤이므로 소리는 정상 동작이다.
         */}
-        <div className="mx-auto mt-12 max-w-3xl overflow-hidden rounded-2xl shadow-[var(--shadow-lift)]">
-          <div className="relative aspect-video bg-brand-900">
-            <iframe
-              src={OUTREACH_VIDEO.embed}
-              title="TV조선 구조신호 시그널 24회 — 동그라미치과의원 무료 틀니 제공"
-              loading="lazy"
-              allow="fullscreen; picture-in-picture"
-              className="absolute inset-0 h-full w-full border-0"
-            />
-          </div>
+        <div className="mx-auto mt-12 max-w-3xl">
+          <VideoFacade
+            embedSrc={`${OUTREACH_VIDEO.embed}&autoplay=1`}
+            poster={OUTREACH_PHOTO.src}
+            posterAlt={OUTREACH_PHOTO.alt}
+            label="TV조선 구조신호 시그널 24회 방영분 재생 — 동그라미치과의원 무료 틀니 제공"
+          />
         </div>
       </Container>
     </section>

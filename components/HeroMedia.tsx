@@ -21,6 +21,57 @@ import { IMG, HERO_VIDEO } from '@/lib/assets';
  */
 export function HeroMedia() {
   const [shown, setShown] = useState(false);
+  /**
+   * ★★ 영상을 첫 화면 임계 경로에서 빼낸다 (2026-08-14, PSI 54 대응) ★★
+   *
+   * 두 가지가 겹쳐 있었다.
+   *   ① 화면비가 다른 두 영상을 `hidden lg:block` / `block lg:hidden` 으로 갈랐는데,
+   *      그건 **CSS 로 감춘 것일 뿐 둘 다 로드된다.** 모바일에서도 데스크톱용 플레이어를
+   *      함께 받고 있었다(실측: 모바일 390px 에서 iframe 4개).
+   *   ② iframe 이 처음부터 있어서 Vimeo 플레이어 JS 가 첫 화면과 CPU 를 두고 경쟁했다.
+   *      PSI 모바일은 CPU 를 4배 느리게 흉내 내므로 여기서 점수가 크게 깎인다.
+   *
+   * → 화면 크기를 재서 **하나만** 만들고, 첫 페인트가 끝난 뒤에 붙인다.
+   *   아래에 진료실 사진이 이미 깔려 있어 늦게 붙어도 화면이 비지 않는다 — 오히려
+   *   사진이 먼저 또렷하게 보이고 영상이 뒤따라 겹치는 지금 연출과 잘 맞는다.
+   */
+  const [src, setSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    /*
+     * ★★ 모바일에서는 배경 영상을 아예 켜지 않는다 (2026-08-14) ★★
+     *   PSI 는 **모바일 기준**으로 점수를 매기고(현재 54/100), 그 점수는 검색 순위 신호이자
+     *   AI 크롤러의 수집 속도에 영향을 준다. 배경 영상은 장식인데 값이 가장 비싸다 —
+     *   플레이어 JS 와 영상 스트림이 느린 회선·느린 CPU 를 그대로 때린다.
+     *
+     *   게다가 세로 화면에서는 4:5 영상도 크게 잘려 나가 얻는 인상이 크지 않다.
+     *   그 자리에 진료실 사진을 또렷하게 보여 주는 편이 낫다.
+     *
+     *   ⚠️ 되살리려면 이 분기만 지우면 된다(아래 pick 이 모바일 주소를 이미 갖고 있다).
+     *      다만 그 전에 PSI 를 다시 재 볼 것.
+     */
+    const pick = () =>
+      window.matchMedia('(min-width: 1024px)').matches ? HERO_VIDEO.desktop : null;
+
+    /*
+     * 유휴 시간에 붙인다 — 없으면(사파리 등) 짧은 타이머로 물러선다.
+     * ⚠️ requestIdleCallback 은 타입 정의가 없는 환경이 있어 좁혀서 꺼낸다.
+     */
+    const ric = (window as unknown as {
+      requestIdleCallback?: (c: () => void, o?: { timeout: number }) => number;
+      cancelIdleCallback?: (h: number) => void;
+    }).requestIdleCallback;
+
+    const run = () => setSrc(pick());
+    if (ric) {
+      const h = ric(run, { timeout: 2500 });
+      return () => {
+        (window as unknown as { cancelIdleCallback?: (x: number) => void }).cancelIdleCallback?.(h);
+      };
+    }
+    const t = window.setTimeout(run, 900);
+    return () => window.clearTimeout(t);
+  }, []);
 
   /**
    * ★★ '재생이 시작됐다' 는 신호를 받고 나서 겹친다 ★★
@@ -76,20 +127,21 @@ export function HeroMedia() {
           shown ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <iframe
-          src={HERO_VIDEO.desktop}
-          title=""
-          tabIndex={-1}
-          allow="autoplay"
-          className="video-cover video-cover-16x9 hidden lg:block"
-        />
-        <iframe
-          src={HERO_VIDEO.mobile}
-          title=""
-          tabIndex={-1}
-          allow="autoplay"
-          className="video-cover video-cover-4x5 block lg:hidden"
-        />
+        {/*
+          하나만 만든다. 어느 쪽을 만들지는 위에서 화면 폭으로 정했고,
+          cover 클래스도 그 화면비에 맞춰 함께 고른다 — 둘이 어긋나면 좌우가 크게 잘린다.
+        */}
+        {src && (
+          <iframe
+            src={src}
+            title=""
+            tabIndex={-1}
+            allow="autoplay"
+            className={`video-cover ${
+              src === HERO_VIDEO.desktop ? 'video-cover-16x9' : 'video-cover-4x5'
+            }`}
+          />
+        )}
       </div>
     </>
   );
