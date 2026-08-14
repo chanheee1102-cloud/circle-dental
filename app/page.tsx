@@ -20,6 +20,7 @@ import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
 import { abs } from '@/lib/seo';
 import { Container, SectionHead, CardLink, ContactCta, Sentences } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
+import { CopyButton } from '@/components/CopyButton';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
@@ -843,80 +844,169 @@ function OutreachSection() {
   );
 }
 
-/** 진료시간·오시는 길 — 기존 홈페이지 표기 그대로. */
+/**
+ * 진료시간 · 오시는 길.
+ *
+ * ★★ 가독성 재설계 (2026-08-14 운영자: "가독성 가시성 좋게") ★★
+ *   두 가지가 문제였다.
+ *     ① 시간표에서 **무엇이 다른지**가 안 보였다. 네 줄이 똑같은 무게로 늘어서 있어
+ *        '화·목 야간진료' 와 '점심시간(쉬는 시간)' 이 같은 종류로 읽혔다.
+ *        점심시간은 **여는 시간이 아니라 닫는 시간**인데 나란히 있으니 헷갈린다.
+ *     ② 오른쪽 칸이 라벨·값만 세로로 쌓여 있고 아래가 통째로 비었다.
+ *        주소는 이 페이지에서 가장 많이 **복사되는** 값인데 누를 것이 하나도 없었다.
+ *
+ *   → 시간표는 '진료' 와 '쉬는 시간·휴진' 을 색과 위치로 갈라 놓고,
+ *     오른쪽은 주소·전화를 **누를 수 있는 것**으로 바꾸고 빈자리에 오는 방법을 채웠다.
+ *
+ * ⚠️ 값은 전부 UNVERIFIED.hours / CLINIC 에서 온다. 여기서 시간을 적지 않는다 —
+ *    두 곳에 적힌 진료시간은 반드시 어긋나고, 틀린 진료시간은 환자를 헛걸음시킨다.
+ */
 function HoursSection() {
+  /* 진료하는 시간과 쉬는 시간을 나눈다 — 화면에서 같은 줄에 섞이면 안 되는 두 종류다. */
+  const open = UNVERIFIED.hours.display.filter((h) => h.label !== '점심시간');
+  const lunch = UNVERIFIED.hours.display.find((h) => h.label === '점심시간');
+
   return (
     <section className="border-t border-brand-200/60 bg-brand-50/40 py-24 lg:py-28">
       <Container>
-        <div className="grid gap-12 lg:grid-cols-2">
-          <div>
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-14">
+          <div className="min-w-0">
             {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
             <SectionHead
-                eyebrow="진료시간 안내"
+              eyebrow="진료시간 안내"
               title="진료시간이 어떻게 되나요?"
               desc="평일은 오전 9시 30분에 시작합니다. 화요일과 목요일은 저녁 8시 30분까지 야간 진료를 하고, 토요일은 오후 2시까지 봅니다. 일요일과 공휴일은 쉽니다."
             />
+
             <div className="mt-9 overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)]">
-              {UNVERIFIED.hours.display.map((h, i) => (
-                <div
-                  key={h.label}
-                  className={`flex items-baseline justify-between gap-4 px-7 py-5 ${
-                    i > 0 ? 'border-t border-brand-100' : ''
-                  } ${h.label === '점심시간' ? 'bg-brand-50/70' : ''}`}
-                >
-                  <span className="text-[15.5px] font-black text-ink">{h.label}</span>
-                  <span className="text-right">
-                    <span className="text-[16px] font-bold text-brand-700">{h.time}</span>
-                    {h.note && (
-                      <span className="ml-2 rounded-lg bg-gold-500/15 px-2.5 py-1 text-[11.5px] font-black text-gold-600">
-                        {h.note}
-                      </span>
-                    )}
-                  </span>
+              {/*
+                ★ 요일과 시간을 **양 끝으로** 벌리지 않고 시간을 크게 세운다.
+                  치과 시간표에서 사람이 찾는 것은 요일이 아니라 **시간**이다.
+                ★ 시간은 tabular-nums — 자릿수가 어긋나면 표가 흔들려 보인다.
+              */}
+              <dl>
+                {open.map((h, i) => (
+                  <div
+                    key={h.label}
+                    className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-5 sm:px-7 ${
+                      i > 0 ? 'border-t border-brand-100' : ''
+                    }`}
+                  >
+                    <dt className="flex items-center gap-2.5">
+                      <span className="text-[15.5px] font-black text-ink">{h.label}</span>
+                      {h.note && (
+                        <span className="rounded-md bg-gold-500/15 px-2 py-0.5 text-[11.5px] font-black text-gold-600">
+                          {h.note}
+                        </span>
+                      )}
+                    </dt>
+                    <dd className="tabular text-[19px] font-black text-brand-700 sm:text-[21px]">
+                      {h.time}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+
+              {/*
+                ★★ 쉬는 시간·휴진은 **아래 칸으로 분리한다** ★★
+                  진료 시간과 같은 목록에 두면 "이때도 여는구나" 로 읽힌다.
+                  배경을 눌러 색을 다르게 하고, 여는 시간이 아님을 글자로도 밝힌다.
+              */}
+              <div className="border-t border-brand-200/70 bg-brand-50/70 px-6 py-5 sm:px-7">
+                <p className="text-[11.5px] font-black tracking-[0.14em] text-ink-muted uppercase">
+                  이 시간에는 진료하지 않습니다
+                </p>
+                <div className="mt-3 space-y-2">
+                  {lunch && (
+                    <p className="flex items-center justify-between gap-4 text-[14.5px]">
+                      <span className="font-bold text-ink-soft">{lunch.label}</span>
+                      <span className="tabular font-black text-ink-soft">{lunch.time}</span>
+                    </p>
+                  )}
+                  <p className="flex items-center gap-2 text-[14.5px] font-bold text-ink-soft">
+                    <span
+                      aria-hidden
+                      className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-brand-300 text-[10px] text-white"
+                    >
+                      ✕
+                    </span>
+                    {UNVERIFIED.hours.closed}
+                  </p>
                 </div>
-              ))}
-              <p className="border-t border-brand-100 bg-white px-7 py-4 text-[13.5px] font-semibold text-ink-muted">
-                ※ {UNVERIFIED.hours.closed}
-              </p>
+              </div>
             </div>
           </div>
 
-          <div>
+          <div className="min-w-0">
             {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
             <SectionHead
-                eyebrow="오시는 길"
+              eyebrow="오시는 길"
               title="어디에 있고 주차는 되나요?"
               desc={`고양시 덕양구 화정동 ${CLINIC.address.building} 3층입니다. 주차는 ${CLINIC.parking.type}이며 ${CLINIC.parking.fee}입니다.`}
             />
-            <dl className="mt-9 space-y-6">
-              <div>
-                <dt className="text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
-                  주소
-                </dt>
-                <dd className="mt-2 text-[17px] font-bold leading-relaxed text-ink">
+
+            {/*
+              ★★ 주소는 '읽는 값' 이 아니라 '쓰는 값' 이다 ★★
+                택시 앱·카톡·지도 검색창에 붙여 넣으려고 보는 정보인데, 긴 주소를 손으로
+                드래그하는 것은 휴대폰에서 특히 성가시다. 복사 버튼을 옆에 둔다.
+            */}
+            <div className="mt-9 rounded-2xl border border-brand-200/70 bg-white p-6 shadow-[var(--shadow-soft)] sm:p-7">
+              <p className="text-[11.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
+                주소
+              </p>
+              <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
+                <p className="max-w-[36ch] text-[16.5px] leading-relaxed font-bold text-ink">
                   {CLINIC.address.full}
-                </dd>
+                </p>
+                <CopyButton text={CLINIC.address.full} />
               </div>
-              <div>
-                <dt className="text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
+              <p className="mt-2.5 text-[13.5px] text-ink-muted">
+                {CLINIC.address.building} · {CLINIC.nearestStation} 인근
+              </p>
+
+              {/* 전화는 가장 큰 요소로. 내원 결정의 마지막 한 걸음은 여전히 전화다. */}
+              {/*
+                ⚠️ 좁은 화면에서는 **세로로 쌓는다** (2026-08-14 실측).
+                   라벨과 번호를 양 끝으로 벌리면 390px 화면에서 둘 다 두 줄로 쪼개져
+                   "대표전화 /" / "FAX" · "031-972-" / "2875" 로 깨졌다.
+                   번호는 절대 쪼개지면 안 되는 값이라 whitespace-nowrap 을 함께 건다.
+              */}
+              <a
+                href={CLINIC.phoneHref}
+                className="group mt-6 flex flex-col items-center gap-1 rounded-xl bg-brand-700 px-6 py-4 text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+              >
+                <span className="text-[11.5px] font-black tracking-[0.14em] whitespace-nowrap text-brand-200 uppercase sm:text-[12px]">
                   대표전화 / FAX
-                </dt>
-                <dd className="mt-2">
-                  <a
-                    href={CLINIC.phoneHref}
-                    className="display-sm text-[30px] text-brand-700 hover:underline"
-                  >
-                    {CLINIC.phone}
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt className="text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
-                  이메일
-                </dt>
-                <dd className="mt-2 text-[15.5px] text-ink-soft">{CLINIC.email}</dd>
-              </div>
-            </dl>
+                </span>
+                <span className="tabular text-[24px] font-black whitespace-nowrap">
+                  {CLINIC.phone}
+                </span>
+              </a>
+
+              {/*
+                ★ 빈자리를 '오는 방법' 으로 채운다.
+                  전에는 이메일 아래가 통째로 비어 있었다. 여기 들어갈 값은 전부
+                  이미 확인된 것들이라 새로 만들 필요가 없었다.
+                ⚠️ 기계식 주차장 주의사항을 빼지 말 것 — 큰 차량이 헛걸음하는 것을 막는다.
+              */}
+              <dl className="mt-6 space-y-3.5 border-t border-brand-100 pt-6">
+                <div className="flex gap-3">
+                  <dt className="w-[62px] shrink-0 text-[13px] font-black text-ink-muted">주차</dt>
+                  <dd className="text-[14.5px] leading-relaxed text-ink-soft">
+                    {CLINIC.parking.type} · <strong className="font-black text-brand-700">{CLINIC.parking.fee}</strong>
+                    <span className="mt-1 block text-[13px] text-ink-muted">{CLINIC.parking.note}</span>
+                  </dd>
+                </div>
+                <div className="flex gap-3">
+                  <dt className="w-[62px] shrink-0 text-[13px] font-black text-ink-muted">이메일</dt>
+                  <dd className="min-w-0 text-[14.5px] break-all text-ink-soft">
+                    <a href={`mailto:${CLINIC.email}`} className="hover:text-brand-700 hover:underline">
+                      {CLINIC.email}
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
 
