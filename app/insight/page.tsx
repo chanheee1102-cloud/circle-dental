@@ -67,6 +67,7 @@ export default function InsightHubPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="인사이트"
           title="진료 시간에 다 못 하는 이야기를 여기에 적었습니다"
           desc="치료 자체보다 그 앞뒤의 설명이 부족해서 불안한 경우가 많습니다. 미리 읽고 오시면 진료실에서 할 이야기가 달라집니다."

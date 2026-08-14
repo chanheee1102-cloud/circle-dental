@@ -115,16 +115,17 @@ export function InteriorSlider() {
       />
 
       <ul ref={trackRef} className="scrollbar-none flex gap-4 overflow-x-auto pb-2">
-        {[...shots, ...shots].map((src, i) => (
+        {[...shots, ...shots].map((shot, i) => (
           <li
-            key={`${src}-${i}`}
+            key={`${shot.src}-${i}`}
             aria-hidden={i >= shots.length}
             className="w-[78%] shrink-0 sm:w-[46%] lg:w-[31.5%]"
           >
             <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-brand-100 shadow-[var(--shadow-soft)]">
               <Image
-                src={src}
-                alt={i < shots.length ? `동그라미치과의원 내부 ${i + 1}` : ''}
+                src={shot.src}
+                /* 두 번째 벌은 이음매용 사본이라 빈 alt — 같은 설명을 두 번 읽지 않게. */
+                alt={i < shots.length ? shot.alt : ''}
                 fill
                 sizes="(max-width: 640px) 78vw, (max-width: 1024px) 46vw, 32vw"
                 /* 앞 세 장만 미리 받는다. 스물넷을 한꺼번에 받으면 첫 화면이 느려진다. */

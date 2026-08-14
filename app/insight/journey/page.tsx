@@ -41,6 +41,7 @@ export default function JourneyIndexPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="치료 여정"
           title="몇 번 오고, 얼마나 걸리고, 그때마다 무엇을 하는지"
           desc="치료가 길어지는 이유는 대부분 시술이 아니라 기다림입니다. 어디서 기다리는지를 알면 일정을 세우기 쉬워집니다."

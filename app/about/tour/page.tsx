@@ -37,26 +37,37 @@ export default function TourPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="Circle Dental Clinic"
           title="동그라미 치과 내부 둘러보기"
           desc="상담실과 진료실을 미리 보고 오시면 첫 방문이 조금 덜 낯섭니다."
         />
 
+        {/*
+          ★★ 사진마다 설명을 눈에 보이게 단다 (2026-08-14) ★★
+            전에는 사진 열두 장뿐이고 글이 120자였다. 사람에게는 "예쁘네" 로 끝나고,
+            검색·답변 엔진 입장에서는 **인용할 문장이 하나도 없는 페이지**였다.
+            사진이 무엇을 보여 주는지 한 줄씩 붙이면 같은 사진이 근거가 된다.
+            설명은 lib/assets.ts 한 곳에서만 온다 — 사진 순서가 바뀌어도 어긋나지 않는다.
+        */}
         <div className="mt-14 columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
-          {IMG.interior.map((src, i) => (
+          {IMG.interior.map((shot, i) => (
             <figure
-              key={src}
-              className="group break-inside-avoid overflow-hidden rounded-xl shadow-[var(--shadow-soft)]"
+              key={shot.src}
+              className="group break-inside-avoid overflow-hidden rounded-xl bg-white shadow-[var(--shadow-soft)]"
             >
               <Image
-                src={src}
-                alt={`${CLINIC.name} 내부 ${i + 1}`}
+                src={shot.src}
+                alt={shot.alt}
                 width={1200}
                 height={900}
                 priority={i < 2}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
+              <figcaption className="px-5 py-4 text-[13.5px] leading-relaxed text-ink-soft">
+                {shot.alt}
+              </figcaption>
             </figure>
           ))}
         </div>

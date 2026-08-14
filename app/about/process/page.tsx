@@ -119,6 +119,7 @@ export default function ProcessPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="첫 방문 안내"
           title="치과에 처음 가면 무엇을 하나요?"
           desc="무엇을 하는지 모르면 첫 방문이 부담스럽습니다. 일반적으로 어떤 순서로 진행되는지 정리했습니다."

@@ -59,6 +59,7 @@ export default function CostPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="비용 가이드"
           title="금액보다 먼저 알아야 하는 것들"
           desc="같은 치료라도 보험이 되는 부분과 안 되는 부분이 나뉘고, 그 경계가 최종 비용을 가장 크게 좌우합니다. 여기서는 그 경계를 설명합니다."

@@ -20,13 +20,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const c = conditionBySlug(slug);
   if (!c) return {};
+  /*
+   * ★ 설명은 정의 한 줄에 **주요 증상**을 이어 붙인다 (2026-08-14 실측 후).
+   *   정의만 쓰면 41~67자라 검색 결과에서 한 줄로 끝난다. 검색하는 사람은 병명보다
+   *   증상을 들고 오기 때문에, 증상 낱말이 설명에 들어 있어야 자기 이야기로 읽는다.
+   *   ⚠️ 새 문장을 짓지 않는다 — 본문에 이미 있는 signs 를 그대로 잇는다.
+   *      여기서 지어낸 한 줄은 검색 결과에 그대로 나가는 의료 정보가 된다.
+   */
+  const description = c.signs.length
+    ? `${c.definition} 주로 ${c.signs.slice(0, 3).join(', ')} 증상으로 나타납니다.`
+    : c.definition;
   return {
     // 별칭을 제목에 넣는다 — '치주염' 보다 '풍치' 로 검색하는 사람이 많다.
     title: `${c.name} (${c.aka[0]})`,
-    description: c.definition,
+    description,
     keywords: [c.name, ...c.aka],
     alternates: { canonical: `/insight/condition/${c.slug}` },
-    openGraph: { title: `${c.name} — ${c.aka[0]}`, description: c.definition },
+    openGraph: { title: `${c.name} — ${c.aka[0]}`, description },
   };
 }
 

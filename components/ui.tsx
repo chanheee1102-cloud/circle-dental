@@ -28,11 +28,29 @@ export function SectionHead({
   eyebrow,
   title,
   desc,
+  as = 'h2',
 }: {
   eyebrow?: string;
   title: React.ReactNode;
   desc?: string;
+  /**
+   * ★★ 이 페이지의 제목이면 반드시 `as="h1"` ★★ (2026-08-14 실측으로 발견)
+   *
+   *   이 컴포넌트는 늘 h2 만 냈다. 그런데 목록·허브 페이지들은 제목을 이것 하나로만
+   *   그리고 있어서, **h1 이 아예 없는 페이지가 13개** 였다(89개 중).
+   *     /treatment · /faq · /visit · /insight · /insight/symptom · /insight/condition
+   *     /insight/journey · /insight/cost · /insight/glossary · /insight/emergency
+   *     /about/doctors · /about/tour · /about/process
+   *
+   *   h1 이 없으면 "이 문서가 무엇에 관한 것인가" 를 한 줄로 집어 줄 자리가 사라진다.
+   *   답변 엔진은 h1 을 문서의 주제로 쓰기 때문에, 없으면 본문에서 추론해야 하고
+   *   그 추론은 자주 빗나간다. 화면은 그대로인데 기계가 읽는 구조만 비어 있던 셈이다.
+   *
+   *   ⚠️ 한 페이지에 h1 은 하나다. 섹션 머리글로 쓸 때는 기본값(h2)을 그대로 둔다.
+   */
+  as?: 'h1' | 'h2';
 }) {
+  const H = as;
   return (
     <div className="max-w-2xl">
       {eyebrow && (
@@ -41,7 +59,16 @@ export function SectionHead({
           {eyebrow}
         </p>
       )}
-      <h2 className="display-sm mt-4 text-[28px] text-ink sm:text-[36px]">{title}</h2>
+      {/* 페이지 제목은 한 단계 크게 — 문서의 머리라는 것이 눈으로도 보여야 한다. */}
+      <H
+        className={
+          as === 'h1'
+            ? 'display-sm mt-4 text-[32px] text-ink sm:text-[42px]'
+            : 'display-sm mt-4 text-[28px] text-ink sm:text-[36px]'
+        }
+      >
+        {title}
+      </H>
       {desc && <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">{desc}</p>}
     </div>
   );

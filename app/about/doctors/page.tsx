@@ -68,6 +68,7 @@ export default function DoctorsPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="의료진 소개"
           title={
             <>

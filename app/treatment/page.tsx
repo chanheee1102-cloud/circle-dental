@@ -26,6 +26,7 @@ export default function TreatmentIndexPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="진료과목"
           title="무엇을 하는 곳인지, 각 치료가 어떤 과정인지"
           desc="치료마다 자주 나오는 질문을 먼저 정리했습니다. 궁금한 것이 이미 적혀 있다면 진료실에서는 그다음 이야기를 할 수 있습니다."

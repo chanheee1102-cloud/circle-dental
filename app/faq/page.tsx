@@ -44,6 +44,7 @@ export default function FaqPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="자주 묻는 질문"
           title="많이 들어오는 질문을 모았습니다"
           desc="여기에 없는 것은 전화로 물어보셔도 됩니다. 진료 전 궁금한 점을 정리해 오시면 진료실에서 더 깊은 이야기를 할 수 있습니다."

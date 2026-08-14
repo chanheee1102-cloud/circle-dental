@@ -34,6 +34,7 @@ export default function VisitPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="내원 안내"
           title="화정동 현창빌딩 3층입니다"
           desc={`${CLINIC.nearestStation} 인근이며, ${CLINIC.serviceArea.slice(0, 4).join(' · ')} 에서 오십니다.`}

@@ -135,6 +135,7 @@ export default function EmergencyPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="응급 상황"
           title="지금 할 수 있는 것과, 하면 안 되는 것"
           desc="응급 상황에서는 좋은 뜻으로 한 행동이 결과를 바꾸기도 합니다. 병원에 오시기 전 몇 분 동안의 조치를 정리했습니다."

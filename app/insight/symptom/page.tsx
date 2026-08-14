@@ -35,6 +35,7 @@ export default function SymptomIndexPage() {
 
       <Container className="py-12 lg:py-16">
         <SectionHead
+          as="h1"
           eyebrow="증상으로 찾기"
           title="지금 느끼는 것에서 시작하세요"
           desc="어떤 치료가 필요한지는 진단의 결과입니다. 출발점은 증상이어야 합니다. 각 항목에는 가능한 원인, 내원 전 할 수 있는 것, 바로 와야 하는 신호를 함께 적었습니다."
