@@ -344,6 +344,38 @@ export function breadcrumbSchema(trail: Array<{ name: string; path: string }>) {
   };
 }
 
+/**
+ * 목록 페이지의 ItemList.
+ *
+ * ★★ 왜 목록에만 붙이는가 ★★
+ *   화면에 **번호가 매겨진 목록이 실제로 보일 때만** 유효하다. 보이지 않는 목록을
+ *   ItemList 로 표시하는 것은 구조화 데이터 정책 위반이고, 위반으로 잡히면
+ *   그 페이지의 다른 마크업까지 함께 무시된다.
+ *   (그래서 홈에서 진료 목록을 /treatment 로 옮길 때 홈이 아니라 여기에 붙였다.)
+ *
+ * ★ url 만 넣고 name 을 함께 넣는다 — url 만 있으면 크롤러가 그 페이지를 열어 봐야
+ *   무엇인지 알 수 있고, 열어 보지 않으면 목록의 의미가 전달되지 않는다.
+ */
+export function itemListSchema(
+  path: string,
+  items: Array<{ name: string; path: string }>,
+  name?: string,
+) {
+  return {
+    '@type': 'ItemList',
+    '@id': `${abs(path)}#itemlist`,
+    ...(name ? { name } : {}),
+    numberOfItems: items.length,
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      url: abs(it.path),
+    })),
+  };
+}
+
 export function websiteSchema() {
   return {
     '@type': 'WebSite',
