@@ -39,15 +39,31 @@ export function HomeFaqSection() {
               내원 전 가장 많이 받는 질문 {items.length}가지입니다. 더 궁금한 것은 전체 페이지에서
               확인하실 수 있습니다.
             </p>
-            <Link
-              href="/faq"
-              className="group mt-7 inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
-            >
-              자주 묻는 질문 전체 보기{' '}
-              <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </Link>
+            {/*
+              ★ 절차 링크를 여기 둔다 — 홈에서 절차 섹션을 뺐으니 그리로 가는 길이 있어야 한다.
+                이 자리가 맞는 이유는 "궁금한 것" 을 다루는 섹션이라 "처음 가면 뭐 하나요" 가
+                같은 갈래이기 때문이다.
+            */}
+            <div className="mt-7 flex flex-col gap-3">
+              <Link
+                href="/faq"
+                className="group inline-flex w-fit items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
+              >
+                자주 묻는 질문 전체 보기{' '}
+                <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+              <Link
+                href="/about/process"
+                className="group inline-flex w-fit items-center gap-2 border-b-[1.5px] border-brand-200 pb-1 text-[14.5px] font-bold text-ink-soft transition-colors hover:border-brand-400 hover:text-brand-700"
+              >
+                처음 오시면 어떻게 진행하나요?{' '}
+                <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+            </div>
           </div>
           </Reveal>
 

@@ -15,9 +15,6 @@ import { Reveal } from '@/components/Reveal';
 import { DOCTORS, OUTREACH_PHOTO, OUTREACH_BROADCAST, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { CareListSection } from '@/components/CareListSection';
-import { ProcessSection } from '@/components/ProcessSection';
-import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
-import { abs } from '@/lib/seo';
 import { Container, SectionHead, CardLink, ContactCta, Sentences } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { CopyButton } from '@/components/CopyButton';
@@ -68,26 +65,11 @@ export default function HomePage() {
           heroImage ? imageObjectSchema({ path: '/', ...heroImage }) : null,
           faqSchema(homeFaq, '/'),
           /*
-            ★ 첫 방문 절차를 HowTo 로 낸다 — "치과 처음 가면 뭐 해요" 는 실제 질의이고,
-              HowTo 는 답변 엔진이 단계별로 그대로 인용하는 형식이다.
-            ⚠️ 화면에 같은 4단계가 보인다(ProcessSection). 안 보이는 절차를 마크업하면
-               구조화 데이터 정책 위반이다.
+            ⚠️⚠️ 여기에 HowTo 를 다시 넣지 말 것 (2026-08-14) ⚠️⚠️
+              절차 다섯 단계를 홈에서 /about/process 로 옮기면서 이 마크업도 함께 뺐다.
+              **화면에 없는 절차를 HowTo 로 내면 구조화 데이터 정책 위반**이고 수동 조치 대상이다.
+              절차 HowTo 는 그 단계들이 실제로 보이는 /about/process 가 그대로 내고 있다.
           */
-          {
-            '@type': 'HowTo',
-            '@id': `${abs('/')}#firstvisit`,
-            name: '치과 첫 방문 진행 절차',
-            description:
-              '동그라미치과의원에 처음 오시면 접수와 문진, 방사선 촬영, 구강 검사, 설명과 계획 수립 순서로 진행합니다.',
-            totalTime: 'PT40M',
-            step: FIRST_VISIT_FLOW.map((f, i) => ({
-              '@type': 'HowToStep',
-              position: i + 1,
-              name: f.t,
-              text: f.d,
-              url: `${abs('/about/process')}#${encodeURIComponent(f.t)}`,
-            })),
-          },
         ]}
       />
       {/*
@@ -146,11 +128,12 @@ export default function HomePage() {
            버튼을 두었고 주 메뉴에도 올렸다.
       */}
       {/*
-        ★ 진행 절차 — "어떻게 진행하나요?" 는 결심 직전에 나오는 질문이다.
-          전에는 /about/process 에만 있어서 홈만 보는 사람에게는 없는 것과 같았다.
-          네 단계 요약만 두고 자세한 것은 그 페이지로 보낸다.
+        ★★ 진행 절차를 /about/process 로 되돌렸다 (2026-08-14 운영자) ★★
+          다섯 단계를 가로로 펼치니 카드마다 글이 다섯 줄씩 들어가 홈에서 읽히지 않았다.
+          절차는 **내원을 결심한 사람이 찾아 읽는 것**이지 훑는 사람에게 들이밀 것이 아니다.
+        ⚠️ 링크는 살아 있다 — 주 메뉴(병원 소개 → 진료 절차), 푸터, 그리고 아래 FAQ 섹션에
+           '처음 오시면 어떻게 진행하나요?' 로 걸어 두었다.
       */}
-      <ProcessSection />
       <InteriorSection />
       <OutreachSection />
 
