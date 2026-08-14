@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CLINIC_QA, HOME_FAQ_COUNT } from '@/lib/faq';
 import { Container } from '@/components/ui';
+import { Reveal } from '@/components/Reveal';
 
 /**
  * 홈 화면의 자주 묻는 질문.
@@ -25,7 +26,8 @@ export function HomeFaqSection() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,340px)_1fr] lg:gap-16">
           {/* 왼쪽 — 제목과 전체 보기. 오른쪽 목록이 길어도 이 열은 위에 붙어 따라온다. */}
-          <div className="lg:sticky lg:top-28 lg:self-start">
+          <Reveal className="lg:sticky lg:top-28 lg:self-start">
+          <div>
             <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
               FAQ
@@ -39,21 +41,26 @@ export function HomeFaqSection() {
             </p>
             <Link
               href="/faq"
-              className="mt-7 inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
+              className="group mt-7 inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
             >
-              자주 묻는 질문 전체 보기 <span aria-hidden>→</span>
+              자주 묻는 질문 전체 보기{' '}
+              <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                →
+              </span>
             </Link>
           </div>
+          </Reveal>
 
           {/* 오른쪽 — 문답. 첫 항목만 열어 둔다: 여는 방법을 한 번 보여 주면 나머지도 눌린다. */}
           <div className="divide-y divide-brand-200/70 border-y border-brand-200/70">
             {items.map((qa, i) => (
-              <details key={qa.q} className="group" open={i === 0}>
-                <summary className="flex cursor-pointer list-none items-start gap-4 py-6 [&::-webkit-details-marker]:hidden">
+              <Reveal key={qa.q} delay={Math.min(i, 5) * 50}>
+              <details className="group" open={i === 0}>
+                <summary className="flex cursor-pointer list-none items-start gap-4 py-6 transition-colors hover:text-brand-700 [&::-webkit-details-marker]:hidden">
                   <span className="mt-0.5 shrink-0 text-[11.5px] font-black tracking-[0.14em] text-gold-600 uppercase">
                     Q {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span className="flex-1 text-[16px] font-bold leading-snug text-ink sm:text-[17px]">
+                  <span className="flex-1 text-[16px] font-bold leading-snug text-ink transition-colors group-hover:text-brand-700 sm:text-[17px]">
                     {qa.q}
                   </span>
                   {/*
@@ -72,6 +79,7 @@ export function HomeFaqSection() {
                   {qa.a}
                 </p>
               </details>
+              </Reveal>
             ))}
           </div>
         </div>

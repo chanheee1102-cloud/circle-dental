@@ -14,8 +14,8 @@ import { HeroMedia } from '@/components/HeroMedia';
 import { Reveal } from '@/components/Reveal';
 import { DOCTORS, OUTREACH_PHOTO, OUTREACH_BROADCAST, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { SYMPTOMS } from '@/lib/symptoms';
-import { TREATMENTS } from '@/lib/treatments';
-import { Container, SectionHead, ContactCta } from '@/components/ui';
+import { CareListSection } from '@/components/CareListSection';
+import { Container, SectionHead, CardLink, ContactCta } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
@@ -47,26 +47,32 @@ export default function HomePage() {
           2 Doctor        누가 보는가 — 병원 선택에서 가장 강한 신호
           3 Concerns      내 망설임이 여기 있는가 (아직 결심 안 한 사람을 붙잡는 자리)
           4 WhyUs         그래서 무엇이 다른가 — 12가지 구체 근거
-          5 Pillar        무엇을 하는가 (사진 네 갈래 + 나머지 진료 전체)
+          5 Pillar        무엇을 하는가 (사진 네 갈래)
           6 Interior      어떤 공간인가 (슬라이드)
           7 Outreach      어떤 곳인가 — 사회공헌
-          8 Explore       증상으로 찾기 + 미리 읽어보기 ('찾아보는' 구간)
-          9 FAQ           궁금증 해소
-         10 Hours         언제·어디로
-         11 Cta           연락
+          8 CareList      진료 영역 전체 (여기부터는 '찾아보는' 구간)
+          9 Symptom       내 증상으로 찾기
+         10 Insight       더 읽을거리
+         11 FAQ           궁금증 해소
+         12 Hours         언제·어디로
+         13 Cta           연락
 
         ★ 검색·AI 는 순서보다 **문서에 있는가**를 본다. 아래로 내려도 같은 페이지 안이라
           인용 가능성은 그대로다. 반대로 사람은 순서에 그대로 영향을 받는다.
         ★ StrengthSection('특별함 5가지')은 WhyUs 와 같은 말이라 제거했다.
           원문은 /about 과 /about/special 에 그대로 있다.
 
-        ★★ 13 → 11 로 줄인 이유 (2026-08-14 운영자: "스크롤이 너무 길다") ★★
-          실측 13,473px 이었다. 줄인 것은 **말이 겹치던 자리**다 —
-          ① CareList(진료 영역 10줄)를 Pillar 안으로 넣었다. 사진 네 갈래와 목록이
-             각각 한 섹션씩 차지하면서 **같은 진료 이야기로 2,244px(17%)** 를 먹고 있었다.
-          ② Symptom + Insight 를 한 섹션 좌우로 합쳤다(둘 합쳐 1,386px).
-          ⚠️ 링크는 하나도 지우지 않았다. 줄인 것은 여백과 머리글이지 내용이 아니다 —
-             내부 링크 수가 줄면 AEO 에서 그대로 손해다.
+        ★★ 섹션을 합쳤다가 **되돌렸다** (2026-08-14 운영자) ★★
+          한 번은 13 → 11 로 줄였다. CareList 를 Pillar 안에 칩으로 넣고,
+          Symptom + Insight 를 한 섹션 좌우로 합쳐 13,473 → 11,559px 를 만들었다.
+
+          운영자 판단은 **"스크롤 안 줄여도 된다. 퀄리티가 우선"** 이다. 맞는 판단이다 —
+          줄여서 얻은 건 1,900px 인데, 잃은 건 각 주제가 자기 자리를 갖는 구조였다.
+          진료 열 갈래가 칩 한 줄로 눌리고, 증상과 인사이트가 좁은 반 칸씩 나눠 가지면서
+          둘 다 곁다리처럼 보였다. 세로로 긴 것은 사이트에서 문제가 아니다 —
+          **한 화면에 두 가지 이야기가 눌려 들어가는 것**이 문제다.
+
+          ⚠️ 다시 합치지 말 것 (합치려면 운영자 GO 필요).
       */}
       <Hero />
       <DoctorSection />
@@ -76,7 +82,9 @@ export default function HomePage() {
       <InteriorSection />
       <OutreachSection />
 
-      <ExploreSection />
+      <CareListSection />
+      <SymptomEntry />
+      <InsightPromo />
       <HomeFaqSection />
       <HoursSection />
       <ContactCta />
@@ -304,43 +312,6 @@ function PillarSection() {
           ))}
         </div>
 
-        {/*
-          ★★ 나머지 진료를 여기에 붙였다 — 별도 섹션을 없앴다 (2026-08-14) ★★
-            사진 카드 넷과 '진료 영역 10줄' 이 각각 한 섹션씩 차지해 **합쳐서 2,244px(전체의 17%)**
-            를 먹고 있었다. 둘 다 "무슨 진료를 하나" 라는 같은 질문에 답한다 —
-            그 답을 두 번 하려고 화면 두 개를 쓸 이유가 없다.
-            → 주력 넷은 사진으로, 나머지 여섯은 이름만 한 줄에. **진료 페이지 10개 링크는 그대로다**
-              (내부 링크 그래프는 손실 없음).
-          ★ 주력 넷의 slug 를 하드코딩하지 않는다 — TREATMENT_PILLARS 의 href 에서 뽑아
-            둘 중 하나가 바뀌어도 목록이 어긋나지 않게 한다.
-        */}
-        {(() => {
-          const pillarSlugs = new Set(
-            TREATMENT_PILLARS.map((p) => p.href.replace('/treatment/', '')),
-          );
-          const rest = TREATMENTS.filter((t) => !pillarSlugs.has(t.slug));
-          if (rest.length === 0) return null;
-          return (
-            <div className="mt-10 border-t border-brand-200/70 pt-8">
-              <p className="text-[13px] font-bold text-ink-muted">이런 진료도 함께 봅니다</p>
-              <ul className="mt-4 flex flex-wrap gap-2.5">
-                {rest.map((t) => (
-                  <li key={t.slug}>
-                    <Link
-                      href={`/treatment/${t.slug}`}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-brand-200 bg-white px-4 py-2.5 text-[14.5px] font-bold text-ink-soft transition-all hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-700"
-                    >
-                      {t.name}
-                      <span aria-hidden className="text-[12px] text-brand-300">
-                        →
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })()}
       </Container>
     </section>
   );
@@ -515,118 +486,123 @@ function DoctorSection() {
 }
 
 /**
- * 더 찾아보기 — 증상 진입 + 인사이트를 **한 섹션으로 합쳤다** (2026-08-14).
+ * 증상 진입 — 이 사이트에만 있는 축(AEO 핵심).
  *
- * ★★ 왜 합쳤나 ★★
- *   따로 뒀을 때 둘이 합쳐 1,386px(전체의 10%)이었다. 그런데 두 블록은 사실 같은 말을
- *   하고 있었다 — "결정은 나중에 하고, 지금은 읽어 보세요." 머리글도 각각 세 줄씩
- *   달려 있어서, 정작 링크보다 **머리글이 차지하는 자리가 더 컸다.**
- *   하나로 묶으면 섹션 패딩 한 벌(224px)과 머리글 한 벌(약 150px)이 통째로 빠진다.
+ * ★★ 한 번 인사이트와 합쳤다가 되돌렸다 (2026-08-14 운영자) ★★
+ *   좌우로 반 칸씩 나눠 가지면 스크롤은 줄지만 **둘 다 곁다리처럼 보인다.**
+ *   증상으로 들어오는 사람은 이 사이트에서 가장 중요한 손님이라 자기 화면을 가져야 한다.
  *
- * ★ 좌우로 나눈 이유
- *   왼쪽은 **아픈 사람**(증상), 오른쪽은 **알아보는 사람**(설명)이다. 목적이 달라서
- *   위아래로 쌓으면 자기 것이 아닌 절반을 지나쳐야 한다. 나란히 두면 자기 쪽만 본다.
- *
- * ★ 증상 축은 이 사이트에만 있는 것이라 AEO 의 핵심이다 — 줄이더라도 **링크 수는
- *   유지한다.** 여섯 개 + 전체 보기 + 인사이트 넷, 내부 링크 개수는 합치기 전과 같다.
+ * ★ 카드가 순서대로 떠오른다 — 여섯 개가 한꺼번에 나타나면 어디부터 볼지 알 수 없다.
+ *   40ms 씩만 어긋내 '왼쪽 위부터' 라는 것을 몸으로 알려 준다.
  */
-function ExploreSection() {
+function SymptomEntry() {
   const featured = SYMPTOMS.slice(0, 6);
-  const guides = [
-    { href: '/insight/journey', title: '치료 여정', desc: '임플란트는 몇 번 와야 하는지, 신경치료는 얼마나 걸리는지 회차별로 정리했습니다.' },
-    { href: '/insight/cost', title: '비용 가이드', desc: '건강보험이 되는 항목과 되지 않는 항목, 65세 임플란트 보험 조건을 설명합니다.' },
-    { href: '/insight/glossary', title: '용어 사전', desc: '진료실에서 듣는 말을 짧게 풀었습니다. 크라운, 인레이, 치수염 같은 단어들입니다.' },
-    { href: '/insight/emergency', title: '응급 상황', desc: '치아가 빠졌거나 부러졌을 때, 밤에 참기 힘들 때 지금 할 수 있는 것을 정리했습니다.' },
-  ];
-
   return (
-    <section className="border-y border-brand-200/60 bg-brand-50/40 py-20 lg:py-24">
+    <section className="relative overflow-hidden border-y border-brand-200/60 bg-brand-50/40 py-24 lg:py-28">
+      {/* 옅은 얼룩 하나 — 넓은 단색 배경은 화면을 납작하게 만든다. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-32 top-1/3 h-[460px] w-[460px] rounded-full bg-brand-100/50 blur-3xl"
+      />
+      <Container className="relative">
+        <Reveal>
+          <SectionHead
+            eyebrow="증상으로 찾기"
+            title={
+              <>
+                병명은 몰라도 됩니다.
+                <br />
+                지금 느끼는 것부터 찾으세요.
+              </>
+            }
+            desc="어떤 치료가 필요한지는 진단의 결과지 출발점이 아닙니다. 증상에서 시작해 가능한 원인과 확인 방법을 정리했습니다."
+          />
+        </Reveal>
+        <div className="mt-12 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.map((s, i) => (
+            <Reveal key={s.slug} delay={i * 40}>
+              <Link
+                href={`/insight/symptom/${s.slug}`}
+                className="group flex h-full items-center justify-between gap-4 rounded-xl border border-brand-200/70 bg-white px-6 py-5.5 shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+              >
+                <span className="text-[15.5px] font-bold leading-snug text-ink transition-colors group-hover:text-brand-700">
+                  {s.title}
+                </span>
+                <span
+                  aria-hidden
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-500 transition-all duration-300 group-hover:translate-x-0.5 group-hover:bg-brand-500 group-hover:text-white"
+                >
+                  →
+                </span>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+        <Link
+          href="/insight/symptom"
+          className="group mt-9 inline-flex items-center gap-2 text-[15.5px] font-black text-brand-700"
+        >
+          <span className="border-b-[1.5px] border-transparent transition-colors group-hover:border-brand-700">
+            증상 {SYMPTOMS.length}가지 전체 보기
+          </span>
+          <span aria-hidden className="transition-transform group-hover:translate-x-1">
+            →
+          </span>
+        </Link>
+      </Container>
+    </section>
+  );
+}
+
+/**
+ * 인사이트 — 읽을거리 넷.
+ *
+ * ★ 증상 섹션과 다시 분리했다(위 주석 참고). 여기는 '아직 안 아픈데 알아보는 사람' 자리다.
+ * ★ 카드는 왼쪽부터 60ms 씩 어긋내 떠오른다.
+ */
+function InsightPromo() {
+  const cards = [
+    {
+      href: '/insight/journey',
+      title: '치료 여정',
+      desc: '임플란트는 몇 번 와야 하는지, 신경치료는 얼마나 걸리는지 회차별로 정리했습니다.',
+      tag: '기간·회차',
+    },
+    {
+      href: '/insight/cost',
+      title: '비용 가이드',
+      desc: '건강보험이 되는 항목과 되지 않는 항목, 65세 임플란트 보험 조건을 설명합니다.',
+      tag: '보험',
+    },
+    {
+      href: '/insight/glossary',
+      title: '용어 사전',
+      desc: '진료실에서 듣는 말을 짧게 풀었습니다. 크라운, 인레이, 치수염 같은 단어들입니다.',
+      tag: '용어',
+    },
+    {
+      href: '/insight/emergency',
+      title: '응급 상황',
+      desc: '치아가 빠졌거나 부러졌을 때, 밤에 참기 힘들 때 지금 할 수 있는 것을 정리했습니다.',
+      tag: '지금 당장',
+    },
+  ];
+  return (
+    <section className="py-24 lg:py-28">
       <Container>
-        <div className="grid gap-14 lg:grid-cols-2 lg:gap-16">
-          {/* ── 왼쪽: 증상으로 찾기 ── */}
-          <div>
-            <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-              증상으로 찾기
-            </p>
-            <h2 className="display-sm mt-4 text-[26px] text-ink sm:text-[32px]">
-              병명은 몰라도 됩니다
-            </h2>
-            <p className="mt-4 text-[15.5px] leading-[1.8] text-ink-soft">
-              어떤 치료가 필요한지는 진단의 결과지 출발점이 아닙니다. 지금 느끼는 것에서 시작해
-              가능한 원인과 확인 방법을 정리했습니다.
-            </p>
-
-            <ul className="mt-8 grid gap-2.5 sm:grid-cols-2">
-              {featured.map((s) => (
-                <li key={s.slug}>
-                  <Link
-                    href={`/insight/symptom/${s.slug}`}
-                    className="group flex h-full items-center justify-between gap-3 rounded-xl border border-brand-200/70 bg-white px-5 py-4 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
-                  >
-                    <span className="text-[14.5px] font-bold leading-snug text-ink group-hover:text-brand-700">
-                      {s.title}
-                    </span>
-                    <span
-                      aria-hidden
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[13px] text-brand-500 transition-all group-hover:bg-brand-500 group-hover:text-white"
-                    >
-                      →
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href="/insight/symptom"
-              className="mt-7 inline-flex items-center gap-2 text-[15px] font-black text-brand-700 hover:underline"
-            >
-              증상 {SYMPTOMS.length}가지 전체 보기 <span aria-hidden>→</span>
-            </Link>
-          </div>
-
-          {/* ── 오른쪽: 미리 읽어 두면 좋은 설명 ── */}
-          <div>
-            <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-              미리 읽어보기
-            </p>
-            <h2 className="display-sm mt-4 text-[26px] text-ink sm:text-[32px]">
-              읽고 오시면 진료실 대화가 달라집니다
-            </h2>
-            <p className="mt-4 text-[15.5px] leading-[1.8] text-ink-soft">
-              진료 시간에 다 담기 어려운 배경 설명을 문서로 정리했습니다.
-            </p>
-
-            {/*
-              ⚠️ 카드 격자가 아니라 **목록**이다. 카드로 두면 설명 줄이 잘려 제목만 남는데,
-                 여기서 고르는 기준은 제목이 아니라 그 아래 한 줄이다.
-            */}
-            <ul className="mt-8 divide-y divide-brand-200/60 border-y border-brand-200/60">
-              {guides.map((g) => (
-                <li key={g.href}>
-                  <Link
-                    href={g.href}
-                    className="group flex items-start gap-4 py-5 transition-colors hover:bg-white/70"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[16px] font-black text-ink group-hover:text-brand-700">
-                        {g.title}
-                      </p>
-                      <p className="mt-1.5 text-[14px] leading-[1.7] text-ink-soft">{g.desc}</p>
-                    </div>
-                    <span
-                      aria-hidden
-                      className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[13px] text-brand-500 shadow-[var(--shadow-soft)] transition-all group-hover:bg-brand-500 group-hover:text-white"
-                    >
-                      →
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <Reveal>
+          <SectionHead
+            eyebrow="인사이트"
+            title="설명을 미리 읽고 오시면 진료실에서 할 이야기가 달라집니다"
+            desc="진료 시간에 다 담기 어려운 배경 설명을 문서로 정리했습니다."
+          />
+        </Reveal>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.map((c, i) => (
+            <Reveal key={c.href} delay={i * 60} className="h-full">
+              <CardLink {...c} />
+            </Reveal>
+          ))}
         </div>
       </Container>
     </section>
@@ -638,7 +614,7 @@ function InteriorSection() {
   return (
     <section className="py-24 lg:py-28">
       <Container>
-        <div className="max-w-3xl">
+        <Reveal className="max-w-3xl">
           <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
             공간
@@ -649,7 +625,7 @@ function InteriorSection() {
           <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
             상담실과 진료실, 소독실까지 실제 사진입니다. 옆으로 넘겨 보실 수 있습니다.
           </p>
-        </div>
+        </Reveal>
         {/* 격자 대신 슬라이드 — 열두 장을 한 줄 자리로 다 보여 준다(components/InteriorSlider.tsx). */}
         <div className="mt-12">
           <InteriorSlider />
@@ -657,9 +633,12 @@ function InteriorSection() {
         <div className="mt-10">
           <Link
             href="/about/tour"
-            className="inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
+            className="group inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
           >
-            둘러보기 페이지에서 전체 보기 <span aria-hidden>→</span>
+            둘러보기 페이지에서 전체 보기{' '}
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
           </Link>
         </div>
       </Container>
@@ -677,7 +656,7 @@ function OutreachSection() {
             사진 아래 캡션이 이미 그 두 줄이라 위아래로 **똑같은 문장이 두 번** 나왔다(실측).
             머리글은 '무엇을 해 왔는가' 한 줄로만 요약하고, 구체는 캡션이 맡는다.
         */}
-        <div className="text-center">
+        <Reveal className="text-center">
           <p className="text-[12.5px] font-black tracking-[0.24em] text-brand-200 uppercase">
             Circle Dental Clinic
           </p>
@@ -685,7 +664,7 @@ function OutreachSection() {
           <p className="mx-auto mt-6 max-w-2xl text-[16px] leading-[1.85] text-brand-100/85">
             진료실 밖에서도 해 온 일이 있습니다. 아래 두 장이 그 기록입니다.
           </p>
-        </div>
+        </Reveal>
 
         {/*
           ★ 두 장을 **가로로 나란히** 둔다 (2026-08-14 운영자, 원본 홈페이지도 같은 구성).
@@ -693,37 +672,47 @@ function OutreachSection() {
             설명도 사진 바로 아래에 각각 붙여 어느 사진의 이야기인지 헷갈리지 않게 한다.
           ★ 오른쪽은 방영분 영상이다. 썸네일로 **방영 장면 사진**을 쓴다 —
             플레이어의 검은 첫 프레임을 두면 무엇을 재생하는지 알 수 없다.
-          ★ 두 칸의 비율을 4:3 으로 맞춘다. 원본 사진이 499×420(≈6:5)이라 큰 왜곡 없이
-            같은 높이로 떨어지고, 아래 설명 줄도 같은 선에서 시작한다.
+          ★★ 크기를 줄였다 (2026-08-14 운영자: "사진이랑 영상 크기 좀 줄여줘") ★★
+            컨테이너(1,256px) 를 꽉 채우면 한 장이 604×453px 이라 **사진 두 장이
+            한 화면을 통째로 먹었다.** 여기는 '이런 일도 해 왔다' 를 보여 주는 자리지
+            사진 자체가 주인공인 자리가 아니다.
+            → 폭을 880px 로 묶어 가운데 두고, 비율도 4:3 → 16:11 로 눕혔다.
+              한 장 428×294px — 무슨 사진인지 알아보기에 충분하면서 화면을 뺏지 않는다.
+          ★ 두 칸의 비율을 똑같이 맞춰 아래 설명 줄이 같은 선에서 시작한다.
+          ★ 왼쪽 먼저, 오른쪽이 90ms 뒤에 떠오른다 — 둘이 동시에 나타나면 한 덩어리로 보인다.
         */}
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          <figure>
-            <div className="overflow-hidden rounded-2xl shadow-[var(--shadow-lift)]">
-              <Image
-                src={OUTREACH_PHOTO.src}
-                alt={OUTREACH_PHOTO.alt}
-                width={1256}
-                height={840}
-                className="aspect-[4/3] w-full object-cover"
-              />
-            </div>
-            <figcaption className="mt-4 text-center text-[14.5px] leading-relaxed text-brand-100/85">
-              {OUTREACH[0]}
-            </figcaption>
-          </figure>
+        <div className="mx-auto mt-12 grid max-w-[880px] gap-6 md:grid-cols-2">
+          <Reveal className="h-full">
+            <figure>
+              <div className="group overflow-hidden rounded-2xl shadow-[var(--shadow-lift)]">
+                <Image
+                  src={OUTREACH_PHOTO.src}
+                  alt={OUTREACH_PHOTO.alt}
+                  width={880}
+                  height={605}
+                  className="aspect-[16/11] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                />
+              </div>
+              <figcaption className="mt-4 text-center text-[14.5px] leading-relaxed text-brand-100/85">
+                {OUTREACH[0]}
+              </figcaption>
+            </figure>
+          </Reveal>
 
-          <figure>
-            <VideoFacade
-              embedSrc={`${OUTREACH_VIDEO.embed}&autoplay=1`}
-              poster={OUTREACH_BROADCAST.src}
-              posterAlt={OUTREACH_BROADCAST.alt}
-              label="TV조선 구조신호 시그널 24회 방영분 재생 — 동그라미치과의원 무료 틀니 제공"
-              ratio="aspect-[4/3]"
-            />
-            <figcaption className="mt-4 text-center text-[14.5px] leading-relaxed text-brand-100/85">
-              {OUTREACH[1]}
-            </figcaption>
-          </figure>
+          <Reveal delay={90} className="h-full">
+            <figure>
+              <VideoFacade
+                embedSrc={`${OUTREACH_VIDEO.embed}&autoplay=1`}
+                poster={OUTREACH_BROADCAST.src}
+                posterAlt={OUTREACH_BROADCAST.alt}
+                label="TV조선 구조신호 시그널 24회 방영분 재생 — 동그라미치과의원 무료 틀니 제공"
+                ratio="aspect-[16/11]"
+              />
+              <figcaption className="mt-4 text-center text-[14.5px] leading-relaxed text-brand-100/85">
+                {OUTREACH[1]}
+              </figcaption>
+            </figure>
+          </Reveal>
         </div>
       </Container>
     </section>
