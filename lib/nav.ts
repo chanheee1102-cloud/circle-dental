@@ -30,6 +30,12 @@ export const NAV: NavItem[] = [
     href: '/about',
     children: [
       { label: '동그라미의 특별함', href: '/about', desc: '진료를 대하는 기준' },
+      /*
+       * ★ 홈에 있던 '망설임 6가지 + 근거 12가지' 를 옮겨 담은 페이지 (2026-08-14).
+       *   홈에서 뺀 만큼 **메뉴에는 반드시 올린다** — 메뉴에 없으면 사이트 안에서 그 페이지로
+       *   가는 길이 사라져 크롤러도 늦게 발견하고 사람도 못 찾는다.
+       */
+      { label: '왜 동그라미치과인가', href: '/about/why', desc: '미루는 이유와 그 답' },
       { label: '의료진 소개', href: '/about/doctors', desc: '교수 출신 대표원장' },
       { label: '둘러보기', href: '/about/tour', desc: '병원 내부 사진' },
       { label: '진료 절차', href: '/about/process', desc: '내원부터 유지관리까지' },

@@ -184,25 +184,32 @@ export default function DoctorsPage() {
               화면은 멀쩡해 보인다. 실제로 네 장 모두 다른 인증서 이름을 달고 있었다.
               문구는 이제 이미지 옆(lib/assets.ts)에 붙어 있으므로 `c.label` 하나만 쓴다.
 
-            ★ 칸 높이를 고정한다.
-              인증서 원본은 236×242 세 장과 236×178 한 장으로 비율이 제각각이다.
-              그대로 흘리면 짧은 한 장만 캡션이 위로 올라와 줄이 어긋난다(원본 홈페이지가 그렇다).
-              정사각 액자에 object-contain 으로 담으면 비율이 달라도 액자 높이가 같아
-              네 캡션이 같은 선에서 시작한다. 잘리는 인증서도 없다.
+            ★★ 액자를 씌우지 않는다 (2026-08-14 운영자: "차라리 원본처럼") ★★
+              한동안 흰 카드 + 테두리 + 옅은 배경에 담아 뒀는데 보기에 나빴다. 이유가 있다 —
+              **인증서 사진에는 이미 금색 액자가 찍혀 있다.** 거기에 우리 테두리를 한 겹 더
+              씌우면 액자 안에 액자가 되고, 그 사이 여백만큼 정작 인증서는 작아진다.
+              원본 홈페이지가 사진을 그냥 바탕 위에 두는 편이 나았다.
+              → 테두리·배경·안쪽 여백을 걷어내고 사진 자체를 키웠다.
+
+            ★ 다만 칸 높이는 고정한다.
+              인증서 원본은 비율이 제각각이라 그대로 흘리면 짧은 한 장만 캡션이 위로 올라와
+              줄이 어긋난다(원본 홈페이지가 실제로 그렇다 — 세 번째 캡션만 한 줄 위에 있다).
+              같은 높이의 빈 칸에 object-contain 으로 담으면 비율이 달라도 네 캡션이 같은
+              선에서 시작하고, 잘리는 인증서도 없다. 원본보다 나은 부분은 가져간다.
           */}
-          <div className="mt-10 grid grid-cols-2 items-start gap-x-6 gap-y-8 sm:grid-cols-4">
+          <div className="mt-12 grid grid-cols-2 items-start gap-x-8 gap-y-10 sm:grid-cols-4">
             {IMG.credentials.map((c) => (
               <figure key={c.src}>
-                <div className="relative aspect-square overflow-hidden rounded-xl border border-brand-100 bg-brand-50/50">
+                <div className="relative h-[190px] sm:h-[210px]">
                   <Image
                     src={c.src}
                     alt={c.label}
                     fill
                     sizes="(max-width: 640px) 45vw, 260px"
-                    className="object-contain p-4"
+                    className="object-contain drop-shadow-[0_6px_18px_rgba(58,33,26,0.14)]"
                   />
                 </div>
-                <figcaption className="mt-3.5 text-center text-[12.5px] leading-snug text-ink-soft">
+                <figcaption className="mt-5 text-center text-[13px] leading-snug text-ink-soft">
                   {c.label}
                 </figcaption>
               </figure>
