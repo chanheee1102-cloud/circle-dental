@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { NAV } from '@/lib/nav';
 import { LogoLockup } from '@/components/Logo';
+import { SITE_MODIFIED, formatKoreanDate } from '@/lib/contentMeta';
 
 /**
  * 전역 푸터.
@@ -169,6 +170,18 @@ export function SiteFooter() {
           있도록' 공개하라고 정하고 있고, 그 관행상의 자리가 푸터다. 주 메뉴에 올리면 진료 정보를
           찾는 흐름을 방해하고, 없으면 법적으로도 AI 신뢰도 평가에서도 감점이다.
         */}
+        {/*
+          ★★ 최종 확인일 — 모든 페이지에 (2026-08-14) ★★
+            외부 진단이 "날짜 정보 없음 / 최근 연도는 있으나 구체적 날짜 없음" 으로 잡았다.
+            본문형 페이지에는 발행·수정일을 달았지만 **홈에는 없었다.** 홈은 대부분의
+            방문자와 크롤러가 처음 만나는 문서라, 거기 날짜가 없으면 사이트 전체가
+            "언제 기준인지 모르는 곳" 으로 읽힌다.
+          ★ `<time datetime>` 으로 기계 판독 값을 함께 준다. 사람에게는 한국어로,
+            기계에게는 ISO 8601 로.
+          ⚠️ 이 날짜는 lib/contentMeta.ts 의 SITE_MODIFIED 다. **실제로 내용을 고친 날만**
+             올린다 — 안 고쳤는데 날짜만 올리면 그건 사실과 다른 표시이고,
+             병원 홈페이지에서는 위험한 종류의 거짓말이다.
+        */}
         <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11.5px]">
           <Link
             href="/privacy"
@@ -176,6 +189,12 @@ export function SiteFooter() {
           >
             개인정보처리방침
           </Link>
+          <span className="text-brand-200/60">
+            병원 정보 최종 확인{' '}
+            <time dateTime={SITE_MODIFIED} className="font-semibold text-brand-200/80">
+              {formatKoreanDate(SITE_MODIFIED)}
+            </time>
+          </span>
           <span className="text-brand-200/40">
             &copy; {new Date().getFullYear()} {CLINIC.name}. All rights reserved.
           </span>
