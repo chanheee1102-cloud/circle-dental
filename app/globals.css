@@ -250,14 +250,111 @@ time,
   }
 }
 
+/*
+ * ── 망설임 섹션 전용 움직임 ──────────────────────────────
+ * ★★ 전역 규칙('.reveal 하나만')을 여기서만 푼다 (2026-08-18 운영자: "임팩트 좀 많이") ★★
+ *   효과를 페이지 전체에 흩뿌리면 산만해진다는 위 판단은 지금도 맞다. 다만 이 섹션은
+ *   페이지에서 **처음으로 어두워지는 자리**다. 흰 면을 지나오다 검은 면에 들어서는
+ *   지점이라, 한 곳에 몰아 주고 나머지를 조용히 두는 편이 낫다.
+ *   ⚠️ 다른 섹션에 이 클래스들을 가져다 쓰지 말 것. 몰아 주는 것이 요점이다.
+ */
+
+/* Reveal 을 **방아쇠로만** 쓸 때. 블록 자체는 안 움직이고 안쪽 어절만 올라온다. */
+.reveal.reveal-plain {
+  opacity: 1;
+  transform: none;
+}
+
+/* 어절 가면 — 글자가 아래에서 밀려 올라온다. */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* 받침·괄호가 잘리지 않게 아래를 조금 열고, 그만큼 다시 당겨 줄간격을 지킨다. */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.word-mask > span {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.is-shown .word-mask > span {
+  transform: none;
+}
+
+/* 카드 진입 — .reveal(26px)보다 세게. 어두운 면이라 이 정도는 튀지 않는다. */
+.concern {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  transition:
+    opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.concern.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * 포인터 스포트라이트 — 커서 자리에서 빛이 번진다.
+ * 좌표는 ConcernCard 가 --mx / --my 로 넣는다(리렌더 없이).
+ * ★ 어두운 면에서만 성립하는 효과다. 밝은 면에 옮기면 얼룩으로 보인다.
+ */
+.concern-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(192, 138, 114, 0.16),
+    rgba(192, 138, 114, 0) 62%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.concern-card:hover::before {
+  opacity: 1;
+}
+
+/* 배경 동그라미 — 아주 느리게 떠다닌다. 병원 이름의 모티프다. */
+.drift {
+  animation: drift 22s ease-in-out infinite alternate;
+}
+.drift-slow {
+  animation-duration: 30s;
+}
+.drift-late {
+  animation-duration: 26s;
+  animation-delay: -8s;
+}
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(26px, -34px, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .enter,
   .reveal,
-  .mega-in {
+  .mega-in,
+  .concern {
     opacity: 1;
     transform: none;
     animation: none;
     transition: none;
+  }
+  .word-mask > span {
+    transform: none;
+    transition: none;
+  }
+  .drift {
+    animation: none;
   }
   .underline-sweep::after {
     transition: none;
