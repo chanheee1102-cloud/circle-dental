@@ -157,7 +157,7 @@ export default function EmergencyPage() {
           </div>
           <a
             href={CLINIC.phoneHref}
-            className="shrink-0 rounded-lg bg-white px-6 py-3 text-[16px] font-black text-brand-700"
+            className="shrink-0 rounded-full bg-white px-6 py-3 text-[16px] font-black text-brand-700"
           >
             {CLINIC.phone}
           </a>
@@ -171,7 +171,7 @@ export default function EmergencyPage() {
               className="scroll-mt-28 overflow-hidden rounded-2xl border border-brand-100 bg-white"
             >
               <div className="border-b border-brand-50 p-7">
-                <span className="inline-flex rounded-lg bg-gold-400/20 px-3 py-1 text-[11.5px] font-black text-gold-600">
+                <span className="inline-flex rounded-full bg-gold-400/20 px-3 py-1 text-[11.5px] font-black text-gold-600">
                   {c.urgency}
                 </span>
                 <h2 className="mt-3.5 text-[20px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[22px]">

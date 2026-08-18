@@ -68,7 +68,7 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
                   {t.whoFor.slice(0, 3).map((w) => (
                     <li
                       key={w}
-                      className="rounded-md bg-brand-100/80 px-2.5 py-1 text-[12.5px] leading-snug text-ink-soft"
+                      className="rounded-full bg-brand-100/80 px-2.5 py-1 text-[12.5px] leading-snug text-ink-soft"
                     >
                       {w}
                     </li>

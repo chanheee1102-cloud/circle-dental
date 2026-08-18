@@ -38,7 +38,7 @@ export default function NotFound() {
 
       <a
         href={CLINIC.phoneHref}
-        className="mt-10 inline-flex rounded-lg bg-brand-700 px-7 py-3.5 text-[16px] font-black text-white transition-colors hover:bg-brand-600"
+        className="mt-10 inline-flex rounded-full bg-brand-700 px-7 py-3.5 text-[16px] font-black text-white transition-colors hover:bg-brand-600"
       >
         {CLINIC.phone}
       </a>

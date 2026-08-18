@@ -115,7 +115,7 @@ export default async function TreatmentDetailPage({
             {t.whoFor.map((w) => (
               <span
                 key={w}
-                className="rounded-lg border border-brand-200 bg-brand-50 px-4 py-2 text-[13.5px] font-semibold text-brand-700"
+                className="rounded-full border border-brand-200 bg-brand-50 px-4 py-2 text-[13.5px] font-semibold text-brand-700"
               >
                 {w}
               </span>

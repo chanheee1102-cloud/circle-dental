@@ -416,7 +416,7 @@ function PillarSection() {
         <div className="mt-12 text-center">
           <Link
             href="/treatment"
-            className="group inline-flex items-center gap-2.5 rounded-lg border border-brand-300 bg-white px-7 py-3.5 text-[15px] font-black text-brand-700 transition-colors hover:border-brand-400 hover:bg-brand-50"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-brand-300 bg-white px-7 py-3.5 text-[15px] font-black text-brand-700 transition-colors hover:border-brand-400 hover:bg-brand-50"
           >
             전체 진료과목 {TREATMENTS.length}가지 보기
             <span aria-hidden className="transition-transform group-hover:translate-x-1">
@@ -631,7 +631,7 @@ function DoctorSection() {
                 <div className="mt-7 flex flex-wrap gap-2.5">
                   <Link
                     href="/about/trust"
-                    className="group inline-flex items-center gap-2 rounded-lg bg-brand-700 px-6 py-3 text-[14.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
+                    className="group inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-[14.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
                   >
                     근거 · 인증 전체 보기
                     <span aria-hidden className="transition-transform group-hover:translate-x-1">
@@ -640,7 +640,7 @@ function DoctorSection() {
                   </Link>
                   <Link
                     href="/about/doctors"
-                    className="inline-flex items-center gap-2 rounded-lg border border-brand-300 bg-white px-6 py-3 text-[14.5px] font-black text-brand-700 transition-colors hover:border-brand-400"
+                    className="inline-flex items-center gap-2 rounded-full border border-brand-300 bg-white px-6 py-3 text-[14.5px] font-black text-brand-700 transition-colors hover:border-brand-400"
                   >
                     의료진 소개
                   </Link>
@@ -951,7 +951,7 @@ function HoursSection() {
                     <dt className="flex items-center gap-2.5">
                       <span className="text-[15.5px] font-black text-ink">{h.label}</span>
                       {h.note && (
-                        <span className="rounded-md bg-gold-500/15 px-2 py-0.5 text-[11.5px] font-black text-gold-600">
+                        <span className="rounded-full bg-gold-500/15 px-2 py-0.5 text-[11.5px] font-black text-gold-600">
                           {h.note}
                         </span>
                       )}

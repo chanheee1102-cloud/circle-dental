@@ -51,7 +51,7 @@ export function SiteFooter() {
             */}
             <a
               href={CLINIC.phoneHref}
-              className="mt-6 flex h-12 w-full items-center justify-center gap-2.5 rounded-lg bg-white/10 text-[16.5px] font-black text-white transition-colors hover:bg-white/20 sm:max-w-[340px] lg:max-w-none"
+              className="mt-6 flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-white/10 text-[16.5px] font-black text-white transition-colors hover:bg-white/20 sm:max-w-[340px] lg:max-w-none"
             >
               <span className="tabular-nums">{CLINIC.phone}</span>
             </a>
@@ -90,7 +90,7 @@ export function SiteFooter() {
                       target="_blank"
                       rel="noopener noreferrer me"
                       aria-label={`${CLINIC.name} ${ch.label} (새 창)`}
-                      className="group flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-white/15 bg-white/5 px-3.5 text-[13px] font-bold text-brand-100 transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
+                      className="group flex h-11 w-full items-center justify-between gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 text-[13px] font-bold text-brand-100 transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
                     >
                       <span className="flex min-w-0 items-center gap-2">
                         <ch.Icon />

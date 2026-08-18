@@ -94,7 +94,7 @@ export default function AboutPage() {
             <Link
               key={p.key}
               href={p.href}
-              className="rounded-lg border border-brand-300 bg-white px-5 py-2.5 text-[14.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="rounded-full border border-brand-300 bg-white px-5 py-2.5 text-[14.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
             >
               {p.name}
             </Link>
@@ -161,7 +161,7 @@ export default function AboutPage() {
               </ul>
               <Link
                 href="/about/doctors"
-                className="mt-8 inline-flex items-center gap-2 rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
               >
                 의료진 자세히 보기 <span aria-hidden>→</span>
               </Link>

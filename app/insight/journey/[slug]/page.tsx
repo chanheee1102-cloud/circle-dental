@@ -205,7 +205,7 @@ export default async function JourneyDetailPage({
           {treatment && (
             <Link
               href={`/treatment/${treatment.slug}`}
-              className="mt-9 inline-flex items-center gap-2 rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
+              className="mt-9 inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
             >
               {treatment.name} 진료 안내 <span aria-hidden>→</span>
             </Link>

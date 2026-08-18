@@ -148,7 +148,7 @@ export default function DoctorsPage() {
 
                   {d.societies.length > 0 && (
                     <>
-                      <span className="mt-6 inline-flex rounded-md bg-brand-500 px-3 py-1.5 text-[12.5px] font-black text-white">
+                      <span className="mt-6 inline-flex rounded-full bg-brand-500 px-3 py-1.5 text-[12.5px] font-black text-white">
                         학회활동
                       </span>
                       <ul className="mt-3 space-y-[7px]">
@@ -163,7 +163,7 @@ export default function DoctorsPage() {
 
                   <Link
                     href={`/about/doctors/${d.slug}`}
-                    className="mt-7 inline-flex items-center gap-2 rounded-lg border-[1.5px] border-brand-300 px-6 py-3 text-[14.5px] font-bold text-brand-700 transition-all hover:-translate-y-0.5 hover:border-brand-400 hover:bg-brand-50"
+                    className="mt-7 inline-flex items-center gap-2 rounded-full border-[1.5px] border-brand-300 px-6 py-3 text-[14.5px] font-bold text-brand-700 transition-all hover:-translate-y-0.5 hover:border-brand-400 hover:bg-brand-50"
                   >
                     {d.name} {d.role} 자세히 <span aria-hidden>→</span>
                   </Link>

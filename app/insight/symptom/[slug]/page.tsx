@@ -146,7 +146,7 @@ export default async function SymptomDetailPage({
             </ul>
             <a
               href={CLINIC.phoneHref}
-              className="mt-7 inline-flex items-center gap-2 rounded-lg bg-brand-700 px-6 py-3 text-[15.5px] font-black text-white transition-colors hover:bg-brand-600"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-[15.5px] font-black text-white transition-colors hover:bg-brand-600"
             >
               {CLINIC.phone} 로 전화
             </a>

@@ -72,7 +72,7 @@ export default function FaqPage() {
           <div className="mt-7 flex flex-wrap gap-3">
             <a
               href={CLINIC.phoneHref}
-              className="rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)]"
+              className="rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)]"
             >
               {CLINIC.phone}
             </a>
@@ -80,7 +80,7 @@ export default function FaqPage() {
               href={CLINIC.booking.naver}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg border border-brand-300 bg-white px-6 py-3 text-[15.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="rounded-full border border-brand-300 bg-white px-6 py-3 text-[15.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
             >
               네이버 예약
             </a>
@@ -88,7 +88,7 @@ export default function FaqPage() {
               href={CLINIC.booking.kakao}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg border border-brand-300 bg-white px-6 py-3 text-[15.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="rounded-full border border-brand-300 bg-white px-6 py-3 text-[15.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
             >
               카카오톡 상담
             </a>

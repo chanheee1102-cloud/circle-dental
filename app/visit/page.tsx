@@ -82,7 +82,7 @@ export default function VisitPage() {
                 </dt>
                 <dd className="mt-2 flex flex-wrap items-center gap-2">
                   <span className="text-[15.5px] font-bold text-ink">{CLINIC.parking.type}</span>
-                  <span className="rounded-lg bg-brand-100 px-3 py-1 text-[12.5px] font-black text-brand-700">
+                  <span className="rounded-full bg-brand-100 px-3 py-1 text-[12.5px] font-black text-brand-700">
                     {CLINIC.parking.fee}
                   </span>
                 </dd>
@@ -98,7 +98,7 @@ export default function VisitPage() {
                 href={CLINIC.booking.naver}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg border border-brand-200 px-5 py-2.5 text-[14px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+                className="rounded-full border border-brand-200 px-5 py-2.5 text-[14px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
               >
                 네이버 예약
               </a>
@@ -106,7 +106,7 @@ export default function VisitPage() {
                 href={CLINIC.booking.kakao}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg border border-brand-200 px-5 py-2.5 text-[14px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+                className="rounded-full border border-brand-200 px-5 py-2.5 text-[14px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
               >
                 카카오톡 상담
               </a>
@@ -129,7 +129,7 @@ export default function VisitPage() {
                     <span className="text-right text-[15.5px] text-ink-soft">
                       {h.time}
                       {h.note && (
-                        <span className="ml-2 rounded-lg bg-gold-500/15 px-2 py-0.5 text-[11.5px] font-black text-gold-600">
+                        <span className="ml-2 rounded-full bg-gold-500/15 px-2 py-0.5 text-[11.5px] font-black text-gold-600">
                           {h.note}
                         </span>
                       )}
@@ -142,7 +142,7 @@ export default function VisitPage() {
               </p>
               <a
                 href={CLINIC.phoneHref}
-                className="mt-6 inline-flex rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
+                className="mt-6 inline-flex rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
               >
                 {CLINIC.phone}
               </a>

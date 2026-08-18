@@ -252,7 +252,7 @@ export function ContactCta({
           <div className="mt-9 flex flex-wrap gap-3">
             <a
               href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 text-[17px] font-black text-brand-700 shadow-lg transition-transform hover:-translate-y-1"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-[17px] font-black text-brand-700 shadow-lg transition-transform hover:-translate-y-1"
             >
               {CLINIC.phone}
             </a>
@@ -267,7 +267,7 @@ export function ContactCta({
               href={CLINIC.booking.naver}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-white/45 px-8 py-4 text-[16.5px] font-bold text-white transition-all hover:-translate-y-1 hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-white/45 px-8 py-4 text-[16.5px] font-bold text-white transition-all hover:-translate-y-1 hover:bg-white/10"
             >
               예약하기
             </a>
@@ -301,7 +301,7 @@ export function CardLink({
         className="absolute -right-14 -top-14 h-32 w-32 rounded-full bg-brand-50 transition-transform duration-500 group-hover:scale-[1.8]"
       />
       {tag && (
-        <span className="relative mb-3.5 inline-flex w-fit rounded-lg bg-brand-100 px-3.5 py-1.5 text-[11.5px] font-black text-brand-700">
+        <span className="relative mb-3.5 inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[11.5px] font-black text-brand-700">
           {tag}
         </span>
       )}

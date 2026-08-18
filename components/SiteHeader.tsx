@@ -220,14 +220,14 @@ export function SiteHeader() {
                 rel="noopener noreferrer"
                 onClick={() => setMobileOpen(false)}
                 aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-b from-brand-500 to-brand-600 px-4 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)]"
+                className="inline-flex items-center justify-center rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-4 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)]"
               >
                 예약하기
               </a>
               <a
                 href={CLINIC.phoneHref}
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-brand-300 bg-white px-4 py-3.5 text-[15.5px] font-black text-brand-700"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-300 bg-white px-4 py-3.5 text-[15.5px] font-black text-brand-700"
               >
                 <PhoneIcon />
                 {CLINIC.phone}
