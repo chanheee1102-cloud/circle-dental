@@ -67,11 +67,18 @@ export function HomeFaqSection() {
           </div>
           </Reveal>
 
-          {/* 오른쪽 — 문답. 첫 항목만 열어 둔다: 여는 방법을 한 번 보여 주면 나머지도 눌린다. */}
+          {/*
+            오른쪽 — 문답. **전부 닫힌 채로 시작한다** (2026-08-18 운영자).
+            첫 항목을 열어 두면 '여는 방법을 보여 준다' 는 뜻이었는데, 실제로는 첫 답이
+            펼쳐진 채라 목록이 한눈에 안 들어온다. 질문 여섯 줄이 나란히 보이는 편이
+            '내 질문이 여기 있나' 를 훑기에 낫다.
+            ⚠️ 접혀 있어도 답은 DOM 에 그대로 있다 — details 는 내용을 지우지 않는다.
+               FAQ 스키마와 화면이 어긋나지 않는 이유다.
+          */}
           <div className="divide-y divide-brand-200/70 border-y border-brand-200/70">
             {items.map((qa, i) => (
               <Reveal key={qa.q} delay={Math.min(i, 5) * 50}>
-              <details className="group" open={i === 0}>
+              <details className="group">
                 <summary className="flex cursor-pointer list-none items-start gap-4 py-6 transition-colors hover:text-brand-700 [&::-webkit-details-marker]:hidden">
                   <span className="mt-0.5 shrink-0 text-[11.5px] font-black tracking-[0.14em] text-gold-600 uppercase">
                     Q {String(i + 1).padStart(2, '0')}

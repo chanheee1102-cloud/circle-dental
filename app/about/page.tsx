@@ -6,6 +6,7 @@ import { CLINIC, TREATMENT_PILLARS, OUTREACH, CREDENTIALS } from '@/lib/clinic';
 import { IMG } from '@/lib/assets';
 import { Container, SectionHead, Breadcrumb, ContactCta } from '@/components/ui';
 import { SpecialGrid } from '@/components/SpecialGrid';
+import { WhyUsSection } from '@/components/WhyUsSection';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema } from '@/lib/seo';
 
@@ -179,6 +180,15 @@ export default function AboutPage() {
           </div>
         </Container>
       </section>
+
+      {/*
+        ★ 홈에서 옮겨 왔다 (2026-08-18 운영자: "메인은 진짜 필요한 것만").
+          '무엇이 다른가' 12가지는 홈에서 1,584px 를 차지했는데, 병원을 이미 들여다보기로
+          한 사람이 읽을 내용이지 처음 훑는 사람에게 들이밀 것이 아니다.
+          이 페이지가 바로 그 '들여다보는' 자리이고, 위의 '다섯 가지 약속' 과도 결이 같다.
+        ⚠️ 홈에서 지운 것이 아니라 **옮긴 것**이다 — 링크는 주 메뉴(병원 소개)로 살아 있다.
+      */}
+      <WhyUsSection />
 
       {/* 사회공헌 — 원문 그대로 */}
       <Container className="py-16">

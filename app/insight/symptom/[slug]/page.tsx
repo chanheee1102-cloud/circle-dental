@@ -47,7 +47,7 @@ export default async function SymptomDetailPage({
 
   const trail = [
     { name: '홈', path: '/' },
-    { name: '인사이트', path: '/insight' },
+    { name: '미리 알아두기', path: '/insight' },
     { name: '증상으로 찾기', path: '/insight/symptom' },
     { name: s.short, path: `/insight/symptom/${s.slug}` },
   ];

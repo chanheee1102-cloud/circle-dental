@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 const TRAIL = [
   { name: '홈', path: '/' },
-  { name: '인사이트', path: '/insight' },
+  { name: '미리 알아두기', path: '/insight' },
   { name: '치료 여정', path: '/insight/journey' },
 ];
 

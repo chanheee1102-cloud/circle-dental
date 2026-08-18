@@ -6,23 +6,19 @@ import {
   UNVERIFIED,
   TREATMENT_PILLARS,
   PUBLICATION,
-  OUTREACH,
 } from '@/lib/clinic';
-import { IMG, OUTREACH_VIDEO } from '@/lib/assets';
+import { IMG } from '@/lib/assets';
 import { heroFacts } from '@/lib/heroFacts';
 import { HeroMedia } from '@/components/HeroMedia';
 import { Reveal } from '@/components/Reveal';
-import { DOCTORS, OUTREACH_PHOTO, OUTREACH_BROADCAST, PUBLICATION_DETAIL } from '@/lib/doctors';
-import { SYMPTOMS } from '@/lib/symptoms';
+import { InteriorSlider } from '@/components/InteriorSlider';
+import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { TREATMENTS } from '@/lib/treatments';
-import { Container, SectionHead, CardLink, ContactCta, Sentences } from '@/components/ui';
-import { ClinicMap } from '@/components/ClinicMap';
+import { Container, SectionHead, ContactCta, Sentences } from '@/components/ui';
 import { CopyButton } from '@/components/CopyButton';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
-import { InteriorSlider } from '@/components/InteriorSlider';
-import { VideoFacade } from '@/components/VideoFacade';
 import { JsonLd } from '@/components/JsonLd';
 import { medicalWebPageSchema, faqSchema, imageObjectSchema } from '@/lib/seo';
 import { CLINIC_QA, HOME_FAQ_COUNT } from '@/lib/faq';
@@ -73,50 +69,64 @@ export default function HomePage() {
         ]}
       />
       {/*
-        ★★ 순서 재설계 (2026-08-14 운영자: "중요한 것부터, 질문·진료 목록은 좀 내리자") ★★
+        ★★ 홈에 남길 것만 남긴다 (2026-08-18 운영자: "진짜 필요한 내용만") ★★
 
-        예전 순서는 진료(PillarSection·CareList)가 2·3번이었다. AEO 를 생각하면 시술명이
-        위에 있는 게 유리해 보이지만, **사람은 그 순서로 읽지 않는다.**
-        병원을 처음 보는 사람은 "무슨 치료 하나" 보다 "여기 믿을 만한가" 를 먼저 판단한다.
-        그 판단이 서기 전에는 시술 목록이 아무리 길어도 눈에 안 들어온다.
+          13,434px 를 재 보니 열한 섹션이 5~15%씩 고르게 차지하고 있었다. 고르다는 것은
+          **무엇이 중요한지 화면이 말해 주지 않는다**는 뜻이다. 처음 온 사람이 결정하는 데
+          필요한 것만 남기고 나머지는 이미 있는 전용 페이지로 넘겼다.
 
-        그래서 **신뢰 → 공감 → 근거 → 구체 → 확인 → 행동** 으로 세웠다.
+            1 Hero       누구이고 지금 갈 수 있는가
+            2 Doctor     누가 보는가 — 병원 선택에서 가장 강한 신호
+            3 Concerns   내 망설임이 여기 있는가
+            4 Pillar     무엇을 하는가 (사진 네 갈래)
+            5 Interior   어떤 공간인가 (자동으로 넘어가는 슬라이드)
+            6 FAQ        궁금증 해소
+            7 Hours      언제·어디로
+            8 Cta        연락
 
-          1 Hero          누구이고 지금 갈 수 있는가
-          2 Doctor        누가 보는가 — 병원 선택에서 가장 강한 신호
-          3 Concerns      내 망설임이 여기 있는가 (아직 결심 안 한 사람을 붙잡는 자리)
-          4 WhyUs         그래서 무엇이 다른가 — 12가지 구체 근거
-          5 Pillar        무엇을 하는가 (사진 네 갈래)
-          6 Interior      어떤 공간인가 (슬라이드)
-          7 Outreach      어떤 곳인가 — 사회공헌
-          8 CareList      진료 영역 전체 (여기부터는 '찾아보는' 구간)
-          9 Symptom       내 증상으로 찾기
-         10 Insight       더 읽을거리
-         11 FAQ           궁금증 해소
-         12 Hours         언제·어디로
-         13 Cta           연락
+          옮긴 것 — WhyUs 12가지 → /about · 사회공헌 → /about(이미 있었음) ·
+                   미리 알아두기 홍보 → 제거 · 지도 → /visit
+          바꾼 것 — 증상으로 찾기 자리를 **병원 둘러보기**로 (2026-08-18 운영자).
+                   증상 입구는 망설임 섹션의 "증상으로 찾아보기" 와 주 메뉴가 맡는다.
 
-        ★ 검색·AI 는 순서보다 **문서에 있는가**를 본다. 아래로 내려도 같은 페이지 안이라
-          인용 가능성은 그대로다. 반대로 사람은 순서에 그대로 영향을 받는다.
-        ★ StrengthSection('특별함 5가지')은 WhyUs 와 같은 말이라 제거했다.
-          원문은 /about 과 /about/special 에 그대로 있다.
+        ★ 검색·AI 는 순서보다 **문서에 있는가**를 본다. 옮긴 내용도 사이트 안에 그대로 있고
+          링크가 살아 있으므로 인용 가능성은 유지된다. 반대로 사람은 순서와 분량에
+          그대로 영향을 받는다.
 
-        ★★ 섹션을 합쳤다가 **되돌렸다** (2026-08-14 운영자) ★★
-          한 번은 13 → 11 로 줄였다. CareList 를 Pillar 안에 칩으로 넣고,
-          Symptom + Insight 를 한 섹션 좌우로 합쳐 13,473 → 11,559px 를 만들었다.
+        ★★ 지난 판단들 (되돌리기 전에 읽을 것) ★★
+          · 섹션을 13 → 11 로 합쳤다가 되돌렸다 — "스크롤 안 줄여도 된다. 퀄리티가 우선."
+            세로로 긴 것은 문제가 아니고 **한 화면에 두 이야기가 눌려 드는 것**이 문제다.
+          · 신뢰 지표 표는 /about/trust, 진행 절차는 /about/process 가 맡는다.
+          · 진료 열 줄 목록은 /treatment 가 맡는다.
+          ⚠️ 위 셋을 홈으로 다시 가져오지 말 것 (가져오려면 운영자 GO 필요).
+      */}
+      {/*
+        ★★ 홈을 덜어냈다 (2026-08-18 운영자: "진짜 필요한 내용만 남기고 다 다른 페이지로") ★★
 
-          운영자 판단은 **"스크롤 안 줄여도 된다. 퀄리티가 우선"** 이다. 맞는 판단이다 —
-          줄여서 얻은 건 1,900px 인데, 잃은 건 각 주제가 자기 자리를 갖는 구조였다.
-          진료 열 갈래가 칩 한 줄로 눌리고, 증상과 인사이트가 좁은 반 칸씩 나눠 가지면서
-          둘 다 곁다리처럼 보였다. 세로로 긴 것은 사이트에서 문제가 아니다 —
-          **한 화면에 두 가지 이야기가 눌려 들어가는 것**이 문제다.
+          13,434px 를 재 보니 열한 섹션이 5~15%씩 고르게 차지하고 있었다. 고르다는 것은
+          **무엇이 중요한지 화면이 말해 주지 않는다**는 뜻이다. 처음 온 사람이 결정하는 데
+          필요한 것만 남기고 나머지는 이미 있는 전용 페이지로 넘긴다.
 
-          ⚠️ 다시 합치지 말 것 (합치려면 운영자 GO 필요).
+          남긴 것 — 누구이고(Hero) · 누가 보고(Doctor) · 내 망설임이 여기 있고(Concerns) ·
+                   무엇을 하고(Pillar) · 내 증상에서 시작하고(Symptom) ·
+                   자주 묻는 것(FAQ) · 언제 어디로(Hours)
+
+          옮긴 것
+            · WhyUs 12가지 (1,584px)  → /about  (그 페이지가 '무엇이 다른가' 를 다룬다)
+            · 병원 둘러보기 (806px)    → /about/tour  **이미 같은 내용이 있었다**
+            · 사회공헌 (707px)        → /about       **이미 같은 내용이 있었다**
+            · 미리 알아두기 홍보 (678px) → 제거. 바로 위 증상 섹션이 같은 곳(/insight)으로
+                                        보내고 있었다. 한 목적지에 두 섹션은 낭비다.
+            · 지도 (약 550px)         → /visit 에만. 주소·전화는 홈에 남는다.
+
+        ⚠️ 링크는 하나도 안 끊는다. 옮긴 것들은 전부 주 메뉴·푸터에서 닿고,
+           /about 카드에서도 닿는다(아래 재크롤로 확인 — 고아 페이지 0).
+        ⚠️ FAQ 는 남긴다. 홈의 FAQPage 스키마가 그 화면을 근거로 나가므로,
+           섹션을 빼면 스키마도 함께 빼야 한다(app/page.tsx 위 JsonLd 주석 참고).
       */}
       <Hero />
       <DoctorSection />
       <ConcernsSection />
-      <WhyUsSection />
       <PillarSection />
       {/*
         ★★ 신뢰 지표를 /about/trust 로 옮겼다 (2026-08-14 운영자) ★★
@@ -134,8 +144,6 @@ export default function HomePage() {
         ⚠️ 링크는 살아 있다 — 주 메뉴(병원 소개 → 진료 절차), 푸터, 그리고 아래 FAQ 섹션에
            '처음 오시면 어떻게 진행하나요?' 로 걸어 두었다.
       */}
-      <InteriorSection />
-      <OutreachSection />
 
       {/*
         ★★ 진료 영역 열 줄 목록을 /treatment 로 옮겼다 (2026-08-14 운영자) ★★
@@ -145,8 +153,7 @@ export default function HomePage() {
         ⚠️ 링크는 살아 있다 — PillarSection 아래 '전체 진료과목' 버튼과 주 메뉴(진료),
            그리고 헤더 메가메뉴의 진료 목록이 그 길이다.
       */}
-      <SymptomEntry />
-      <InsightPromo />
+      <InteriorSection />
       <HomeFaqSection />
       <HoursSection />
       <ContactCta />
@@ -695,130 +702,16 @@ function DoctorSection() {
 }
 
 /**
- * 증상 진입 — 이 사이트에만 있는 축(AEO 핵심).
+ * 내부 둘러보기 — 실제 병원 사진 갤러리.
  *
- * ★★ 한 번 인사이트와 합쳤다가 되돌렸다 (2026-08-14 운영자) ★★
- *   좌우로 반 칸씩 나눠 가지면 스크롤은 줄지만 **둘 다 곁다리처럼 보인다.**
- *   증상으로 들어오는 사람은 이 사이트에서 가장 중요한 손님이라 자기 화면을 가져야 한다.
- *
- * ★ 카드가 순서대로 떠오른다 — 여섯 개가 한꺼번에 나타나면 어디부터 볼지 알 수 없다.
- *   40ms 씩만 어긋내 '왼쪽 위부터' 라는 것을 몸으로 알려 준다.
+ * ★★ 홈에서 뺐다가 **되돌렸다** (2026-08-18 운영자) ★★
+ *   홈을 덜어내면서 "같은 내용이 /about/tour 에 이미 있다" 는 이유로 지웠는데,
+ *   운영자가 다시 넣기를 원했다. 맞는 판단이다 — 같은 사진이라도 **역할이 다르다.**
+ *   /about/tour 는 찾아 들어가서 보는 자리이고, 홈의 이 슬라이드는 병원을 처음 보는
+ *   사람에게 **공간을 먼저 보여 주는** 자리다. 저절로 넘어가는 움직임 자체가
+ *   "볼 것이 더 있다" 를 알린다.
+ * ⚠️ 다시 지우지 말 것 (지우려면 운영자 GO 필요).
  */
-function SymptomEntry() {
-  const featured = SYMPTOMS.slice(0, 6);
-  return (
-    <section className="relative overflow-hidden border-y border-brand-200/60 bg-brand-50/40 py-24 lg:py-28">
-      {/* 옅은 얼룩 하나 — 넓은 단색 배경은 화면을 납작하게 만든다. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-32 top-1/3 h-[460px] w-[460px] rounded-full bg-brand-100/50 blur-3xl"
-      />
-      <Container className="relative">
-        <Reveal>
-          <SectionHead
-            eyebrow="증상으로 찾기"
-            title={
-              <>
-                병명은 몰라도 됩니다.
-                <br />
-                지금 느끼는 것부터 찾으세요.
-              </>
-            }
-            desc="어떤 치료가 필요한지는 진단의 결과지 출발점이 아닙니다. 증상에서 시작해 가능한 원인과 확인 방법을 정리했습니다."
-          />
-        </Reveal>
-        <div className="mt-12 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((s, i) => (
-            <Reveal key={s.slug} delay={i * 40}>
-              <Link
-                href={`/insight/symptom/${s.slug}`}
-                className="group flex h-full items-center justify-between gap-4 rounded-xl border border-brand-200/70 bg-white px-6 py-5.5 shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
-              >
-                <span className="text-[15.5px] font-bold leading-snug text-ink transition-colors group-hover:text-brand-700">
-                  {s.title}
-                </span>
-                <span
-                  aria-hidden
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-500 transition-all duration-300 group-hover:translate-x-0.5 group-hover:bg-brand-500 group-hover:text-white"
-                >
-                  →
-                </span>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-        <Link
-          href="/insight/symptom"
-          className="group mt-9 inline-flex items-center gap-2 text-[15.5px] font-black text-brand-700"
-        >
-          <span className="border-b-[1.5px] border-transparent transition-colors group-hover:border-brand-700">
-            증상 {SYMPTOMS.length}가지 전체 보기
-          </span>
-          <span aria-hidden className="transition-transform group-hover:translate-x-1">
-            →
-          </span>
-        </Link>
-      </Container>
-    </section>
-  );
-}
-
-/**
- * 인사이트 — 읽을거리 넷.
- *
- * ★ 증상 섹션과 다시 분리했다(위 주석 참고). 여기는 '아직 안 아픈데 알아보는 사람' 자리다.
- * ★ 카드는 왼쪽부터 60ms 씩 어긋내 떠오른다.
- */
-function InsightPromo() {
-  const cards = [
-    {
-      href: '/insight/journey',
-      title: '치료 여정',
-      desc: '임플란트는 몇 번 와야 하는지, 신경치료는 얼마나 걸리는지 회차별로 정리했습니다.',
-      tag: '기간·회차',
-    },
-    {
-      href: '/insight/cost',
-      title: '비용 가이드',
-      desc: '건강보험이 되는 항목과 되지 않는 항목, 65세 임플란트 보험 조건을 설명합니다.',
-      tag: '보험',
-    },
-    {
-      href: '/insight/glossary',
-      title: '용어 사전',
-      desc: '진료실에서 듣는 말을 짧게 풀었습니다. 크라운, 인레이, 치수염 같은 단어들입니다.',
-      tag: '용어',
-    },
-    {
-      href: '/insight/emergency',
-      title: '응급 상황',
-      desc: '치아가 빠졌거나 부러졌을 때, 밤에 참기 힘들 때 지금 할 수 있는 것을 정리했습니다.',
-      tag: '지금 당장',
-    },
-  ];
-  return (
-    <section className="py-24 lg:py-28">
-      <Container>
-        <Reveal>
-          <SectionHead
-            eyebrow="인사이트"
-            title="설명을 미리 읽고 오시면 진료실에서 할 이야기가 달라집니다"
-            desc="진료 시간에 다 담기 어려운 배경 설명을 문서로 정리했습니다."
-          />
-        </Reveal>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.map((c, i) => (
-            <Reveal key={c.href} delay={i * 60} className="h-full">
-              <CardLink {...c} />
-            </Reveal>
-          ))}
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-/** 내부 둘러보기 — 실제 병원 사진 갤러리. */
 function InteriorSection() {
   return (
     <section className="py-24 lg:py-28">
@@ -855,96 +748,6 @@ function InteriorSection() {
   );
 }
 
-/** 사회공헌 — 원문 그대로. */
-function OutreachSection() {
-  return (
-    <section className="border-y border-brand-200/60 bg-gradient-to-br from-brand-700 to-brand-900 py-20 text-white lg:py-24">
-      <Container>
-        {/*
-          ⚠️ 여기에 OUTREACH 두 줄을 다시 늘어놓지 않는다.
-            사진 아래 캡션이 이미 그 두 줄이라 위아래로 **똑같은 문장이 두 번** 나왔다(실측).
-            머리글은 '무엇을 해 왔는가' 한 줄로만 요약하고, 구체는 캡션이 맡는다.
-        */}
-        <Reveal className="text-center">
-          <p className="text-[12.5px] font-black tracking-[0.24em] text-brand-200 uppercase">
-            Circle Dental Clinic
-          </p>
-          <h2 className="display-sm mt-4 text-[28px] sm:text-[34px]">동그라미 치과 사회공헌</h2>
-          <p className="mx-auto mt-6 max-w-2xl text-[16px] leading-[1.85] text-brand-100/85">
-            진료실 밖에서도 해 온 일이 있습니다. 아래 두 장이 그 기록입니다.
-          </p>
-        </Reveal>
-
-        {/*
-          ★ 두 장을 **가로로 나란히** 둔다 (2026-08-14 운영자, 원본 홈페이지도 같은 구성).
-            세로로 쌓으면 두 활동이 별개의 이야기처럼 읽히는데 실제로는 '봉사' 라는 한 갈래다.
-            설명도 사진 바로 아래에 각각 붙여 어느 사진의 이야기인지 헷갈리지 않게 한다.
-          ★ 오른쪽은 방영분 영상이다. 썸네일로 **방영 장면 사진**을 쓴다 —
-            플레이어의 검은 첫 프레임을 두면 무엇을 재생하는지 알 수 없다.
-          ★★ 크기를 줄였다 (2026-08-14 운영자: "사진이랑 영상 크기 좀 줄여줘") ★★
-            컨테이너(1,256px) 를 꽉 채우면 한 장이 604×453px 이라 **사진 두 장이
-            한 화면을 통째로 먹었다.** 여기는 '이런 일도 해 왔다' 를 보여 주는 자리지
-            사진 자체가 주인공인 자리가 아니다.
-            → 폭을 880px 로 묶어 가운데 두고, 비율도 4:3 → 16:11 로 눕혔다.
-              한 장 428×294px — 무슨 사진인지 알아보기에 충분하면서 화면을 뺏지 않는다.
-          ★ 두 칸의 비율을 똑같이 맞춰 아래 설명 줄이 같은 선에서 시작한다.
-          ★ 왼쪽 먼저, 오른쪽이 90ms 뒤에 떠오른다 — 둘이 동시에 나타나면 한 덩어리로 보인다.
-        */}
-        <div className="mx-auto mt-12 grid max-w-[880px] gap-6 md:grid-cols-2">
-          <Reveal className="h-full">
-            <figure>
-              <div className="group overflow-hidden rounded-2xl shadow-[var(--shadow-lift)]">
-                <Image
-                  src={OUTREACH_PHOTO.src}
-                  alt={OUTREACH_PHOTO.alt}
-                  width={880}
-                  height={605}
-                  className="aspect-[16/11] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
-              </div>
-              <figcaption className="mt-4 text-center text-[14.5px] leading-relaxed text-brand-100/85">
-                {OUTREACH[0]}
-              </figcaption>
-            </figure>
-          </Reveal>
-
-          <Reveal delay={90} className="h-full">
-            <figure>
-              <VideoFacade
-                embedSrc={`${OUTREACH_VIDEO.embed}&autoplay=1`}
-                poster={OUTREACH_BROADCAST.src}
-                posterAlt={OUTREACH_BROADCAST.alt}
-                label="TV조선 구조신호 시그널 24회 방영분 재생 — 동그라미치과의원 무료 틀니 제공"
-                ratio="aspect-[16/11]"
-              />
-              <figcaption className="mt-4 text-center text-[14.5px] leading-relaxed text-brand-100/85">
-                {OUTREACH[1]}
-              </figcaption>
-            </figure>
-          </Reveal>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-/**
- * 진료시간 · 오시는 길.
- *
- * ★★ 가독성 재설계 (2026-08-14 운영자: "가독성 가시성 좋게") ★★
- *   두 가지가 문제였다.
- *     ① 시간표에서 **무엇이 다른지**가 안 보였다. 네 줄이 똑같은 무게로 늘어서 있어
- *        '화·목 야간진료' 와 '점심시간(쉬는 시간)' 이 같은 종류로 읽혔다.
- *        점심시간은 **여는 시간이 아니라 닫는 시간**인데 나란히 있으니 헷갈린다.
- *     ② 오른쪽 칸이 라벨·값만 세로로 쌓여 있고 아래가 통째로 비었다.
- *        주소는 이 페이지에서 가장 많이 **복사되는** 값인데 누를 것이 하나도 없었다.
- *
- *   → 시간표는 '진료' 와 '쉬는 시간·휴진' 을 색과 위치로 갈라 놓고,
- *     오른쪽은 주소·전화를 **누를 수 있는 것**으로 바꾸고 빈자리에 오는 방법을 채웠다.
- *
- * ⚠️ 값은 전부 UNVERIFIED.hours / CLINIC 에서 온다. 여기서 시간을 적지 않는다 —
- *    두 곳에 적힌 진료시간은 반드시 어긋나고, 틀린 진료시간은 환자를 헛걸음시킨다.
- */
 function HoursSection() {
   /* 진료하는 시간과 쉬는 시간을 나눈다 — 화면에서 같은 줄에 섞이면 안 되는 두 종류다. */
   const open = UNVERIFIED.hours.display.filter((h) => h.label !== '점심시간');
@@ -953,8 +756,27 @@ function HoursSection() {
   return (
     <section className="border-t border-brand-200/60 bg-brand-50/40 py-24 lg:py-28">
       <Container>
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-14">
-          <div className="min-w-0">
+        {/*
+          ★★ 한 덩이 안에서 **왼쪽 설명 · 오른쪽 표** (2026-08-18 운영자) ★★
+            오늘 이 자리를 네 번 고쳤다. 남기는 이유가 아니라 **버린 이유**를 적어 둔다.
+
+              ① 좌우 2단(진료시간 | 오시는 길)  → 버림. 둘 다 넣으려다 둘 다 좁아졌다.
+                 시간표는 요일과 시간을 양 끝으로 벌려야 읽히는데 폭이 없어 줄이 붙었다.
+              ② 탭으로 하나씩              → 버림. 운영자: "탭으로 나누지 말고."
+              ③ 위아래로 쌓기              → 버림. 폭은 넉넉해졌는데 **너무 길어졌다**
+                 (설명 아래 표, 그 아래 또 설명 아래 카드로 네 덩이가 세로로 늘어섰다).
+              ④ 지금 — 각 덩이 안에서 왼쪽에 제목·설명, 오른쪽에 표·카드.
+                 설명과 표가 **같은 높이를 나눠 쓰므로** 세로가 절반이 되고 폭도 산다.
+
+          ★ 좌우를 5:5 로 나눈다 (2026-08-18 운영자: "너무 비율이 별론데").
+            처음엔 왼쪽을 330px 로 좁게 잡았는데, 오른쪽 표가 과하게 넓어져
+            제목과 표의 무게가 어긋나 보였다. 반씩 나누면 두 덩이가 같은 크기로 읽힌다.
+          ⚠️ 여기서 오른쪽을 더 줄이지 말 것 — 시간표의 요일과 시간이 붙는다.
+            (앞서 "왼쪽을 키우지 말 것" 이라고 적었던 것은 이 수정으로 뒤집혔다.)
+          ⚠️ 좁은 화면에서는 그냥 쌓인다(lg 미만). 한 칸에서 좌우로 나누면 둘 다 못 읽는다.
+        */}
+        <div className="space-y-16 lg:space-y-20">
+                <div className="min-w-0 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-x-14">
             {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
             <SectionHead
               eyebrow="진료시간 안내"
@@ -962,7 +784,7 @@ function HoursSection() {
               desc="평일은 오전 9시 30분에 시작합니다. 화요일과 목요일은 저녁 8시 30분까지 야간 진료를 하고, 토요일은 오후 2시까지 봅니다. 일요일과 공휴일은 쉽니다."
             />
 
-            <div className="mt-9 overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)]">
+            <div className="overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)]">
               {/*
                 ★ 요일과 시간을 **양 끝으로** 벌리지 않고 시간을 크게 세운다.
                   치과 시간표에서 사람이 찾는 것은 요일이 아니라 **시간**이다.
@@ -1019,9 +841,9 @@ function HoursSection() {
                 </div>
               </div>
             </div>
-          </div>
+                </div>
 
-          <div className="min-w-0">
+                <div className="min-w-0 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-x-14">
             {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
             <SectionHead
               eyebrow="오시는 길"
@@ -1029,12 +851,13 @@ function HoursSection() {
               desc={`고양시 덕양구 화정동 ${CLINIC.address.building} 3층입니다. 주차는 ${CLINIC.parking.type}이며 ${CLINIC.parking.fee}입니다.`}
             />
 
+            <div className="min-w-0">
             {/*
               ★★ 주소는 '읽는 값' 이 아니라 '쓰는 값' 이다 ★★
                 택시 앱·카톡·지도 검색창에 붙여 넣으려고 보는 정보인데, 긴 주소를 손으로
                 드래그하는 것은 휴대폰에서 특히 성가시다. 복사 버튼을 옆에 둔다.
             */}
-            <div className="mt-9 rounded-2xl border border-brand-200/70 bg-white p-6 shadow-[var(--shadow-soft)] sm:p-7">
+            <div className="rounded-2xl border border-brand-200/70 bg-white p-6 shadow-[var(--shadow-soft)] sm:p-7">
               <p className="text-[11.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
                 주소
               </p>
@@ -1091,12 +914,34 @@ function HoursSection() {
                 </div>
               </dl>
             </div>
-          </div>
-        </div>
 
-        {/* 지도 — 홈에서 바로 위치를 확인하고 길찾기까지 갈 수 있게 한다. */}
-        <div className="mt-14">
-          <ClinicMap height={400} />
+                  {/*
+                    ⚠️ 지도는 여기 두지 않는다 (2026-08-18 운영자: 홈을 덜어내기).
+                       420px 짜리 지도가 홈에서 두 번째로 큰 덩어리였는데, 같은 지도가
+                       /visit 에 이미 있다. 홈에는 **주소와 전화**만 남기고 길찾기는
+                       아래 버튼으로 넘긴다.
+                    ★ 지도를 뺐으면 **가는 길을 반드시 열어 둬야 한다.** 안 그러면
+                      "여기 있습니다" 로 끝나고 길찾기까지 가는 통로가 사라진다.
+                  */}
+                  <div className="mt-8 flex flex-wrap gap-2.5">
+                    <Link
+                      href="/visit"
+                      className="group inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-[14.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
+                    >
+                      지도 · 길찾기 보기
+                      <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
+                    </Link>
+                    <a
+                      href={CLINIC.phoneHref}
+                      className="inline-flex items-center gap-2 rounded-full border border-brand-300 bg-white px-6 py-3 text-[14.5px] font-black text-brand-700 transition-colors hover:border-brand-400"
+                    >
+                      {CLINIC.phone}
+                    </a>
+                  </div>
+            </div>
+                </div>
         </div>
       </Container>
     </section>
