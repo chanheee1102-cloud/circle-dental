@@ -41,6 +41,19 @@ export function GET() {
     for (const r of UNVERIFIED.hours.rows) {
       lines.push(`  - ${r.day}: ${r.open}–${r.close}${r.note ? ` (${r.note})` : ''}`);
     }
+    /*
+     * 점심시간을 반드시 함께 적는다 (2026-08-18). 이 파일을 읽는 쪽은 사람이 아니라
+     * 답변 엔진이고, 여는 시간만 있으면 "13시에 가도 되나요" 에 그렇다고 답한다.
+     * ⚠️ 토요일은 마감(14:00)이 점심 종료(14:30)보다 일러 해당이 없다 — 그래서 요일을 밝힌다.
+     */
+    const lunch = UNVERIFIED.hours.lunch;
+    if (lunch) {
+      const days = UNVERIFIED.hours.rows
+        .filter((r) => r.open < lunch.start && r.close > lunch.end)
+        .map((r) => r.day)
+        .join(', ');
+      if (days) lines.push(`  - 점심시간(휴진): ${lunch.start}–${lunch.end} — ${days}`);
+    }
   } else {
     // 확인 전에는 시간을 적지 않는다. 추측한 시간이 AI 답변에 인용되면 환자가 헛걸음한다.
     lines.push('- 진료시간: 안내 준비 중 (전화 문의)');

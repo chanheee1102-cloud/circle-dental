@@ -179,12 +179,28 @@ export function clinicSchema() {
   // 진료시간 — 확인된 경우에만 넣는다. 틀린 영업시간은 환자를 헛걸음시킨다.
   //   요일별로 한 줄씩 낸다(월·수·금을 묶어서 내면 크롤러가 못 읽는 형식이 된다).
   if (UNVERIFIED.hours.verified && UNVERIFIED.hours.rows.length > 0) {
-    schema.openingHoursSpecification = UNVERIFIED.hours.rows.map((r) => ({
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: `https://schema.org/${r.day}`,
-      opens: r.open,
-      closes: r.close,
-    }));
+    /**
+     * ★★ 점심시간을 빼고 낸다 (2026-08-18, 운영자 확인 후) ★★
+     *   전에는 09:30–18:30 을 **끊김 없이** 선언했다. 화면에는 점심시간 13:00–14:30 이
+     *   있는데 기계가 읽는 값에는 없어서, 지도 서비스나 AI 가 "지금 여나요" 에
+     *   점심시간에도 '진료 중' 이라고 답했다 — 환자가 헛걸음한다.
+     *
+     * ⚠️ 점심시간이 그날 진료시간 **안에 온전히 들어갈 때만** 쪼갠다.
+     *   토요일은 09:30–14:00 이라 점심 종료(14:30)가 마감보다 늦다. 그대로 쪼개면
+     *   '14:30 부터 14:00 까지' 라는 말이 안 되는 구간이 나온다.
+     *   'HH:MM' 은 사전순 비교가 곧 시각 비교라 문자열 비교로 충분하다.
+     */
+    const lunch = UNVERIFIED.hours.lunch;
+    schema.openingHoursSpecification = UNVERIFIED.hours.rows.flatMap((r) => {
+      const base = { '@type': 'OpeningHoursSpecification', dayOfWeek: `https://schema.org/${r.day}` };
+      if (lunch && r.open < lunch.start && r.close > lunch.end) {
+        return [
+          { ...base, opens: r.open, closes: lunch.start },
+          { ...base, opens: lunch.end, closes: r.close },
+        ];
+      }
+      return [{ ...base, opens: r.open, closes: r.close }];
+    });
   }
 
   // 좌표 — 확인된 경우에만. 틀린 좌표는 지역 검색에 해가 된다.
