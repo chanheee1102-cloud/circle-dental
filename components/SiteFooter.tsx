@@ -40,6 +40,16 @@ export function SiteFooter() {
         <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[240px_repeat(4,minmax(0,1fr))] xl:grid-cols-[300px_repeat(4,minmax(0,1fr))] xl:gap-x-10">
           <div className="sm:col-span-2 lg:col-span-1">
             <LogoLockup tone="light" />
+            {/*
+              ★ 병원 영문명 (2026-08-18). 지어낸 문구가 아니라 CLINIC.nameEn 에 이미 있던
+                정식 영문 표기이고, 로고 이미지 안에도 같은 글자가 들어 있다. 지금까지는
+                기계용 데이터(alternateName)로만 쓰이고 화면에는 한 번도 안 나왔다.
+              ★ 영문 세리프로 쓴다 — 라틴 문자만 있는 자리라 조건에 맞고, 푸터에서
+                한 줄이 결이 다르면 그것만으로 마감이 정돈돼 보인다.
+            */}
+            <p className="display-en mt-4 text-[13px] tracking-[0.22em] text-brand-300/80">
+              {CLINIC.nameEn}
+            </p>
             <p className="mt-5 text-[14px] leading-relaxed text-brand-200/90 lg:max-w-none">
               {CLINIC.description}
             </p>

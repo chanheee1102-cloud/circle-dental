@@ -48,7 +48,9 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
               {/* 번호 — 테두리 원. 병원 이름이 '동그라미'라 이 모티프를 계속 쓴다. */}
               <span
                 aria-hidden
-                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[14px] font-black tabular-nums text-brand-500 transition-colors group-hover:border-gold-500 group-hover:text-gold-600"
+                /* 번호는 영문 세리프 — 라틴 숫자만 있는 자리라 조건에 맞고, 본문 글꼴과
+                   결이 달라 순번이 '장식'이 아니라 '표식'으로 읽힌다(globals.css .display-en). */
+                className="display-en inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[15px] text-brand-500 transition-colors group-hover:border-gold-500 group-hover:text-gold-600"
               >
                 {String(i + 1).padStart(2, '0')}
               </span>
