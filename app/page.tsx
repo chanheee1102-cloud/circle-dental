@@ -617,21 +617,61 @@ function DoctorSection() {
             발표 논문 — 원본도 인증패 아래에 가로로 긴 배너로 뒀다.
             제목만 적어 두면 '있다는 말' 로만 읽히므로 실물 화면을 함께 보여 준다.
           */}
+          {/*
+            ★★ 사진을 오른쪽 상자에 가두지 않고 **면 전체로** 쓴다 (2026-08-18 운영자) ★★
+              원본 홈페이지가 이 자리를 가로로 긴 배너 한 장으로 뒀다. 왼쪽은 흐린 여백,
+              오른쪽에 노트북과 논문이 있는 구도라 **여백 위에 글을 얹으라고 만든 사진**이다.
+              그동안은 이걸 420px 상자에 넣어 노트북만 잘라 보여 줬는데, 그러면 사진이
+              '첨부물' 이 되고 논문은 옆에 적힌 글로만 남는다.
+              배너로 깔면 논문 화면 자체가 근거가 되고, 이 섹션에서 가장 무거운 자리가 된다.
+
+            ★ 큰 화면에서만 글을 사진 위에 얹는다(왼쪽 52%). 좁은 화면에서는 사진 오른쪽의
+              흰 논문 위로 글이 겹쳐 읽을 수 없게 되므로 **어둡게 덮는 정도를 다르게** 준다.
+            ⚠️ 흰 글씨는 `.on-photo` 두 겹 그림자를 함께 쓴다. 이 사진은 흐린 밝은 배경이라
+               덮개만으로는 글자 가장자리가 뭉갠다(globals.css .on-photo 주석).
+          */}
           <div className="mt-12 border-t border-brand-200/70 pt-10">
-            <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-              발표 논문
-            </p>
-            <div className="mt-6 grid gap-7 lg:grid-cols-[1fr_minmax(0,420px)] lg:items-center">
-              <div className="min-w-0">
-                <p className="text-[16px] leading-relaxed font-bold text-ink">
+            <div className="relative overflow-hidden rounded-2xl bg-brand-900">
+              <Image
+                src={PUBLICATION_DETAIL.banner}
+                alt="발표 논문 화면 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment: Two Case Reports"
+                fill
+                loading="lazy"
+                sizes="(max-width: 1024px) 100vw, 1320px"
+                /* 노트북이 오른쪽에 있다 — 좁아질수록 오른쪽을 남기고 왼쪽 여백부터 잘라낸다. */
+                className="object-cover object-right"
+              />
+              {/*
+                덮개를 **두 장으로 나눈다.**
+                ⚠️ 한 요소에 `bg-brand-900/82 lg:bg-gradient-to-r` 를 같이 걸면 안 된다.
+                   앞은 background-color, 뒤는 background-image 라 **서로 다른 속성**이고,
+                   큰 화면에서 둘 다 살아남아 사진 전체가 어두워진다(논문 글씨가 안 보였다).
+                ★ 좁은 화면 — 글이 사진 전체 위에 놓이므로 고르게 덮는다.
+                ★ 큰 화면 — 글은 왼쪽 54%에만 있다. 왼쪽은 짙게, 노트북이 있는 오른쪽은
+                  완전히 비운다. 멈춤 위치를 직접 적는 이유는 to-transparent 만으로는
+                  가운데가 70%쯤 덮여 논문이 회색으로 뭉개지기 때문이다.
+              */}
+              <div aria-hidden className="absolute inset-0 bg-brand-900/82 lg:hidden" />
+              <div
+                aria-hidden
+                className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(34,32,29,0.94)_0%,rgba(34,32,29,0.88)_34%,rgba(34,32,29,0.45)_54%,rgba(34,32,29,0)_70%)]"
+              />
+
+              <div className="relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
+                <p className="on-photo flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-gold-400 uppercase">
+                  <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-400" />
+                  발표 논문
+                </p>
+                <p className="on-photo mt-5 text-[17px] leading-[1.55] font-bold text-white sm:text-[19px]">
                   {PUBLICATION_DETAIL.title}
                 </p>
-                <p className="mt-2.5 text-[13.5px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
-                <div className="mt-7 flex flex-wrap gap-2.5">
+                <p className="on-photo mt-3 text-[13.5px] text-brand-200">
+                  {PUBLICATION_DETAIL.authors}
+                </p>
+                <div className="mt-8 flex flex-wrap gap-2.5">
                   <Link
                     href="/about/trust"
-                    className="group inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-[14.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
+                    className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-[14.5px] font-black text-brand-800 shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
                   >
                     근거 · 인증 전체 보기
                     <span aria-hidden className="transition-transform group-hover:translate-x-1">
@@ -640,23 +680,11 @@ function DoctorSection() {
                   </Link>
                   <Link
                     href="/about/doctors"
-                    className="inline-flex items-center gap-2 rounded-full border border-brand-300 bg-white px-6 py-3 text-[14.5px] font-black text-brand-700 transition-colors hover:border-brand-400"
+                    className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-white/45 px-6 py-3 text-[14.5px] font-black text-white transition-colors hover:bg-white/10"
                   >
                     의료진 소개
                   </Link>
                 </div>
-              </div>
-
-              <div className="relative aspect-[768/430] overflow-hidden rounded-xl border border-brand-200/70 bg-white">
-                <Image
-                  src={PUBLICATION_DETAIL.image}
-                  alt="발표 논문 화면 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment"
-                  fill
-                  loading="lazy"
-                  sizes="(max-width: 1024px) 100vw, 420px"
-                  /* 원본은 위 60%가 흐린 배경이고 노트북·논문이 아래쪽에 있다 — 아래를 기준으로 자른다. */
-                  className="object-cover object-bottom"
-                />
               </div>
             </div>
           </div>
