@@ -15,6 +15,7 @@ import { CLINIC } from '@/lib/clinic';
  */
 export function QuickMenu() {
   const [showTop, setShowTop] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
@@ -22,6 +23,14 @@ export function QuickMenu() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  /* 열어 둔 채로 다른 데를 볼 일은 없다 — Esc 로 닫는다. */
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
   return (
     <>
@@ -41,43 +50,65 @@ export function QuickMenu() {
           ★ 전화를 맨 아래(엄지에 가장 가까운 자리)에 두고 색을 채운다 —
             급한 사람이 가장 많이 누르는 버튼이다.
       */}
+      {/*
+        ★★ 떠 있는 버튼 셋 → 접히는 QUICK 레일 (2026-08-18 운영자, 참고 화면 제공) ★★
+
+          직전 판은 카톡·예약·전화 세 개가 **항상 떠 있었다.** 위 주석이 레일을 걷어낸
+          이유(본문을 가린다)가 규모만 줄어든 채 그대로 남아 있던 셈이다.
+          이제 평소에는 동그란 QUICK 하나만 있고, 누르면 세로 레일이 올라온다.
+          국내 병원 사이트에서 가장 익숙한 형태이고, 접혀 있을 때 가리는 면적이 56px 짜리
+          원 하나로 줄어든다.
+
+        ★ 접힌 상태에서 항목 넷을 다 넣어도 비용이 0 이라 **오시는 길을 되살렸다.**
+          '읽는 정보라 헤더에 있다' 는 앞의 판단은 항상 떠 있을 때 이야기다.
+        ★ 맨 위로 버튼은 **자리를 늘 비워 둔다.** 스크롤 600px 에서 나타날 때
+          없던 자리가 생기면 아래 정렬이라 QUICK 이 통째로 위로 튄다(실제로 튀었다).
+          그래서 `hidden` 이 아니라 투명도로만 감춘다.
+        ⚠️ 접힘은 `visibility` 로 한다 — `opacity-0` 만 쓰면 안 보이는 링크에 Tab 이 들어간다.
+      */}
       <aside
-        className="fixed right-5 bottom-7 z-40 hidden flex-col items-end gap-3 lg:flex"
+        className="fixed right-5 bottom-7 z-40 hidden flex-col items-center gap-3 lg:flex"
         aria-label="빠른 연락"
       >
-        {showTop && (
-          <button
-            type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            aria-label="맨 위로"
-            className="group mb-1 flex h-12 w-12 items-center justify-center rounded-full border border-brand-200 bg-white/95 text-brand-700 shadow-[var(--shadow-lift)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-brand-400"
-          >
-            <span aria-hidden className="text-[15px] leading-none transition-transform group-hover:-translate-y-0.5">
-              ↑
-            </span>
-          </button>
-        )}
+        <div
+          id="quick-rail"
+          className={`flex w-[74px] flex-col items-center overflow-hidden rounded-full bg-gradient-to-b from-brand-600 to-brand-800 py-3 text-white shadow-[var(--shadow-lift)] transition-all duration-300 ${
+            open ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-3 opacity-0'
+          }`}
+        >
+          <RailItem href={CLINIC.phoneHref} label="전화상담" icon={<PhoneIcon />} />
+          <RailItem href={CLINIC.booking.naver} label="네이버예약" external icon={<CalendarIcon />} />
+          <RailItem href={CLINIC.booking.kakao} label="카카오상담" external icon={<ChatIcon />} />
+          <RailItem href="/visit" internal label="오시는 길" icon={<PinIcon />} />
+        </div>
 
-        <Fab
-          href={CLINIC.booking.kakao}
-          label="카톡 상담"
-          external
-          className="border border-brand-200 bg-white/95 text-ink"
-          icon={<KakaoIcon />}
-        />
-        <Fab
-          href={CLINIC.booking.naver}
-          label="예약하기"
-          external
-          className="border border-brand-200 bg-white/95 text-ink"
-          icon={<NaverIcon />}
-        />
-        <Fab
-          href={CLINIC.phoneHref}
-          label={CLINIC.phone}
-          className="bg-gradient-to-b from-brand-600 to-brand-700 text-white shadow-[var(--shadow-btn)]"
-          icon={<PhoneIcon />}
-        />
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="quick-rail"
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-900 text-[11.5px] font-black tracking-[0.06em] text-white shadow-[var(--shadow-lift)] transition-transform hover:-translate-y-0.5"
+        >
+          {open ? '닫기' : 'QUICK'}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="맨 위로"
+          aria-hidden={!showTop}
+          tabIndex={showTop ? 0 : -1}
+          className={`group flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-b from-brand-500 to-brand-700 text-white shadow-[var(--shadow-lift)] transition-all hover:-translate-y-0.5 ${
+            showTop ? 'visible opacity-100' : 'invisible opacity-0'
+          }`}
+        >
+          <span
+            aria-hidden
+            className="text-[15px] leading-none transition-transform group-hover:-translate-y-0.5"
+          >
+            ↑
+          </span>
+        </button>
       </aside>
 
       {/* 모바일 — 하단 고정 바. 엄지가 닿는 위치라 전환의 대부분이 여기서 난다. */}
@@ -170,41 +201,74 @@ function NaverIcon() {
 }
 
 /**
- * 떠 있는 동작 버튼 하나.
+ * QUICK 레일의 항목 하나 — 아이콘 위, 이름 아래.
  *
- * ★ 평소에는 동그란 아이콘, 마우스를 올리면 이름이 옆으로 펼쳐진다.
- *   항상 이름을 펼쳐 두면 셋이 나란히 큰 면적을 차지해 결국 본문을 가린다 —
- *   레일을 걷어낸 이유를 그대로 되풀이하는 셈이다.
- * ⚠️ 이름은 **DOM 에 항상 있다.** 폭만 0 으로 접는다 — 스크린리더와 검색엔진은
- *    그대로 읽는다. `aria-label` 로만 두면 화면에 이름이 아예 없는 버튼이 된다.
- * ⚠️ `overflow-hidden` 없이 폭을 접으면 글자가 삐져나온다.
+ * ★ 이름을 **항상 글자로 보여 준다.** 직전 판은 마우스를 올려야 이름이 펼쳐졌는데,
+ *   레일 안에서는 그럴 이유가 없다(폭이 이미 고정이다). 아이콘만 있는 버튼은
+ *   무엇인지 눌러 봐야 아는 버튼이다.
+ * ★ 레일 아이콘은 **단색 선**으로 통일한다. 네이버 초록·카카오 노랑을 갈색 그라데이션
+ *   위에 얹으면 스티커를 붙인 것처럼 보인다. 색이 든 원본 아이콘은 흰 바탕인
+ *   모바일 하단 바에 그대로 남아 있다.
  */
-function Fab({
+function RailItem({
   href,
   label,
   icon,
-  className,
   external,
+  internal,
 }: {
   href: string;
   label: string;
   icon: React.ReactNode;
-  className: string;
   external?: boolean;
+  internal?: boolean;
 }) {
+  const cls =
+    'flex w-full flex-col items-center gap-1.5 px-1 py-3 text-[11px] font-bold text-white/80 transition-colors hover:text-white';
+  const body = (
+    <>
+      <span aria-hidden className="flex h-6 w-6 items-center justify-center">
+        {icon}
+      </span>
+      {label}
+    </>
+  );
+
+  if (internal) {
+    return (
+      <Link href={href} className={cls}>
+        {body}
+      </Link>
+    );
+  }
   return (
     <a
       href={href}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      title={label}
-      className={`group flex h-14 items-center gap-0 rounded-full px-4 shadow-[var(--shadow-lift)] backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:gap-3 hover:pr-6 ${className}`}
+      className={cls}
     >
-      <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center">
-        {icon}
-      </span>
-      <span className="max-w-0 overflow-hidden text-[15px] font-black whitespace-nowrap opacity-0 transition-all duration-300 group-hover:max-w-[10rem] group-hover:opacity-100">
-        {label}
-      </span>
+      {body}
     </a>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg width="21" height="21" viewBox="0 0 20 20" fill="none" aria-hidden>
+      <rect x="3" y="4.6" width="14" height="12.4" rx="2.2" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M3 8.4h14M7 3.2v2.8M13 3.2v2.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+function ChatIcon() {
+  return (
+    <svg width="21" height="21" viewBox="0 0 20 20" fill="none" aria-hidden>
+      <path
+        d="M10 3.6c3.6 0 6.5 2.3 6.5 5.2 0 2.9-2.9 5.2-6.5 5.2-.5 0-1-.04-1.4-.12L5.2 16.2l.7-2.7C4.4 12.6 3.5 11.1 3.5 8.8c0-2.9 2.9-5.2 6.5-5.2Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
