@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { TREATMENTS, treatmentBySlug } from '@/lib/treatments';
 import { symptomBySlug } from '@/lib/symptoms';
 import { IMPLANT_TOPICS } from '@/lib/implantTopics';
+import { journeyForTreatment } from '@/lib/insight';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import {
   Container,
@@ -15,7 +16,7 @@ import {
   Sentences,
 } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage, withLocality } from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, firstSentence } from '@/components/article';
 import { REFS_TREATMENT } from '@/lib/references';
 import { ComparisonTable } from '@/components/ComparisonTable';
@@ -40,13 +41,19 @@ export async function generateMetadata({
   const { slug } = await params;
   const t = treatmentBySlug(slug);
   if (!t) return {};
+  /*
+   * ★ 메타 설명에만 지역을 붙인다 (2026-08-18). 카드에 쓰는 t.summary 자체는 안 건드린다 —
+   *   /treatment 목록에서 열 줄이 전부 '…화정동 동그라미치과의원입니다' 로 끝나면 읽기 싫어진다.
+   *   지역이 필요한 곳은 검색 결과이지 화면이 아니다.
+   */
+  const desc = withLocality(t.summary);
   return {
     title: t.name,
-    description: t.summary,
+    description: desc,
     alternates: { canonical: `/treatment/${t.slug}` },
     openGraph: og({
       title: `${t.name} | 동그라미치과`,
-      description: t.summary,
+      description: desc,
       path: `/treatment/${t.slug}`,
     }),
   };
@@ -68,6 +75,8 @@ export default async function TreatmentDetailPage({
   ];
 
   const related = t.relatedSymptoms.map(symptomBySlug).filter(Boolean);
+  /* 여정은 slug 로 맞춘다 — lib/insight.ts journeyForTreatment 주석 참고. */
+  const journey = journeyForTreatment(t.slug);
 
   const TPATH = `/treatment/${t.slug}`;
   /** 대표 이미지 — 사진이 없는 문서는 그 페이지 전용 공유 카드를 쓴다(lib/seo.ts pageImage 주석). */
@@ -223,6 +232,31 @@ export default async function TreatmentDetailPage({
                   </Link>
                 ))}
               </div>
+            </Container>
+          </section>
+        )}
+
+        {/*
+          ★★ 치료 여정으로 잇는다 (2026-08-18 내부 링크 전수 조사) ★★
+            치료 여정 8개 중 7개가 들어오는 링크 하나(허브 목록)뿐이었다. 데이터에 진료 ↔ 여정
+            대응이 이미 있는데 진료 페이지 쪽에서 아무도 안 읽고 있었다.
+          ★ "몇 번 와야 하나요" 는 이 페이지를 읽는 사람이 바로 다음에 하는 질문이라
+            자리도 여기가 맞다. 여정이 없는 진료(스케일링·소아)는 아무것도 그리지 않는다.
+        */}
+        {journey && (
+          <section className="border-t border-brand-100 bg-brand-50/40 py-14">
+            <Container>
+              <h2 className="text-[20px] font-black text-ink">몇 번에 걸쳐 어떻게 진행되나요?</h2>
+              <p className="mt-2 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
+                {journey.answer}
+              </p>
+              <Link
+                href={`/insight/journey/${journey.slug}`}
+                className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-300 bg-white px-6 py-3 text-[15px] font-bold text-brand-700 transition-colors hover:border-brand-500"
+              >
+                {t.name} 치료 여정 — 내원 {journey.visits} · {journey.duration}
+                <span aria-hidden>→</span>
+              </Link>
             </Container>
           </section>
         )}
