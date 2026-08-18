@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CLINIC } from '@/lib/clinic';
 
 /**
@@ -15,7 +15,22 @@ import { CLINIC } from '@/lib/clinic';
  */
 export function QuickMenu() {
   const [showTop, setShowTop] = useState(false);
-  const [open, setOpen] = useState(false);
+  /**
+   * 열림 상태가 둘이다.
+   *   hovering — 마우스나 포커스가 올라와 있는 동안만.
+   *   pinned   — 눌러서 고정한 것. 마우스가 떠나도 유지된다.
+   * ★ 둘을 합치는 이유: 마우스로 열어 두고 다른 곳을 보다가 돌아오는 사람과,
+   *   눌러서 붙박아 두려는 사람이 서로를 방해하지 않는다.
+   */
+  const [hovering, setHovering] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const open = hovering || pinned;
+  /** 진짜 hover 가 되는 기기인가. 터치에서 hover 로 열면 곧바로 click 이 와서 닫힌다. */
+  const canHover = useRef(false);
+
+  useEffect(() => {
+    canHover.current = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
@@ -27,7 +42,7 @@ export function QuickMenu() {
   /* 열어 둔 채로 다른 데를 볼 일은 없다 — Esc 로 닫는다. */
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const onKey = (e: KeyboardEvent) => { if (e.key !== 'Escape') return; setPinned(false); setHovering(false); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
@@ -69,25 +84,53 @@ export function QuickMenu() {
       <aside
         className="fixed right-5 bottom-7 z-40 hidden flex-col items-center gap-3 lg:flex"
         aria-label="빠른 연락"
+        /*
+          ★★ 마우스를 얹기만 해도 열린다 (2026-08-18 운영자) ★★
+            누르는 동작 하나를 없앤다. 손잡이(QUICK)에 다가가는 것만으로 목적이 드러난다.
+          ★ 핸들러를 **aside 에** 건다. 버튼과 레일 사이에 12px 틈이 있어서 버튼에만 걸면
+            그 틈을 지나는 순간 닫힌다. aside 는 둘을 함께 감싸므로 이동 중에도 안 닫힌다.
+          ⚠️ 터치 기기에서는 걸지 않는다. 화면을 누르면 mouseenter 가 먼저 오고 곧바로
+             click 이 와서 **열자마자 닫힌다.** hover 가 진짜 있는 기기인지 먼저 묻는다.
+          ★ 키보드도 같이 연다 — focus 가 들어오면 열리고 나가면 닫힌다. 안 그러면
+            Tab 으로는 레일 안 링크에 닿을 방법이 없다.
+        */
+        onMouseEnter={() => canHover.current && setHovering(true)}
+        onMouseLeave={() => canHover.current && setHovering(false)}
+        onFocus={() => setHovering(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHovering(false);
+        }}
       >
+        {/*
+          ★ 접힐 때 **자리를 차지하지 않게** max-height 를 0 으로 접는다.
+            visibility 만으로 감추면 상자는 그대로 남아, 아무것도 없는 74×280px 영역이
+            본문 위에 떠서 지나가기만 해도 메뉴가 열린다.
+          ★ 펼칠 때 높이가 자라는 것 자체가 '좌르륵 나오는' 움직임이다. aside 가 아래에
+            고정돼 있어 레일은 **위로** 자란다 — QUICK 버튼은 제자리에 있다.
+          ⚠️ 접힘은 visibility 도 함께 쓴다. max-height:0 만으로는 안 보이는 링크에
+             Tab 이 들어간다.
+        */}
         <div
           id="quick-rail"
-          className={`flex w-[74px] flex-col items-center overflow-hidden rounded-full bg-gradient-to-b from-brand-600 to-brand-800 py-3 text-white shadow-[var(--shadow-lift)] transition-all duration-300 ${
-            open ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-3 opacity-0'
+          className={`flex w-[74px] flex-col items-center overflow-hidden rounded-full bg-gradient-to-b from-brand-600 to-brand-800 text-white shadow-[var(--shadow-lift)] transition-[max-height,opacity,visibility] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            open ? 'visible max-h-[420px] py-3 opacity-100' : 'invisible max-h-0 py-0 opacity-0'
           }`}
         >
-          <RailItem href={CLINIC.phoneHref} label="전화상담" icon={<PhoneIcon />} />
-          <RailItem href={CLINIC.booking.naver} label="네이버예약" external icon={<CalendarIcon />} />
-          <RailItem href={CLINIC.booking.kakao} label="카카오상담" external icon={<ChatIcon />} />
-          <RailItem href="/visit" internal label="오시는 길" icon={<PinIcon />} />
+          {/*
+            항목이 아래(버튼 쪽)에서 위로 차례로 들어온다 — 그래서 지연을 **거꾸로** 준다.
+            버튼에서 손이 올라오는 방향과 같아야 '쏟아져 나온다' 로 읽힌다.
+          */}
+          {RAIL.map((r, i) => (
+            <RailItem key={r.label} {...r} open={open} delay={(RAIL.length - 1 - i) * 55} />
+          ))}
         </div>
 
         <button
           type="button"
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => setPinned((v) => !v)}
           aria-expanded={open}
           aria-controls="quick-rail"
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-900 text-[11.5px] font-black tracking-[0.06em] text-white shadow-[var(--shadow-lift)] transition-transform hover:-translate-y-0.5"
+          className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-900 text-[12.5px] font-black tracking-[0.06em] text-white shadow-[var(--shadow-lift)] transition-transform hover:-translate-y-0.5"
         >
           {open ? '닫기' : 'QUICK'}
         </button>
@@ -155,6 +198,17 @@ export function QuickMenu() {
 }
 
 
+/**
+ * 레일 항목 — 데이터로 둔다. 지연 시간을 순서에서 계산해야 해서 배열이 필요하다.
+ * ⚠️ 순서가 곧 화면 순서다. 전화가 맨 위인 것은 급한 사람이 가장 많이 누르기 때문이다.
+ */
+const RAIL = [
+  { href: CLINIC.phoneHref, label: '전화상담', icon: <PhoneIcon /> },
+  { href: CLINIC.booking.naver, label: '네이버예약', external: true, icon: <CalendarIcon /> },
+  { href: CLINIC.booking.kakao, label: '카카오상담', external: true, icon: <ChatIcon /> },
+  { href: '/visit', label: '오시는 길', internal: true, icon: <PinIcon /> },
+];
+
 function PinIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden>
@@ -216,15 +270,30 @@ function RailItem({
   icon,
   external,
   internal,
+  open,
+  delay,
 }: {
   href: string;
   label: string;
   icon: React.ReactNode;
   external?: boolean;
   internal?: boolean;
+  /** 레일이 펼쳐졌는가. 항목마다 조금씩 늦게 들어오게 하려고 개별로 받는다. */
+  open?: boolean;
+  /** 들어오는 순서(ms). 버튼과 가까운 항목부터 먼저다. */
+  delay?: number;
 }) {
+  /*
+   * ★ 항목이 하나씩 차례로 들어온다 (2026-08-18 운영자: "좌르륵 나오게").
+   *   레일 전체가 통째로 나타나면 '켜졌다' 로 읽히고, 하나씩 밀려 들어오면
+   *   '쏟아져 나왔다' 로 읽힌다. 같은 정보인데 인상이 다르다.
+   * ⚠️ 닫힐 때는 지연을 주지 않는다 — 손이 떠났는데도 잔상이 남으면 굼떠 보인다.
+   *   그래서 delay 는 열릴 때만 건다.
+   */
   const cls =
-    'flex w-full flex-col items-center gap-1.5 px-1 py-3 text-[11px] font-bold text-white/80 transition-colors hover:text-white';
+    'flex w-full flex-col items-center gap-1.5 px-1 py-3 text-[11px] font-bold text-white/80 transition-[color,opacity,transform] duration-300 hover:text-white' +
+    (open ? ' translate-y-0 opacity-100' : ' translate-y-2 opacity-0');
+  const style = { transitionDelay: open ? `${delay ?? 0}ms` : '0ms' };
   const body = (
     <>
       <span aria-hidden className="flex h-6 w-6 items-center justify-center">
@@ -236,7 +305,7 @@ function RailItem({
 
   if (internal) {
     return (
-      <Link href={href} className={cls}>
+      <Link href={href} className={cls} style={style}>
         {body}
       </Link>
     );
@@ -246,6 +315,7 @@ function RailItem({
       href={href}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       className={cls}
+      style={style}
     >
       {body}
     </a>
