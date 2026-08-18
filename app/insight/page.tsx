@@ -78,9 +78,14 @@ export default function InsightHubPage() {
         <div className="mt-8 max-w-[70ch]">
           <ArticleMeta path="/insight" />
         </div>
+        {/*
+          ★ 카드 제목이 h2 다 (2026-08-18). 이 격자 위에 h2 가 따로 없어서 h3 으로 두면
+            h1 → h3 으로 한 단계를 건너뛴다. 게다가 여기 카드 하나하나는 이 허브의
+            **최상위 구획**(증상으로 찾기 · 치료 여정 · 비용 · 용어 · 응급)이라 의미상으로도 h2 가 맞다.
+        */}
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((c) => (
-            <CardLink key={c.href} {...c} />
+            <CardLink key={c.href} {...c} as="h2" />
           ))}
         </div>
       </Container>

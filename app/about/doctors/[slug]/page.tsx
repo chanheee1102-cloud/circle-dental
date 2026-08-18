@@ -154,7 +154,7 @@ export default async function DoctorDetailPage({
                 ))}
               </div>
 
-              <h2 className="display-sm mt-10 text-[18px] text-ink">학력 · 경력</h2>
+              <h2 className="display-sm mt-10 text-[18px] text-ink">어디서 배우고 어디서 일했나요?</h2>
               <ul className="mt-4 space-y-2.5">
                 {d.career.map((c) => (
                   <li key={c} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
@@ -166,7 +166,7 @@ export default async function DoctorDetailPage({
 
               {d.societies.length > 0 && (
                 <>
-                  <h2 className="display-sm mt-9 text-[18px] text-ink">학회 활동</h2>
+                  <h2 className="display-sm mt-9 text-[18px] text-ink">학회 활동은 무엇을 하나요?</h2>
                   <ul className="mt-4 space-y-2.5">
                     {d.societies.map((s) => (
                       <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
@@ -222,7 +222,7 @@ export default async function DoctorDetailPage({
 
         <section className="bg-brand-50/40 py-14">
           <Container>
-            <h2 className="text-[20px] font-black text-ink">다른 의료진</h2>
+            <h2 className="text-[20px] font-black text-ink">다른 의료진은 누가 있나요?</h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {others.map((o) => (
                 <Link

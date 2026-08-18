@@ -177,7 +177,7 @@ export default function DoctorsPage() {
       {/* 인증·수료 */}
       <section className="border-y border-brand-200/60 bg-white py-16">
         <Container>
-          <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">인증 · 수료</h2>
+          <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">어떤 인증과 수료를 받았나요?</h2>
           {/*
             ★ 라벨을 `CREDENTIALS[i]` 로 가져오지 않는다.
               이미지 배열과 문구 배열을 인덱스로 짝지으면 한쪽 순서만 바뀌어도 전부 어긋나는데

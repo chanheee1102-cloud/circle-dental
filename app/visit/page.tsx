@@ -49,7 +49,7 @@ export default function VisitPage() {
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {/* 위치 */}
           <div className="rounded-2xl border border-brand-100 bg-white p-8">
-            <h2 className="text-[18px] font-black text-ink">위치</h2>
+            <h2 className="text-[18px] font-black text-ink">어디에 있나요?</h2>
             <dl className="mt-6 space-y-5">
               <div>
                 <dt className="text-[12px] font-black tracking-[0.14em] text-ink-muted uppercase">주소</dt>
@@ -115,7 +115,7 @@ export default function VisitPage() {
 
           {/* 진료시간 */}
           <div className="rounded-2xl border border-brand-100 bg-white p-8">
-            <h2 className="text-[18px] font-black text-ink">진료시간</h2>
+            <h2 className="text-[18px] font-black text-ink">언제 진료하나요?</h2>
             <div className="mt-6">
               <ul className="divide-y divide-brand-100">
                 {UNVERIFIED.hours.display.map((h) => (
@@ -152,7 +152,7 @@ export default function VisitPage() {
 
         {/* 지도 — 확대·축소·드래그 가능. 아래에 네이버·카카오 길찾기 버튼이 함께 붙는다. */}
         <div className="mt-8">
-          <h2 className="display-sm text-[22px] text-ink">지도</h2>
+          <h2 className="display-sm text-[22px] text-ink">어떻게 찾아가나요?</h2>
           <p className="mt-2.5 text-[14.5px] leading-relaxed text-ink-soft">
             길찾기는 아래 네이버 지도나 카카오맵 버튼을 눌러 주세요. 대중교통 경로와 로드뷰까지 함께
             확인하실 수 있습니다.

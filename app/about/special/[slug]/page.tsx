@@ -28,9 +28,14 @@ export async function generateMetadata({
    *   body 한 줄만 쓰면 항목에 따라 42자밖에 안 돼 검색 결과에서 한 줄로 끝난다
    *   (실측: digital-diagnosis 42자). 45자 미만은 스니펫으로서 제 역할을 못 한다.
    *   ⚠️ 새 문장을 짓지 않는다 — 본문에 이미 있는 context 의 소제목을 그대로 잇는다.
+   *
+   * ★ 기준을 60 → 80 으로 올렸다 (2026-08-18 전수 재측정).
+   *   60 이면 hygiene 이 **정확히 60자**라 아슬아슬하게 통과해 그대로 짧게 나갔다.
+   *   본문 길이(42·52·60·79·92)를 보면 80 이 다섯 항목을 자연스럽게 가른다 —
+   *   79자 이하는 이어 붙이고, 92자짜리 medical-team 만 그대로 둔다.
    */
   const description =
-    s.body.length >= 60 ? s.body : `${s.body}. ${s.context.map((c) => c.h).slice(0, 2).join(', ')} 등을 정리했습니다.`;
+    s.body.length >= 80 ? s.body : `${s.body}. ${s.context.map((c) => c.h).slice(0, 2).join(', ')} 등을 정리했습니다.`;
   return {
     title: s.title,
     description,

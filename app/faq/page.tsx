@@ -10,8 +10,9 @@ import { breadcrumbSchema, faqSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '자주 묻는 질문',
+  /* 66자였다 — 있는 사실(진료시간·예약 경로·지역)만으로 늘렸다(2026-08-18). */
   description:
-    '임플란트 기간, 신경치료 회차, 사랑니 발치, 잇몸치료 보험 적용까지. 동그라미치과에 자주 들어오는 질문을 모았습니다.',
+    '임플란트 기간, 신경치료 회차, 사랑니 발치, 잇몸치료 보험 적용까지. 진료시간과 예약 방법도 함께 정리했습니다. 경기 고양시 덕양구 화정동, 화정역 인근 동그라미치과의원입니다.',
   alternates: { canonical: '/faq' },
 };
 

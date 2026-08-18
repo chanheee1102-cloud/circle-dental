@@ -278,17 +278,28 @@ export function ContactCta({
   );
 }
 
-/** 카드 링크 — 목록 화면에서 반복 사용. */
+/**
+ * 카드 링크 — 목록 화면에서 반복 사용.
+ *
+ * ★★ 제목 레벨을 밖에서 정할 수 있어야 한다 (2026-08-18 전수 검사에서 발견) ★★
+ *   h3 로 못 박혀 있었는데, 카드 격자 위에 h2 가 없는 페이지(/insight)에서는
+ *   **h1 → h3 으로 한 단계를 건너뛰게** 된다. 네이버 서치어드바이저가 헤딩 위계를
+ *   진단 항목으로 보고, AI 에게도 문서 구조를 흐리는 요소다.
+ *   ⚠️ 값을 정할 때 규칙은 하나다 — **바로 위 헤딩보다 정확히 한 단계 아래.**
+ *     보기 좋으라고 고르는 값이 아니다(크기는 클래스가 정한다).
+ */
 export function CardLink({
   href,
   title,
   desc,
   tag,
+  as: Heading = 'h3',
 }: {
   href: string;
   title: string;
   desc: string;
   tag?: string;
+  as?: 'h2' | 'h3' | 'h4';
 }) {
   return (
     <Link
@@ -305,7 +316,9 @@ export function CardLink({
           {tag}
         </span>
       )}
-      <h3 className="display-sm relative text-[18px] text-ink group-hover:text-brand-700">{title}</h3>
+      <Heading className="display-sm relative text-[18px] text-ink group-hover:text-brand-700">
+        {title}
+      </Heading>
       <p className="relative mt-3 flex-1 text-[14.5px] leading-[1.8] text-ink-soft">{desc}</p>
       <span className="relative mt-5 inline-flex items-center gap-2 text-[13.5px] font-black text-brand-700">
         자세히 보기

@@ -10,7 +10,8 @@ import { breadcrumbSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '병원 둘러보기',
-  description: `${CLINIC.name} 내부 사진입니다. 상담실, 진료실, 대기 공간을 미리 보실 수 있습니다. ${CLINIC.address.dong} 현창빌딩 3층.`,
+  /* 62자였다 — 검색 결과에서 쓸 수 있는 자리를 절반도 안 썼다. 있는 사실만으로 늘렸다(2026-08-18). */
+  description: `${CLINIC.name} 내부 사진입니다. 대기 공간, 상담실, 진료실, 소독실을 미리 보실 수 있습니다. 처음 오시는 분이 어떤 곳인지 미리 확인하시도록 실제 사진만 올렸습니다. 경기 ${CLINIC.address.locality} ${CLINIC.address.dong} 현창빌딩 3층, 화정역 인근입니다.`,
   alternates: { canonical: '/about/tour' },
 };
 

@@ -22,6 +22,14 @@ import { headingId } from '@/components/article';
  *   원장이 늘거나 인증이 추가되면 화면이 저절로 따라온다.
  */
 export function TrustSection({ headless = false }: { headless?: boolean }) {
+  /**
+   * ★★ headless 면 소제목이 h2 가 된다 (2026-08-18 전수 검사에서 발견) ★★
+   *   headless 는 아래 섹션 제목(h2)을 지우는데, 소제목은 h3 로 고정돼 있어서
+   *   /about/trust 에서 **h1 → h3 으로 한 단계를 건너뛰었다.**
+   *   위 헤딩이 사라지면 아래 헤딩도 한 칸 올라가야 위계가 맞는다.
+   *   ⚠️ 크기는 클래스가 정한다 — 태그를 바꿔도 화면은 그대로다.
+   */
+  const Q = headless ? 'h2' : 'h3';
   return (
     <section className={headless ? 'pb-20' : 'border-y border-brand-200/60 bg-white py-24 lg:py-28'}>
       <Container>
@@ -69,12 +77,12 @@ export function TrustSection({ headless = false }: { headless?: boolean }) {
                넘친 것은 표가 아니라 표를 담은 칸이었다.
           */}
           <div className="min-w-0">
-            <h3
+            <Q
               id={headingId('인증과 자격은 어디서 받았나요')}
               className="scroll-mt-28 text-[19px] font-black text-ink"
             >
               인증과 자격은 어디서 받았나요?
-            </h3>
+            </Q>
             <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
               발급처를 함께 적었습니다. &lsquo;수료증 4건&rsquo;은 인상이지만 &lsquo;세계근관치료학회가 준
               수료증&rsquo;은 확인할 수 있는 사실입니다.
@@ -117,12 +125,12 @@ export function TrustSection({ headless = false }: { headless?: boolean }) {
           {/* ── 논문 · 언론 · 접근성 ── */}
           <div className="min-w-0 space-y-8">
             <div>
-              <h3
+              <Q
                 id={headingId('학술 활동이 있나요')}
                 className="scroll-mt-28 text-[19px] font-black text-ink"
               >
                 학술 활동이 있나요?
-              </h3>
+              </Q>
               <p className="mt-3 text-[14.5px] leading-relaxed text-ink-soft">
                 대표원장이 공저자로 참여한 논문이 국제 학술지에 실려 있습니다.
               </p>
@@ -136,12 +144,12 @@ export function TrustSection({ headless = false }: { headless?: boolean }) {
 
             {MEDIA_APPEARANCES.length > 0 && (
               <div>
-                <h3
+                <Q
                   id={headingId('방송에 나온 적이 있나요')}
                   className="scroll-mt-28 text-[19px] font-black text-ink"
                 >
                   방송에 나온 적이 있나요?
-                </h3>
+                </Q>
                 <ul className="mt-3 space-y-2.5">
                   {MEDIA_APPEARANCES.map((m) => (
                     <li
@@ -158,12 +166,12 @@ export function TrustSection({ headless = false }: { headless?: boolean }) {
 
             {ACCESS_FACTS.length > 0 && (
               <div>
-                <h3
+                <Q
                   id={headingId('언제 갈 수 있나요')}
                   className="scroll-mt-28 text-[19px] font-black text-ink"
                 >
                   언제 갈 수 있나요?
-                </h3>
+                </Q>
                 <dl className="mt-3 space-y-2">
                   {ACCESS_FACTS.map((f) => (
                     <div key={f.label} className="flex gap-3 text-[14.5px] leading-relaxed">

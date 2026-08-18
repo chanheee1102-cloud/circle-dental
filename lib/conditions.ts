@@ -450,3 +450,22 @@ export const CONDITIONS: Condition[] = [
 ];
 
 export const conditionBySlug = (slug: string) => CONDITIONS.find((c) => c.slug === slug);
+
+/**
+ * 이 증상에서 이어질 수 있는 질환들 — **위 관계를 거꾸로 읽는다.**
+ *
+ * ★★ 왜 필요했나 (2026-08-18 내부 링크 전수 조사) ★★
+ *   질환 페이지 15개가 전부 **들어오는 링크 하나**(허브 목록)뿐이었다. 이유는 단순하다 —
+ *   질환은 `relatedSymptoms` 로 증상을 가리키는데 **증상 쪽에는 질환을 가리키는 필드가 없어서**
+ *   화살표가 한 방향으로만 나 있었다.
+ *
+ * ★★ 데이터를 새로 만들지 않는다 ★★
+ *   증상마다 '관련 질환' 을 손으로 채우면 그 순간 **추측이 섞인다** — 어떤 증상이 어떤 질환에서
+ *   오는가는 의학적 판단이고 지어낼 수 있는 값이 아니다. 대신 이미 확인해서 적어 둔
+ *   `relatedSymptoms` 를 뒤집는다. 같은 관계를 반대에서 읽는 것이라 새 사실이 0 이다.
+ *
+ * ★ 43개 엣지가 증상 21개를 덮는다. 나머지 증상에는 이 목록이 비어 아무것도 렌더하지 않는다 —
+ *   억지로 채우지 않는 편이 맞다.
+ */
+export const conditionsForSymptom = (symptomSlug: string) =>
+  CONDITIONS.filter((c) => c.relatedSymptoms.includes(symptomSlug));

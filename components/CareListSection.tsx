@@ -27,8 +27,15 @@ import { Reveal } from '@/components/Reveal';
  *
  * @param headless 페이지가 이미 자기 제목(h1)을 갖고 있을 때 섹션 제목을 생략한다.
  *                 제목이 둘이면 무엇이 이 페이지의 주제인지 기계가 판단하지 못한다.
+ *
+ * ★★ headless 면 진료명이 h2 가 된다 (2026-08-18 전수 검사에서 발견) ★★
+ *   headless 는 이 컴포넌트의 h2(섹션 제목)를 지우는데, 진료명은 h3 로 고정돼 있어서
+ *   /treatment 에서 **h1 → h3 으로 한 단계를 건너뛰었다.** 위 헤딩이 사라지면
+ *   아래 헤딩도 한 칸 올라가야 위계가 맞는다.
+ *   ⚠️ 크기는 클래스가 정한다. 태그를 바꿔도 화면은 그대로다.
  */
 export function CareListSection({ headless = false }: { headless?: boolean } = {}) {
+  const Name = headless ? 'h2' : 'h3';
   const list = (
     <ul className="border-t border-brand-200/70">
       {TREATMENTS.map((t, i) => (
@@ -47,9 +54,9 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
               </span>
 
               <div className="min-w-0">
-                <h3 className="display-sm text-[19px] text-ink transition-colors group-hover:text-brand-700 sm:text-[21px]">
+                <Name className="display-sm text-[19px] text-ink transition-colors group-hover:text-brand-700 sm:text-[21px]">
                   {t.name}
-                </h3>
+                </Name>
                 {/*
                   이 진료 페이지에 답이 몇 개 적혀 있는지 — 카드 격자에 있던 값이다.
                   '읽을 것이 있다' 는 신호라 목록으로 옮길 때 함께 가져왔다.

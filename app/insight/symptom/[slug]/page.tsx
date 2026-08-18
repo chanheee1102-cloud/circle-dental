@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SYMPTOMS, symptomBySlug } from '@/lib/symptoms';
 import { treatmentBySlug } from '@/lib/treatments';
+import { conditionsForSymptom } from '@/lib/conditions';
 import { CLINIC } from '@/lib/clinic';
 import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
@@ -52,6 +53,8 @@ export default async function SymptomDetailPage({
   ];
 
   const treatments = s.relatedTreatments.map(treatmentBySlug).filter(Boolean);
+  /* 질환 쪽 relatedSymptoms 를 거꾸로 읽는다 — 증상 데이터에 새 필드를 만들지 않는다. */
+  const conditions = conditionsForSymptom(s.slug);
 
   const SYPATH = `/insight/symptom/${s.slug}`;
   /** 대표 이미지 — 사진이 없는 문서는 그 페이지 전용 공유 카드를 쓴다(lib/seo.ts pageImage 주석). */
@@ -116,7 +119,13 @@ export default async function SymptomDetailPage({
               ]}
             />
             <TableOfContents
-              items={['이럴 때는 미루지 마세요', '가능한 원인', '내원 전에 해볼 수 있는 것']}
+              items={[
+                '어떤 경우에 미루면 안 되나요?',
+                '왜 이런 증상이 생기나요?',
+                '오기 전에 해볼 수 있는 것이 있나요?',
+                /* 질환 목록이 비면 그 소제목도 없다 — 목차에 없는 자리를 걸면 클릭이 죽는다. */
+                ...(conditions.length ? ['어떤 질환일 수 있나요?'] : []),
+              ]}
             />
           </div>
         </Container>
@@ -125,7 +134,7 @@ export default async function SymptomDetailPage({
         <section className="border-y border-gold-400/40 bg-gold-400/8 py-12">
           <Container>
             <h2
-              id={headingId('이럴 때는 미루지 마세요')}
+              id={headingId('어떤 경우에 미루면 안 되나요?')}
               className="flex scroll-mt-28 items-center gap-2.5 text-[19px] font-black text-ink"
             >
               <span
@@ -134,7 +143,7 @@ export default async function SymptomDetailPage({
               >
                 !
               </span>
-              이럴 때는 미루지 마세요
+              어떤 경우에 미루면 안 되나요?
             </h2>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
               {s.urgent.map((u) => (
@@ -155,10 +164,10 @@ export default async function SymptomDetailPage({
 
         <Container className="py-14">
           <h2
-            id={headingId('가능한 원인')}
+            id={headingId('왜 이런 증상이 생기나요?')}
             className="scroll-mt-28 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]"
           >
-            가능한 원인
+            왜 이런 증상이 생기나요?
           </h2>
           <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
             아래는 이 증상에서 흔히 확인되는 원인들입니다. 증상만으로는 어느 쪽인지 특정할 수 없고,
@@ -177,10 +186,10 @@ export default async function SymptomDetailPage({
         <section className="border-t border-brand-100 bg-white py-14">
           <Container>
             <h2
-              id={headingId('내원 전에 해볼 수 있는 것')}
+              id={headingId('오기 전에 해볼 수 있는 것이 있나요?')}
               className="scroll-mt-28 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]"
             >
-              내원 전에 해볼 수 있는 것
+              오기 전에 해볼 수 있는 것이 있나요?
             </h2>
             <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
               증상을 덜어주는 방법이지 원인을 없애는 방법은 아닙니다. 나아진 것처럼 느껴져도 원인은
@@ -202,10 +211,50 @@ export default async function SymptomDetailPage({
           </Container>
         </section>
 
+        {/*
+          ★★ 증상 → 질환 링크 (2026-08-18 내부 링크 전수 조사) ★★
+            질환 페이지 15개가 전부 **들어오는 링크 하나**(허브 목록)뿐이었다. 질환은 증상을
+            가리키는데 증상은 질환을 안 가리켜 화살표가 한 방향으로만 나 있었기 때문이다.
+            환자가 실제로 밟는 길은 "밤에 아픔 → 치수염 → 신경치료" 인데, 그 가운데 칸으로
+            들어가는 길이 없었던 셈이다.
+          ★ 목록은 질환 쪽 relatedSymptoms 를 거꾸로 읽어 만든다 — 새로 지어낸 사실이 0 이다
+            (lib/conditions.ts conditionsForSymptom 주석 참고).
+          ★ 앞의 '왜 이런 증상이 생기나요?' 는 원인을 **설명**하는 자리이고 링크가 없다.
+            여기는 그 원인을 **읽으러 갈 곳**이라 역할이 겹치지 않는다.
+        */}
+        {conditions.length > 0 && (
+          <Container className="py-14">
+            <h2
+              id={headingId('어떤 질환일 수 있나요')}
+              className="scroll-mt-28 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]"
+            >
+              어떤 질환일 수 있나요?
+            </h2>
+            <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
+              이 증상에서 흔히 확인되는 질환입니다. 증상만으로 어느 쪽인지 단정할 수 없으니
+              무엇을 확인하게 되는지 미리 읽어 보시는 정도로 보시면 됩니다.
+            </p>
+            <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {conditions.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/insight/condition/${c.slug}`}
+                  className="group rounded-2xl border border-brand-100 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+                >
+                  <h3 className="text-[17px] font-black text-ink group-hover:text-brand-700">
+                    {c.name}
+                  </h3>
+                  <p className="mt-2.5 text-[14px] leading-relaxed text-ink-soft">{c.definition}</p>
+                </Link>
+              ))}
+            </div>
+          </Container>
+        )}
+
         {treatments.length > 0 && (
           <Container className="py-14">
             <h2 className="text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]">
-              이어지는 치료
+              어떤 치료로 이어지나요?
             </h2>
             <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {treatments.map((t) => (
