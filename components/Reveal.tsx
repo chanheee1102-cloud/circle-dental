@@ -1,7 +1,3 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
-
 /**
  * 화면에 들어올 때 한 번 떠오르는 래퍼.
  *
@@ -10,9 +6,18 @@ import { useEffect, useRef, useState } from 'react';
  *   페이지가 산만해지고 '기성품' 티가 난다. 섹션이 조용히 한 번 올라오는 것,
  *   그 하나만 일관되게 쓴다. 나머지는 타이포와 여백이 한다.
  *
- * ★ 한 번만 실행하고 관찰을 끊는다 — 스크롤을 오르내릴 때마다 다시 움직이면 멀미가 난다.
- * ⚠️ prefers-reduced-motion 을 존중한다. 움직임에 민감한 사용자에게 이 효과는 불편이지
- *    장식이 아니다. 그 경우 애초에 보인 상태로 시작한다.
+ * ★★ 서버 컴포넌트다 — 클라이언트 컴포넌트가 아니다 (2026-08-18) ★★
+ *   전에는 이 파일이 'use client' 였고, 인스턴스마다 useState + useEffect +
+ *   IntersectionObserver 를 하나씩 만들었다. 홈에는 이 래퍼가 **34개** 있어서
+ *   관찰자 34개와 하이드레이션 경계 34개가 생겼다(실측: 홈의 긴 작업 1,748ms,
+ *   같은 사이트의 본문 페이지는 160~212ms).
+ *
+ *   지금은 **표시만** 한다 — 클래스와 지연 시간을 붙인 div 를 낼 뿐이고,
+ *   실제로 `is-shown` 을 붙이는 일은 문서 전체에 하나뿐인 관찰자(RevealScript)가 한다.
+ *   ⚠️ 여기에 'use client' 를 다시 붙이지 말 것. 붙이는 순간 34개가 되돌아온다.
+ *
+ * ⚠️ prefers-reduced-motion 과 자바스크립트 실패는 RevealScript / layout 의 noscript 가 맡는다.
+ *    이 파일만 보고 "움직임이 꺼졌을 때 처리가 없다" 고 판단하지 말 것.
  */
 export function Reveal({
   children,
@@ -24,35 +29,8 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setShown(true);
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (!e.isIntersecting) return;
-        setShown(true);
-        io.disconnect();
-      },
-      /* 조금 일찍 시작한다 — 화면에 완전히 들어온 뒤 움직이면 이미 읽고 있던 글이 흔들린다. */
-      { rootMargin: '0px 0px -12% 0px' },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <div
-      ref={ref}
-      className={`reveal ${shown ? 'is-shown' : ''} ${className}`}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
-    >
+    <div className={`reveal ${className}`} style={delay ? { transitionDelay: `${delay}ms` } : undefined}>
       {children}
     </div>
   );

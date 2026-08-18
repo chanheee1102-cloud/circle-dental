@@ -3,6 +3,7 @@ import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { QuickMenu } from '@/components/QuickMenu';
+import { RevealScript } from '@/components/RevealScript';
 import { CLINIC } from '@/lib/clinic';
 
 /**
@@ -73,6 +74,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           글꼴이 늦어도 본문은 폴백으로 즉시 보인다.
         */}
         <link rel="stylesheet" href="/fonts/pretendard/pretendard.css" />
+        {/*
+          ⚠️ 스크롤 효과는 `.reveal` 을 opacity 0 으로 시작시킨다. 자바스크립트가 꺼져 있으면
+             그 글이 **영영 안 보인다.** 브라우저가 스크립트를 안 돌리는 상황에서는
+             효과를 통째로 무효화해 처음부터 보이게 한다.
+        */}
+        <noscript>
+          {/* eslint-disable-next-line react/no-danger */}
+          <style
+            dangerouslySetInnerHTML={{
+              __html: '.reveal,.concern{opacity:1!important;transform:none!important}',
+            }}
+          />
+        </noscript>
       </head>
       <body>
         {/* 키보드 사용자가 헤더 메뉴를 매번 통과하지 않고 본문으로 건너뛸 수 있게 한다. */}
@@ -86,6 +100,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <SiteFooter />
         <QuickMenu />
+        {/*
+          스크롤 효과 담당 — 문서 전체에서 **하나뿐인** 관찰자다.
+          화면에 아무것도 그리지 않는다(null 반환). components/RevealScript.tsx 머리말 참조.
+        */}
+        <RevealScript />
       </body>
     </html>
   );
