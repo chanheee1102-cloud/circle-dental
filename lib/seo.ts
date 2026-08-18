@@ -101,6 +101,7 @@ export function clinicSchema() {
       streetAddress: `${CLINIC.address.street}, ${CLINIC.address.building}`,
       addressLocality: CLINIC.address.locality,
       addressRegion: CLINIC.address.region,
+      postalCode: CLINIC.address.postalCode,
       addressCountry: CLINIC.address.country,
     },
     areaServed: CLINIC.serviceArea.map((a) => ({ '@type': 'Place', name: a })),
@@ -193,9 +194,47 @@ export function clinicSchema() {
       latitude: UNVERIFIED.geo.lat,
       longitude: UNVERIFIED.geo.lng,
     };
+    /**
+     * 지도 링크 — 좌표와 **같은 조건**에서만 낸다.
+     *
+     * ★ hasMap 은 "이 병원을 지도에서 보려면 여기" 를 기계에게 알려 주는 자리다.
+     *   좌표(GeoCoordinates)가 '어디' 라면 hasMap 은 '어느 지도 서비스에서 확인되는가' 로,
+     *   국내에서는 네이버·카카오 항목과 홈페이지를 잇는 동일성 신호로도 읽힌다.
+     * ★ 화면(components/ClinicMap.tsx)이 이미 같은 세 링크를 보여 준다.
+     *   구조화 데이터가 화면에 보이는 것과 일치해야 한다는 원칙(구글 AI 기능 문서)에 맞다.
+     * ⚠️ 검색어 방식 URL 이라 병원명·주소 문자열이 바뀌면 함께 바뀐다.
+     *   ClinicMap 과 **같은 문자열**을 써야 둘이 어긋나지 않는다.
+     */
+    const q = encodeURIComponent(`${CLINIC.name} ${CLINIC.address.full}`);
+    schema.hasMap = [
+      `https://map.naver.com/p/search/${q}`,
+      `https://map.kakao.com/?q=${q}`,
+      `https://www.google.com/maps/search/?api=1&query=${UNVERIFIED.geo.lat},${UNVERIFIED.geo.lng}`,
+    ];
   }
 
   return schema;
+}
+
+/**
+ * 메타 설명 뒤에 **지역 한 줄**을 붙인다.
+ *
+ * ★★ 왜 (2026-08-18 실측) ★★
+ *   91페이지를 훑어보니 제목·설명·h1·첫 문단 어디에도 지역어가 없는 페이지가 **86개**였다.
+ *   국내 치과 검색의 큰 축이 "고양 임플란트", "화정동 치과" 처럼 **지역 + 시술**인데,
+ *   그 질의에 대응할 문서가 사실상 없었던 셈이다.
+ *
+ * ⚠️ 그렇다고 전 페이지에 기계적으로 박으면 그게 곧 키워드 스터핑이다.
+ *   **시술 페이지와 내원 안내에만** 쓴다. 증상·질환 26+16페이지에까지 같은 꼬리를 달면
+ *   설명이 전부 비슷해져 오히려 품질 신호를 깎는다.
+ *
+ * ★ 앞부분(base)이 페이지마다 다르므로 설명 중복은 생기지 않는다. 붙인 뒤에도
+ *   중복 0 인지는 크롤로 확인한다.
+ * ★ 155자를 넘기면 붙이지 않는다 — 잘려 나가면 지역어도 같이 잘린다.
+ */
+export function withLocality(base: string) {
+  const tail = ` 경기 ${CLINIC.address.locality} ${CLINIC.address.dong}, 화정역 인근 ${CLINIC.name}입니다.`;
+  return base.length + tail.length <= 155 ? base + tail : base;
 }
 
 /**
@@ -227,11 +266,22 @@ export function og(opts: {
      * ★★ images 를 반드시 채운다 (2026-08-14 실측) ★★
      *   페이지가 openGraph 를 직접 선언하면 `app/opengraph-image.tsx` 가 자동으로 붙여 주던
      *   카드가 **사라진다**(실측: og 4종을 다 갖춘 페이지가 89개 중 24개뿐이었다).
-     *   그래서 고유 이미지가 없으면 루트 OG 카드 주소를 명시적으로 넣는다.
+     *   그래서 고유 이미지가 없으면 카드 주소를 명시적으로 넣는다.
      *   metadataBase 가 있어 상대 경로도 절대 주소로 나간다.
+     *
+     * ★★ 그 카드를 **페이지마다 다르게** 만든다 (2026-08-18 재측정) ★★
+     *   위 수정으로 og:image 가 빠지는 문제는 사라졌지만, 이번엔 91페이지가
+     *   같은 그림 한 장을 나눠 쓰는 상태가 됐다(실측 10종, 그중 16페이지는 홈과 동일).
+     *   /api/og 가 제목을 받아 그리므로 주소만 바꾸면 페이지 수만큼 카드가 생긴다.
+     *   ⚠️ `/opengraph-image` 로 되돌리지 말 것 — 그건 홈 전용 카드다.
      */
     images: opts.images ?? [
-      { url: '/opengraph-image', width: 1200, height: 630, alt: `${CLINIC.name} 대표 이미지` },
+      {
+        url: `/api/og?t=${encodeURIComponent(opts.title)}`,
+        width: 1200,
+        height: 630,
+        alt: `${opts.title} — ${CLINIC.name}`,
+      },
     ],
   };
 }
@@ -322,7 +372,14 @@ export function pageImage(
 ) {
   return (
     photo ?? {
-      src: '/opengraph-image',
+      /*
+       * ★ 사진이 없으면 **그 페이지 제목이 박힌 카드**를 만든다 (2026-08-18).
+       *   전에는 여기가 `/opengraph-image` 한 장이라 91페이지가 카드 10종을 나눠 썼고,
+       *   그중 16페이지는 홈과 완전히 같은 그림이었다. 카카오톡에 어느 페이지를 붙여도
+       *   같은 카드가 뜬다는 뜻이다.
+       * ⚠️ 제목을 반드시 인코딩할 것 — 한글과 공백이 그대로 들어가면 URL 이 깨진다.
+       */
+      src: `/api/og?t=${encodeURIComponent(fallbackCaption)}`,
       caption: fallbackCaption,
       width: 1200,
       height: 630,
@@ -414,7 +471,15 @@ export function medicalWebPageSchema(opts: {
     inLanguage: 'ko-KR',
     isPartOf: { '@id': ID.website },
     publisher: { '@id': ID.clinic },
-    breadcrumb: { '@id': ID.breadcrumb(opts.path) },
+    /**
+     * 빵부스러기 참조 — **홈에서는 빼야 한다** (2026-08-18 전수 검사에서 발견).
+     *
+     * 전에는 경로와 무관하게 늘 붙였는데, 홈에는 BreadcrumbList 노드가 없다(있을 이유도
+     * 없다 — 홈이 곧 뿌리라 나열할 상위가 없다). 그래서 홈에서만 **어디에도 정의되지 않은
+     * `#breadcrumb` 를 가리키는 참조**가 남아 그래프가 열려 있었다.
+     * ⚠️ 다시 무조건 붙이지 말 것. 붙이려면 홈용 BreadcrumbList 를 먼저 만들어야 한다.
+     */
+    ...(opts.path === '/' ? {} : { breadcrumb: { '@id': ID.breadcrumb(opts.path) } }),
     datePublished: published,
     dateModified: modified,
     /** 마지막 검토 주체를 밝히면 의료 정보의 신뢰 신호가 된다(E-E-A-T). */

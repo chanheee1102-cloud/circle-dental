@@ -10,7 +10,7 @@ import {
   ContactCta,
 } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, articleSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, articleSchema, medicalWebPageSchema } from '@/lib/seo';
 import { KeyPoints, ArticleMeta, References, charCount, headingId } from '@/components/article';
 import { REFS_COST } from '@/lib/references';
 
@@ -51,6 +51,18 @@ export default function CostPage() {
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
+          /*
+           * ⚠️ 이 노드가 없으면 안 된다 (2026-08-18 전수 검사에서 발견).
+           *   articleSchema 는 isPartOf / mainEntityOfPage 로 `#webpage` 를 가리키는데,
+           *   여기 MedicalWebPage 가 없어서 **문서 안에서 해소되지 않는 참조**가 됐다.
+           *   그래프가 열려 있으면 크롤러가 문서를 하나로 못 묶는다.
+           */
+          medicalWebPageSchema({
+            title: '비용 가이드 — 무엇이 보험이고 무엇이 아닌가',
+            description:
+              '만 65세 임플란트 보험 조건, 스케일링 연 1회 적용, 신경치료와 크라운의 보험 차이. 치과 비용이 사람마다 달라지는 이유를 설명합니다.',
+            path: '/insight/cost',
+          }),
           articleSchema({
             path: '/insight/cost',
             title: '치과 비용 — 건강보험 적용 항목과 비급여 항목',

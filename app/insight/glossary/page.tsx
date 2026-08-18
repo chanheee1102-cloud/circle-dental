@@ -3,14 +3,15 @@ import Link from 'next/link';
 import { GLOSSARY } from '@/lib/insight';
 import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, abs, articleSchema } from '@/lib/seo';
+import { breadcrumbSchema, abs, articleSchema, medicalWebPageSchema } from '@/lib/seo';
 import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 
 export const metadata: Metadata = {
   title: '치과 용어 사전',
+  /* 57자였다 — 있는 사실(용어 수·쓰임)만으로 늘렸다(2026-08-18). */
   description:
-    '치수염, 치주낭, 골유착, 드라이소켓, 인레이. 진료실에서 듣는 치과 용어를 한두 문장으로 풀었습니다.',
+    '치수염, 치주낭, 골유착, 드라이소켓, 인레이. 진료실에서 듣는 치과 용어를 한두 문장으로 풀었습니다. 설명을 들을 때 옆에 두고 보시면 무슨 말인지 되묻지 않아도 됩니다.',
   alternates: { canonical: '/insight/glossary' },
 };
 
@@ -48,6 +49,17 @@ export default function GlossaryPage() {
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
+          /*
+           * ⚠️ 이 노드가 없으면 안 된다 (2026-08-18 전수 검사에서 발견).
+           *   articleSchema 가 isPartOf / mainEntityOfPage 로 `#webpage` 를 가리키는데
+           *   받아 줄 MedicalWebPage 가 없어 문서 안에서 해소되지 않는 참조가 됐다.
+           */
+          medicalWebPageSchema({
+            title: '치과 용어 사전',
+            description:
+              '치수염, 치주낭, 골유착, 드라이소켓, 인레이. 진료실에서 듣는 치과 용어를 한두 문장으로 풀었습니다.',
+            path: '/insight/glossary',
+          }),
           definedTermSet,
           articleSchema({
             path: '/insight/glossary',
