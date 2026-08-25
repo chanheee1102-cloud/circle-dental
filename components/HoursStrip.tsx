@@ -92,7 +92,15 @@ export function HoursStrip() {
 
   return (
     <>
-      <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-[20px] bg-white/10 sm:grid-cols-4 lg:grid-cols-7">
+      {/*
+        ★★ 표를 또렷하게 (2026-08-25 운영자: "표를 하얀 테두리를 하든 해서 전문적인
+           디자인으로 좀 더 가시성 키워줘") ★★
+           칸 사이 선이 white/10 이라 어두운 판 위에서 거의 안 보였다 — 표가 아니라
+           글자 덩어리로 읽혔다. 바깥 테두리를 두르고 칸 사이 선을 white/22 로 올린다.
+        ⚠️ 칸 사이 선은 grid 의 gap-px 에 **바탕색이 비쳐** 만들어진다. 그래서 선 색을
+           바꾸려면 dl 의 배경색을 바꿔야 한다(border 를 칸마다 주면 모서리에서 두 겹이 된다).
+      */}
+      <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border border-white/25 bg-white/22 sm:grid-cols-4 lg:grid-cols-7">
         {week.map((d, n) => {
           const on = today === n;
           return (
@@ -105,36 +113,44 @@ export function HoursStrip() {
                */
               className={`relative flex flex-col gap-3 px-5 py-7 ${
                 n === week.length - 1 ? 'col-span-2 lg:col-span-1' : ''
-              }`}
-              style={{
-                background: on
-                  ? 'color-mix(in srgb, var(--color-brand-500) 34%, var(--color-brand-900))'
-                  : 'var(--color-brand-900)',
-              }}
+              } ${on ? 'bg-mint-400' : 'bg-brand-900'}`}
             >
-              {/* 오늘 표시 — 색만으로 알리지 않는다. 색을 못 보는 사람에게는 글자가 근거다. */}
+              {/*
+                ★★ 오늘 칸을 통째로 밝게 (2026-08-25 운영자: "실시간으로 오늘이라는거
+                   딱 티나게 해줘") ★★
+                   전에는 배경을 살짝 섞어 놓기만 해서 어두운 판 위에서 옆 칸과 잘
+                   구분되지 않았다. 이제 칸 하나만 밝은 초록으로 채우고 글자를 뒤집는다.
+                ⚠️ 색만으로 알리지 않는다 — 색을 못 보는 사람에게는 '오늘' 이라는 글자가
+                   유일한 근거다. 배지를 지우지 말 것.
+                ⚠️ 밝은 칸 위에서는 흰 글자가 안 보인다. 아래 글자·비고 색을 전부
+                   뒤집는 이유다. 배경만 바꾸고 글자색을 두면 통째로 안 읽힌다.
+              */}
               {on && (
-                <span className="absolute top-4 right-4 rounded-full bg-mint-400 px-2 py-[3px] text-[11px] font-bold text-brand-900">
+                <span className="absolute top-4 right-4 rounded-full bg-brand-900 px-2.5 py-[3px] text-[11px] font-bold tracking-[0.02em] text-mint-400">
                   오늘
                 </span>
               )}
-              <dt className={`text-[14px] tracking-[0.02em] ${d.closed ? 'text-white/45' : 'text-white/55'}`}>
+              <dt
+                className={`text-[14px] font-semibold tracking-[0.02em] ${
+                  on ? 'text-brand-900/75' : d.closed ? 'text-white/45' : 'text-white/55'
+                }`}
+              >
                 {/* 화면에는 '월', 낭독기에는 '월요일'. */}
                 {d.ko}
                 <span className="sr-only">요일</span>
               </dt>
               <dd>
                 <span
-                  className={`tabular block text-[16px] leading-[1.5] font-bold tracking-[-0.01em] ${
-                    d.closed ? 'text-white/55' : 'text-white'
+                  className={`tabular block text-[16.5px] leading-[1.5] font-bold tracking-[-0.01em] ${
+                    on ? 'text-brand-900' : d.closed ? 'text-white/55' : 'text-white'
                   }`}
                 >
                   {d.time}
                 </span>
                 {d.note && (
                   <span
-                    className={`mt-2 block text-[13px] leading-[1.5] ${
-                      d.closed ? 'text-white/65' : 'text-mint-400'
+                    className={`mt-2 block text-[13px] leading-[1.5] font-medium ${
+                      on ? 'text-brand-900/75' : d.closed ? 'text-white/65' : 'text-mint-400'
                     }`}
                   >
                     {d.note}
