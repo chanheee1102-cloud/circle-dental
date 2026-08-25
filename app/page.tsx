@@ -13,12 +13,11 @@ import { HeroMedia } from '@/components/HeroMedia';
 import { HeroMarquee } from '@/components/HeroMarquee';
 import { CredentialFan } from '@/components/CredentialFan';
 import { DoctorStage } from '@/components/DoctorStage';
-import { DustReveal } from '@/components/DustReveal';
 import { Reveal } from '@/components/Reveal';
 import { InteriorSlider } from '@/components/InteriorSlider';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { TREATMENTS } from '@/lib/treatments';
-import { Container, SectionHead, ContactCta, Sentences } from '@/components/ui';
+import { Container, SectionHead, ContactCta, Sentences, SeqLetters } from '@/components/ui';
 import { CopyButton } from '@/components/CopyButton';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
@@ -620,55 +619,70 @@ function DoctorSection() {
                덮개만으로는 글자 가장자리가 뭉갠다(globals.css .on-photo 주석).
           */}
           {/*
-            ★★ 왼쪽에서 닦이던 것 → 먼지가 모이듯 (2026-08-25 운영자: "이거 먼지가
-               모이듯이 스크롤이벤트 넣어줘") ★★
-               사진의 색을 격자로 찍어 낟알을 만들고, 사방으로 흩어 둔 뒤 스크롤에
-               맞춰 제자리로 모은다. 다 모이면 낟알 그림을 걷고 진짜 사진이 남는다.
-               (직전의 clip-path 닦기(.wipe)는 이 자리에서 걷어냈다. CSS 는 다른 데서
-                쓸 수 있게 globals.css 에 남겨 뒀다.)
-            ⚠️ 구현·주의사항은 components/DustReveal.tsx 주석에 있다. 특히
-               ① 사진을 새로 내려받지 않는다(next/image 가 그린 <img> 를 캔버스에 옮긴다)
-               ② object-cover / object-right 자르기를 캔버스에서도 같은 식으로 계산한다
-               두 가지를 건드리면 마지막에 화면이 한 번 튄다.
+            ★★ 먼지 효과 제거 → 글자가 먼저, 사진이 나중 (2026-08-25 운영자: "아니 이거
+               이상하다. 이 효과 빼고 그냥 논문이라고 설명하는 문구 한글자씩 스크롤
+               이벤트로 나오게 해서 저 이미지 뜨게 하자") ★★
+               직전에 넣었던 캔버스 낟알 연출(DustReveal)은 통째로 걷어냈다 — 모여드는
+               중간 상태가 '먼지'보다 '깨진 화면'으로 보였다. 컴포넌트와 CSS 도 지웠다.
+               지금은 어두운 판 위에서 라벨 → 제목이 한 글자씩 올라오고, 글이 거의
+               끝날 무렵 사진이 떠오른다.
+            ⚠️ 순서가 뒤집히면 안 된다 — 사진이 먼저 뜨면 글자가 사진 위에서 튀어
+               '읽는 순서'가 사라진다. 지연값(--d)은 그 순서를 만드는 유일한 장치다.
+            ⚠️ 관찰자는 레이아웃에 하나뿐인 RevealScript 다. 여기서 새로 만들지 말 것 —
+               바깥에 .seq 만 두르면 안쪽 .seq-letter / .seq-fade 가 따라온다.
           */}
           <div className="mt-12 border-t border-brand-200/70 pt-10">
-            <DustReveal className="overflow-hidden rounded-2xl bg-brand-900">
-              <Image
-                src={PUBLICATION_DETAIL.banner}
-                alt="발표 논문 화면 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment: Two Case Reports"
-                fill
-                loading="lazy"
-                sizes="(max-width: 1024px) 100vw, 1320px"
-                /* 노트북이 오른쪽에 있다 — 좁아질수록 오른쪽을 남기고 왼쪽 여백부터 잘라낸다. */
-                className="object-cover object-right"
-              />
+            <div className="seq relative overflow-hidden rounded-2xl bg-brand-900">
               {/*
-                덮개를 **두 장으로 나눈다.**
-                ⚠️ 한 요소에 `bg-brand-900/82 lg:bg-gradient-to-r` 를 같이 걸면 안 된다.
-                   앞은 background-color, 뒤는 background-image 라 **서로 다른 속성**이고,
-                   큰 화면에서 둘 다 살아남아 사진 전체가 어두워진다(논문 글씨가 안 보였다).
-                ★ 좁은 화면 — 글이 사진 전체 위에 놓이므로 고르게 덮는다.
-                ★ 큰 화면 — 글은 왼쪽 54%에만 있다. 왼쪽은 짙게, 노트북이 있는 오른쪽은
-                  완전히 비운다. 멈춤 위치를 직접 적는 이유는 to-transparent 만으로는
-                  가운데가 70%쯤 덮여 논문이 회색으로 뭉개지기 때문이다.
+                사진과 덮개를 한 겹으로 묶어 마지막에 함께 띄운다.
+                ⚠️ 이 상자는 absolute 다 — next/image 의 fill 이 기준으로 삼을
+                   위치 지정 조상이 필요하다. static 으로 바꾸면 사진이 배너 전체로
+                   퍼지지 않는다.
               */}
-              <div aria-hidden className="absolute inset-0 bg-brand-900/82 lg:hidden" />
               <div
                 aria-hidden
-                className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(34,32,29,0.94)_0%,rgba(34,32,29,0.88)_34%,rgba(34,32,29,0.45)_54%,rgba(34,32,29,0)_70%)]"
-              />
+                className="seq-fade absolute inset-0"
+                style={{ ['--d' as string]: '1180ms' }}
+              >
+                <Image
+                  src={PUBLICATION_DETAIL.banner}
+                  alt=""
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 1024px) 100vw, 1320px"
+                  /* 노트북이 오른쪽에 있다 — 좁아질수록 오른쪽을 남기고 왼쪽 여백부터 잘라낸다. */
+                  className="object-cover object-right"
+                />
+                {/*
+                  덮개를 **두 장으로 나눈다.**
+                  ⚠️ 한 요소에 `bg-brand-900/82 lg:bg-gradient-to-r` 를 같이 걸면 안 된다.
+                     앞은 background-color, 뒤는 background-image 라 **서로 다른 속성**이고,
+                     큰 화면에서 둘 다 살아남아 사진 전체가 어두워진다(논문 글씨가 안 보였다).
+                  ★ 좁은 화면 — 글이 사진 전체 위에 놓이므로 고르게 덮는다.
+                  ★ 큰 화면 — 글은 왼쪽 54%에만 있다. 왼쪽은 짙게, 노트북이 있는 오른쪽은
+                    완전히 비운다. 멈춤 위치를 직접 적는 이유는 to-transparent 만으로는
+                    가운데가 70%쯤 덮여 논문이 회색으로 뭉개지기 때문이다.
+                */}
+                <div className="absolute inset-0 bg-brand-900/82 lg:hidden" />
+                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(34,32,29,0.94)_0%,rgba(34,32,29,0.88)_34%,rgba(34,32,29,0.45)_54%,rgba(34,32,29,0)_70%)]" />
+              </div>
 
               <div className="relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
+                {/*
+                  ⚠️ 사진의 alt 를 비웠으므로(장식 겹으로 내려갔다) 논문 제목은 여기
+                     본문 글자가 진다. 아래 제목을 지우면 이 배너에 논문 정보가
+                     문서상 사라진다.
+                */}
                 <p className="t-eyebrow on-photo text-gold-400">
-                  PUBLICATION
+                  <SeqLetters text="PUBLICATION" step={34} />
                 </p>
                 <p className="on-photo mt-5 text-[17px] leading-[1.55] font-bold text-white sm:text-[19px]">
-                  {PUBLICATION_DETAIL.title}
+                  <SeqLetters text={PUBLICATION_DETAIL.title} step={11} start={420} />
                 </p>
-                <p className="on-photo mt-3 text-[13.5px] text-brand-200">
+                <p className="seq-fade on-photo mt-3 text-[13.5px] text-brand-200" style={{ ['--d' as string]: '1400ms' }}>
                   {PUBLICATION_DETAIL.authors}
                 </p>
-                <div className="mt-8 flex flex-wrap gap-2.5">
+                <div className="seq-fade mt-8 flex flex-wrap gap-2.5" style={{ ['--d' as string]: '1560ms' }}>
                   <Link
                     href="/about/trust"
                     className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-[14.5px] font-black text-brand-800 shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
@@ -686,7 +700,7 @@ function DoctorSection() {
                   </Link>
                 </div>
               </div>
-            </DustReveal>
+            </div>
           </div>
         </div>
       </Container>

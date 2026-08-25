@@ -339,3 +339,52 @@ export function CardLink({
     </Link>
   );
 }
+
+/**
+ * 한 글자씩 떠오르는 글.
+ *
+ * 2026-08-25 운영자: "문구 한글자씩 스크롤 이벤트로 나오게 해서 저 이미지 뜨게 하자"
+ * 바깥에 .seq 를 두른 요소가 화면에 들어오면(RevealScript 가 is-shown 을 붙인다)
+ * 글자들이 --d 만큼 어긋나며 차례로 올라온다.
+ *
+ * 주의: 글자 span 을 inline-block 으로 만들지 말 것.
+ *   inline-block 은 innerText 에서 낱말 경계로 취급돼 문서의 텍스트가
+ *   "L o n g - t e r m ..." 이 된다(두 번째 버전 마퀴에서 실제로 났던 문제다).
+ *   그래서 기본 inline 을 유지하고, 올라오는 움직임은 position:relative + top 으로 만든다.
+ *   inline 요소에도 relative 는 먹는다.
+ * 주의: 공백은 span 으로 싸지 않고 그대로 둔다 — 낱말 경계를 지키고 span 수도 줄인다.
+ * 주의: 화면 낭독기는 의미 없는 inline span 들을 이어 붙여 한 문장으로 읽는다.
+ *   따로 aria 를 붙이면 오히려 같은 문장을 두 번 읽게 된다.
+ */
+export function SeqLetters({
+  text,
+  step = 14,
+  start = 0,
+  className = '',
+}: {
+  text: string;
+  /** 글자 사이 간격(ms). */
+  step?: number;
+  /** 첫 글자가 뜨기까지의 지연(ms). */
+  start?: number;
+  className?: string;
+}) {
+  let n = -1;
+  return (
+    <span className={className}>
+      {[...text].map((ch, i) => {
+        if (ch === ' ') return ' ';
+        n += 1;
+        return (
+          <span
+            key={i}
+            className="seq-letter"
+            style={{ ['--d' as string]: `${start + n * step}ms` } as React.CSSProperties}
+          >
+            {ch}
+          </span>
+        );
+      })}
+    </span>
+  );
+}

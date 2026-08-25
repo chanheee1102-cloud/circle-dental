@@ -608,33 +608,50 @@ time,
 }
 
 /*
- * -- 먼지가 모이듯 나타나는 배너 (components/DustReveal.tsx) --------------
- * 2026-08-25 운영자: "이거 먼지가 모이듯이 스크롤이벤트 넣어줘"
+ * -- 한 글자씩 떠오르고 그다음 사진 (2026-08-25) --------------------------
+ * 운영자: "이 효과 빼고 그냥 논문 이라고 설명하는 문구 한글자씩 스크롤 이벤트로
+ *          나오게 해서 저 이미지 뜨게 하자"
  *
- * 캔버스가 낟알을 그리는 동안 진짜 내용은 --dust-real 로 눌러 둔다.
- * 주의: 캔버스만 덮으면 낟알 사이 틈으로 진짜 사진이 그대로 비쳐 '먼지가 모인다'가
- *       아니라 '사진 위에 먼지가 앉는다'가 된다. 아래를 같이 눌러야 한다.
- * 주의: 자식마다 opacity 를 거는 이유 -- 감싸는 div 를 하나 더 넣으면 next/image 의
- *       fill 이 기준으로 삼는 상자가 바뀌어 배너 높이가 무너진다.
- * 주의: 자바스크립트가 못 돌면 --dust-real 이 안 정해진다. 기본값 1 이라 그 경우
- *       처음부터 다 보인다(빈 배너가 남지 않는다).
+ * .seq 를 두른 요소가 화면에 들어오면(RevealScript 가 is-shown 을 붙인다) 안쪽
+ * 글자들이 --d 만큼 어긋나며 올라오고, 마지막에 .seq-fade(사진)가 뜬다.
+ *
+ * 주의: .seq-letter 를 inline-block 으로 만들지 말 것. inline-block 은 innerText 에서
+ *       낱말 경계로 취급돼 문서의 텍스트가 "L o n g - t e r m ..." 이 된다.
+ *       기본 inline 을 유지하고 움직임은 position:relative + top 으로 만든다.
+ *       inline 요소에도 relative 는 먹는다.
+ * 주의: 관찰자는 레이아웃에 하나뿐인 RevealScript 다. 선택자에 .seq 를 더했을 뿐이니
+ *       여기서 IntersectionObserver 를 새로 만들지 말 것.
  */
-.dust-host { position: relative; }
-
-.dust-host > :not(.dust-canvas) {
-  opacity: var(--dust-real, 1);
+.seq-letter {
+  position: relative;
+  top: 0.3em;
+  opacity: 0;
+  transition:
+    opacity 0.5s ease-out,
+    top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--d, 0ms);
 }
 
-.dust-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  transition: opacity 0.35s ease-out;
+.seq.is-shown .seq-letter {
+  top: 0;
+  opacity: 1;
+}
+
+.seq-fade {
+  opacity: 0;
+  transition: opacity 1.1s ease-out;
+  transition-delay: var(--d, 0ms);
+}
+
+.seq.is-shown .seq-fade {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dust-host > :not(.dust-canvas) { opacity: 1; }
-  .dust-canvas { display: none; }
+  .seq-letter,
+  .seq-fade {
+    opacity: 1;
+    top: 0;
+    transition: none;
+  }
 }
