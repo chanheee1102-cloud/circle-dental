@@ -547,3 +547,41 @@ time,
 @media (prefers-reduced-motion: reduce) {
   .tilt { transition: none; transform: none !important; }
 }
+
+/*
+ * -- 왼쪽에서 오른쪽으로 닦이며 열리는 배너 (2026-08-25 운영자: "저 논문도 막
+ *    왼쪽부터 스르륵 보이게 할 수있나?") --------------------------------
+ *
+ * clip-path 로 오른쪽을 100% 잘라 둔 상태에서 0 으로 연다. 폭이나 transform 을
+ * 애니메이션하면 안쪽 사진과 글이 같이 늘어나거나 밀린다 -- clip 은 **그리는
+ * 범위만** 바꾸므로 안쪽은 처음부터 제자리에 완성돼 있고 가림막만 걷힌다.
+ *
+ * 주의: 안쪽 요소가 살짝 뒤따라오게 해야 '닦였다'로 읽힌다. 가림막만 걷히면
+ *       그냥 잘려 있던 것이 보이는 것이고, 안쪽이 조금 밀려 들어오면 손이
+ *       지나간 것처럼 보인다. 그래서 .wipe-inner 를 한 겹 더 둔다.
+ * 주의: overflow-hidden 인 부모 안에서 쓸 것. clip-path 는 그림자를 함께 자른다.
+ */
+.wipe {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: clip-path;
+}
+
+.wipe.is-shown {
+  clip-path: inset(0 0 0 0);
+  will-change: auto;
+}
+
+.wipe .wipe-inner {
+  transform: translateX(-36px);
+  transition: transform 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wipe.is-shown .wipe-inner {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wipe { clip-path: none; transition: none; }
+  .wipe .wipe-inner { transform: none; transition: none; }
+}

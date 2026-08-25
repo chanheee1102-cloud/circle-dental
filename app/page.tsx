@@ -624,8 +624,18 @@ function DoctorSection() {
             ⚠️ 흰 글씨는 `.on-photo` 두 겹 그림자를 함께 쓴다. 이 사진은 흐린 밝은 배경이라
                덮개만으로는 글자 가장자리가 뭉갠다(globals.css .on-photo 주석).
           */}
+          {/*
+            ★★ 왼쪽에서 오른쪽으로 닦이며 열린다 (2026-08-25 운영자: "저 논문도 막
+               왼쪽부터 스르륵 보이게 할 수있나?") ★★
+               .wipe 는 clip-path 로 오른쪽을 잘라 둔 상태에서 연다 — 폭이나 transform
+               을 애니메이션하면 안쪽 사진·글이 같이 늘어나거나 밀린다.
+               안쪽(.wipe-inner)이 조금 뒤따라 들어와야 '손이 지나갔다'로 읽힌다.
+               가림막만 걷히면 그냥 잘려 있던 게 보이는 것이다(globals.css 주석 참조).
+            ⚠️ 등장은 레이아웃에 하나뿐인 RevealScript 가 맡는다. 여기서 관찰자를
+               새로 만들지 말 것 — 클래스만 붙이면 된다.
+          */}
           <div className="mt-12 border-t border-brand-200/70 pt-10">
-            <div className="relative overflow-hidden rounded-2xl bg-brand-900">
+            <div className="wipe relative overflow-hidden rounded-2xl bg-brand-900">
               <Image
                 src={PUBLICATION_DETAIL.banner}
                 alt="발표 논문 화면 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment: Two Case Reports"
@@ -651,7 +661,7 @@ function DoctorSection() {
                 className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(34,32,29,0.94)_0%,rgba(34,32,29,0.88)_34%,rgba(34,32,29,0.45)_54%,rgba(34,32,29,0)_70%)]"
               />
 
-              <div className="relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
+              <div className="wipe-inner relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
                 <p className="on-photo flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-gold-400 uppercase">
                   <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-400" />
                   발표 논문

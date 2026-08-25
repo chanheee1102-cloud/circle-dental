@@ -28,7 +28,13 @@ export function RevealScript() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const targets = document.querySelectorAll<HTMLElement>('.reveal, .concern');
+    /*
+     * ⚠️ 새 효과를 만들 때는 여기 선택자에 클래스를 **한 줄 더할 뿐**이다.
+     *    컴포넌트에서 IntersectionObserver 를 새로 만들지 말 것 — 관찰자를 한 곳으로
+     *    모은 이유가 위 주석에 있다(홈 기준 40개 → 1개).
+     *    .wipe = 왼쪽에서 오른쪽으로 닦이며 열리는 배너(2026-08-25).
+     */
+    const targets = document.querySelectorAll<HTMLElement>('.reveal, .concern, .wipe');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduce) {
