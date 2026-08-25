@@ -579,7 +579,15 @@ function DoctorSection() {
             그림자만 옅게 깔아 바탕에서 떠 보이게 한다.
           ⚠️ 원본이 236px 라 그보다 크게 늘리면 뭉개진다. 칸 높이를 200px 선에서 멈춘다.
         */}
-        <div className="mt-14 rounded-2xl border border-brand-200/70 bg-brand-50/40 px-7 py-10 lg:px-12">
+        {/*
+          ★★ 상자를 걷어냈다 (2026-08-25 운영자: "여기도 테두리좀 없애고") ★★
+             테두리 + 옅은 바탕 + 안쪽 여백으로 묶어 두던 것을 없앴다. 바로 위
+             의료진 무대도 상자가 없어졌는데 여기만 네모가 남아 한 섹션 안에서
+             두 가지 언어가 섞여 있었다.
+          ⚠️ 상자가 사라진 만큼 위아래 여백이 구분을 대신한다 — mt 를 줄이지 말 것.
+             줄이면 인증패가 의료진 경력 줄에 붙어 한 덩어리로 읽힌다.
+        */}
+        <div className="mt-20 lg:mt-24">
           <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
             인증 · 수료

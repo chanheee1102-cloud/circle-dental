@@ -139,12 +139,31 @@ function FanRow({ children }: { children: ReactNode[] }) {
           1,
           Math.max(0, (window.innerHeight - r.top - window.innerHeight * 0.15) / span),
         );
+        /* 부드럽게 — 선형이면 끝에서 뚝 멈춘 것처럼 보인다. */
+        const e = 1 - Math.pow(1 - p, 3);
         const gap = Math.min(330, (window.innerWidth - 220) / Math.max(1, kids.length));
+        const mid = (kids.length - 1) / 2;
+
         kids.forEach((k, i) => {
-          const x = (i - (kids.length - 1) / 2) * gap * p;
-          k.style.transform = `translate3d(${x}px, 0, 0) scale(${0.8 + 0.2 * p})`;
-          k.style.filter = `blur(${(1 - p) * 3}px)`;
-          k.style.opacity = `${0.5 + 0.5 * p}`;
+          /* -1.5 … +1.5 — 가운데가 0 이라 좌우가 대칭으로 벌어진다. */
+          const rel = i - mid;
+          const x = rel * gap * e;
+          /*
+            아크 — 바깥으로 갈수록 아래로 처진다. 손에 쥔 카드가 부채꼴로 벌어질 때
+            생기는 곡선이다. 이게 없으면 그냥 가로로 미끄러지는 줄이 된다.
+          */
+          const y = (1 - e) * 26 + Math.abs(rel) * 12 * e;
+          /* 각도 — 처음엔 한 뭉치로 겹쳐 있다가 펼쳐지며 각자 기운다(카드를 돌리듯). */
+          const rot = rel * 4.5 * e;
+          k.style.transform =
+            `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) ` +
+            `rotate(${rot.toFixed(2)}deg) scale(${(0.76 + 0.24 * e).toFixed(3)})`;
+          /* ⚠️ 흐림이 핵심이다 — 크기·투명도만 바꾸면 '커진다'로 읽히고,
+             흐림이 걷혀야 '초점이 맞는다'가 된다. */
+          k.style.filter = `blur(${((1 - e) * 4).toFixed(2)}px)`;
+          k.style.opacity = `${(0.35 + 0.65 * e).toFixed(3)}`;
+          /* 가운데 두 장이 위로 오게 — 겹쳐 있는 구간에서 순서가 뒤집히면 어수선하다. */
+          k.style.zIndex = `${10 - Math.round(Math.abs(rel) * 2)}`;
         });
       }
       raf = requestAnimationFrame(frame);
@@ -163,11 +182,13 @@ function FanRow({ children }: { children: ReactNode[] }) {
       className={
         flat
           ? 'mt-9 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4'
-          : 'relative mt-9 grid h-[clamp(280px,26vw,340px)] place-items-center'
+          : /* 아크로 아래가 처지므로 높이에 그만큼 여유를 둔다 — 안 두면 바깥 두 장의
+               캡션이 다음 섹션에 물린다. */
+            'relative mt-10 grid h-[clamp(300px,25vw,350px)] place-items-center'
       }
     >
       {children.map((it, i) => (
-        <div key={i} className={flat ? '' : 'fan-item absolute w-[min(240px,18vw)]'}>
+        <div key={i} className={flat ? '' : 'fan-item absolute w-[min(280px,21vw)] will-change-transform'}>
           {it}
         </div>
       ))}
