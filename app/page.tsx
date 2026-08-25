@@ -230,19 +230,15 @@ function Hero() {
           알아채기 전에 끝난다 — 기다림으로 느껴지는 순간부터는 방해다.
       */}
       {/*
-        ★ 마퀴 — 화면 맨 위를 가로지른다. 흐름 안에 둔다(absolute 금지).
-          띄워 두면 글자 크기가 화면 **폭**(13.9vw)을 따르는 탓에, 폭이 넓고 세로가
-          짧은 창에서 아래 글 덩어리와 서로를 모른 채 겹친다. flex 열에 넣어 두면
-          겹칠 수가 없다.
-        ⚠️ 위 여백은 '헤더 높이 + 4vh' 다 — 헤더가 투명하게 겹쳐 있으므로 그만큼
-           내려야 로고·메뉴와 글자가 부딪히지 않는다. 헤더 높이를 바꾸면 여기도 같이.
+        ★★ 첫 화면 대형 마퀴("Save your own tooth") 제거 (2026-08-25 운영자:
+           "여기 초록색 글씨 움직이는건 없애줘") ★★
+           화면 폭을 가로지르는 268px 짜리 민트 글자가 배경 영상 위에서 너무 크게
+           떠들었다. 지금은 영상과 아래 문구만 남아 첫 화면이 조용해진다.
+        ⚠️ HeroMarquee 컴포넌트는 지우지 않는다 — 인증패 섹션이 배경 워터마크로
+           같은 컴포넌트를 쓴다(DoctorSection 안).
+        ⚠️ 마퀴가 flex 열의 첫 칸이었다. 빠져도 아래 덩어리는 mt-auto 로 여전히
+           화면 아래에 붙으므로 배치는 그대로다 — 위쪽이 비었을 뿐이다.
       */}
-      <div
-        className="enter relative shrink-0 pt-[calc(60px+4vh)] sm:pt-[calc(86px+4vh)]"
-        style={{ animationDelay: '60ms' }}
-      >
-        <HeroMarquee text="Save your own tooth" />
-      </div>
 
       {/*
         ★★ 가운데 정렬 → 왼쪽 아래 (2026-08-25 운영자: "히어로는 두번째버전 디자인이
@@ -655,9 +651,19 @@ function DoctorSection() {
                그 클래스를 지우면 여기서 가로 스크롤이 생긴다.
           */}
           <div className="relative">
+            {/*
+              ★★ 화면 양끝까지 (2026-08-25 운영자: "양옆에 꽉차게 흐르게 해줘") ★★
+                 이 자리는 Container(최대 1320px) 안이라 마퀴가 본문 폭에서 잘리고 있었다.
+                 배경으로 흐르는 글자는 화면 모서리까지 이어져야 '지나간다'로 읽힌다.
+              ⚠️ left-1/2 + -translate-x-1/2 + w-screen — 가운데 정렬된 상자 안에서
+                 화면 폭을 되찾는 방법이다. inset-x-0 만으로는 Container 폭에 갇힌다.
+              ⚠️ w-screen 은 스크롤바 폭까지 포함해 살짝 넘칠 수 있다. 바깥 섹션의
+                 overflow-hidden 이 그걸 잘라 준다 — 그 클래스를 지우면 여기서
+                 가로 스크롤이 생긴다.
+            */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-[42%] z-0 -translate-y-1/2"
+              className="pointer-events-none absolute top-[42%] left-1/2 z-0 w-screen -translate-x-1/2 -translate-y-1/2"
             >
               <HeroMarquee
                 text="Circle Dental Clinic ·"
