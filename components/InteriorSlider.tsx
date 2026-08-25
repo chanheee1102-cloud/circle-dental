@@ -105,21 +105,31 @@ export function InteriorSlider() {
         양끝을 배경색으로 살짝 덮어 사진이 화면 밖으로 '사라지는' 것처럼 보이게 한다.
         딱 잘리면 목록이 거기서 끝난 것처럼 읽힌다.
       */}
+      {/*
+        ⚠️ 2026-08-25: 화면 양끝까지 쓰게 되면서 덮개를 12 → 20 으로 넓혔다.
+           끝이 화면 모서리에 닿으므로 더 넓게 풀어야 '잘렸다'가 아니라 '이어진다'로 읽힌다.
+      */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-cream to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-cream to-transparent"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-cream to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-cream to-transparent"
       />
 
+      {/*
+        ⚠️ 좌우 여백을 주지 않는다 — 사진이 화면 모서리에 닿아야 한다(운영자 요청).
+        ⚠️ 칸 너비는 **화면 폭 기준**이다. 컨테이너 안에 있을 때는 lg 에서 31.5% 였는데,
+           같은 값을 화면 폭에 쓰면 사진이 한 단계 커져 세 장밖에 안 보인다.
+           26% 로 낮춰 예전과 비슷한 크기·개수를 유지한다.
+      */}
       <ul ref={trackRef} className="scrollbar-none flex gap-4 overflow-x-auto pb-2">
         {[...shots, ...shots].map((shot, i) => (
           <li
             key={`${shot.src}-${i}`}
             aria-hidden={i >= shots.length}
-            className="w-[78%] shrink-0 sm:w-[46%] lg:w-[31.5%]"
+            className="w-[72%] shrink-0 sm:w-[40%] lg:w-[26%]"
           >
             <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-brand-100 shadow-[var(--shadow-soft)]">
               <Image
@@ -136,7 +146,7 @@ export function InteriorSlider() {
                  */
                 alt={shot.alt}
                 fill
-                sizes="(max-width: 640px) 78vw, (max-width: 1024px) 46vw, 32vw"
+                sizes="(max-width: 640px) 72vw, (max-width: 1024px) 40vw, 26vw"
                 /* 앞 세 장만 미리 받는다. 스물넷을 한꺼번에 받으면 첫 화면이 느려진다. */
                 loading={i < 3 ? 'eager' : 'lazy'}
                 className="object-cover"

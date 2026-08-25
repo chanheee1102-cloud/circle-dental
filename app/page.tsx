@@ -733,10 +733,24 @@ function InteriorSection() {
             <Sentences text="상담실과 진료실, 소독실까지 실제 사진입니다. 옆으로 넘겨 보실 수 있습니다." />
           </p>
         </Reveal>
-        {/* 격자 대신 슬라이드 — 열두 장을 한 줄 자리로 다 보여 준다(components/InteriorSlider.tsx). */}
-        <div className="mt-12">
-          <InteriorSlider />
-        </div>
+      </Container>
+
+      {/*
+        ★★ 사진 줄만 컨테이너 밖으로 — 화면 양끝까지 (2026-08-25 운영자: "여기 전체
+           양옆에 꽉 채워주면 안되나? 사진 범위를?") ★★
+           글은 다른 섹션과 같은 기준선에 두고, **사진 줄만** 화면 폭을 다 쓴다.
+           옆으로 흐르는 줄은 가장자리에서 잘려 나가야 '계속 이어진다'로 읽힌다 —
+           상자 안에 갇혀 있으면 거기서 끝난 목록으로 보인다.
+        ⚠️ Container 를 여기서 닫고 아래 링크에서 다시 연다. 사진 줄을 Container
+           안에 도로 넣지 말 것 — 그 순간 양옆 여백이 돌아온다.
+        ⚠️ 가로 스크롤은 <ul> 안에서만 일어난다(overflow-x-auto). 이 div 에
+           overflow 를 걸지 말 것 — 페이지 전체가 옆으로 밀린다.
+      */}
+      <div className="mt-12">
+        <InteriorSlider />
+      </div>
+
+      <Container>
         <div className="mt-10">
           <Link
             href="/about/tour"
