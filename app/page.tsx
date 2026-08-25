@@ -13,6 +13,7 @@ import { HeroMedia } from '@/components/HeroMedia';
 import { HeroMarquee } from '@/components/HeroMarquee';
 import { CredentialFan } from '@/components/CredentialFan';
 import { DoctorStage } from '@/components/DoctorStage';
+import { DustReveal } from '@/components/DustReveal';
 import { Reveal } from '@/components/Reveal';
 import { InteriorSlider } from '@/components/InteriorSlider';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
@@ -619,17 +620,19 @@ function DoctorSection() {
                덮개만으로는 글자 가장자리가 뭉갠다(globals.css .on-photo 주석).
           */}
           {/*
-            ★★ 왼쪽에서 오른쪽으로 닦이며 열린다 (2026-08-25 운영자: "저 논문도 막
-               왼쪽부터 스르륵 보이게 할 수있나?") ★★
-               .wipe 는 clip-path 로 오른쪽을 잘라 둔 상태에서 연다 — 폭이나 transform
-               을 애니메이션하면 안쪽 사진·글이 같이 늘어나거나 밀린다.
-               안쪽(.wipe-inner)이 조금 뒤따라 들어와야 '손이 지나갔다'로 읽힌다.
-               가림막만 걷히면 그냥 잘려 있던 게 보이는 것이다(globals.css 주석 참조).
-            ⚠️ 등장은 레이아웃에 하나뿐인 RevealScript 가 맡는다. 여기서 관찰자를
-               새로 만들지 말 것 — 클래스만 붙이면 된다.
+            ★★ 왼쪽에서 닦이던 것 → 먼지가 모이듯 (2026-08-25 운영자: "이거 먼지가
+               모이듯이 스크롤이벤트 넣어줘") ★★
+               사진의 색을 격자로 찍어 낟알을 만들고, 사방으로 흩어 둔 뒤 스크롤에
+               맞춰 제자리로 모은다. 다 모이면 낟알 그림을 걷고 진짜 사진이 남는다.
+               (직전의 clip-path 닦기(.wipe)는 이 자리에서 걷어냈다. CSS 는 다른 데서
+                쓸 수 있게 globals.css 에 남겨 뒀다.)
+            ⚠️ 구현·주의사항은 components/DustReveal.tsx 주석에 있다. 특히
+               ① 사진을 새로 내려받지 않는다(next/image 가 그린 <img> 를 캔버스에 옮긴다)
+               ② object-cover / object-right 자르기를 캔버스에서도 같은 식으로 계산한다
+               두 가지를 건드리면 마지막에 화면이 한 번 튄다.
           */}
           <div className="mt-12 border-t border-brand-200/70 pt-10">
-            <div className="wipe relative overflow-hidden rounded-2xl bg-brand-900">
+            <DustReveal className="overflow-hidden rounded-2xl bg-brand-900">
               <Image
                 src={PUBLICATION_DETAIL.banner}
                 alt="발표 논문 화면 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment: Two Case Reports"
@@ -655,7 +658,7 @@ function DoctorSection() {
                 className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(34,32,29,0.94)_0%,rgba(34,32,29,0.88)_34%,rgba(34,32,29,0.45)_54%,rgba(34,32,29,0)_70%)]"
               />
 
-              <div className="wipe-inner relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
+              <div className="relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
                 <p className="t-eyebrow on-photo text-gold-400">
                   PUBLICATION
                 </p>
@@ -683,7 +686,7 @@ function DoctorSection() {
                   </Link>
                 </div>
               </div>
-            </div>
+            </DustReveal>
           </div>
         </div>
       </Container>

@@ -606,3 +606,35 @@ time,
   font-weight: 600;
   line-height: 1.2;
 }
+
+/*
+ * -- 먼지가 모이듯 나타나는 배너 (components/DustReveal.tsx) --------------
+ * 2026-08-25 운영자: "이거 먼지가 모이듯이 스크롤이벤트 넣어줘"
+ *
+ * 캔버스가 낟알을 그리는 동안 진짜 내용은 --dust-real 로 눌러 둔다.
+ * 주의: 캔버스만 덮으면 낟알 사이 틈으로 진짜 사진이 그대로 비쳐 '먼지가 모인다'가
+ *       아니라 '사진 위에 먼지가 앉는다'가 된다. 아래를 같이 눌러야 한다.
+ * 주의: 자식마다 opacity 를 거는 이유 -- 감싸는 div 를 하나 더 넣으면 next/image 의
+ *       fill 이 기준으로 삼는 상자가 바뀌어 배너 높이가 무너진다.
+ * 주의: 자바스크립트가 못 돌면 --dust-real 이 안 정해진다. 기본값 1 이라 그 경우
+ *       처음부터 다 보인다(빈 배너가 남지 않는다).
+ */
+.dust-host { position: relative; }
+
+.dust-host > :not(.dust-canvas) {
+  opacity: var(--dust-real, 1);
+}
+
+.dust-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: opacity 0.35s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dust-host > :not(.dust-canvas) { opacity: 1; }
+  .dust-canvas { display: none; }
+}
