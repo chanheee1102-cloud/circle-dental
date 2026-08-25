@@ -676,3 +676,29 @@ time,
     transition: none;
   }
 }
+
+/*
+ * -- 지금 진료 중 표시의 맥박 (components/HoursStrip.tsx) ------------------
+ * 2026-08-25 운영자: "그 라이브 모양으로 실제 진료시간에 맞게 나오게 하자"
+ * 점 하나가 아주 느리게 커졌다 작아진다. '지금' 이라는 뜻을 글자 없이 전한다.
+ * 주의: 진료 중일 때만 돈다. 쉬는 시간에도 돌면 '살아 있다' 는 신호가 거짓이 된다.
+ * 주의: 모션 감소에서는 멈춘다 -- 점은 그대로 보이므로 뜻은 잃지 않는다.
+ */
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: livePulse 2s ease-out infinite;
+}
+
+@keyframes livePulse {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  70%  { transform: scale(2.6); opacity: 0; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot::after { animation: none; opacity: 0; }
+}
