@@ -45,7 +45,7 @@ export function CredentialFan() {
   const items = IMG.credentials;
 
   return (
-    <ul className="mt-10 grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-10">
+    <ul className="relative z-10 mt-10 grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-10">
       {items.map((c, i) => (
         /*
           ⚠️ 하나씩 올라오게 만드는 것은 이 delay 다. 다 같이 올라오면 '한 덩어리가

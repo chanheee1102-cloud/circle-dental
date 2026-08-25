@@ -39,8 +39,6 @@
  *    되돌리면 이 값도 함께 줄여야 한다.
  */
 const SIZE = 'clamp(56px, 13.9vw, 268px)';
-/** 상자를 아래로만 키우는 양 — 위 디센더 주석 참조. */
-const DESCENT_BUFFER = `calc(${SIZE} * 0.2)`;
 
 /**
  * 트랙 하나에 넣을 반복 수.
@@ -54,10 +52,24 @@ export function HeroMarquee({
   text,
   seconds = 30,
   className = '',
+  size = SIZE,
+  colorClass = 'text-mint-400',
 }: {
   text: string;
   seconds?: number;
   className?: string;
+  /**
+   * 글자 크기(CSS 값). 기본은 첫 화면용 대형.
+   * ⚠️ 크기를 바꾸면 디센더 여백도 같이 따라간다 — 아래 paddingBottom 이 이 값을 쓴다.
+   *    둘을 따로 계산하면 y·g 아랫부분이 잘린다.
+   */
+  size?: string;
+  /**
+   * 글자색. 배경 워터마크로 쓸 때는 아주 옅은 색을 넘긴다.
+   * ⚠️ 배경으로 쓸 때 진한 색을 주면 그 위에 얹히는 내용이 안 읽힌다 — 그건 배경이
+   *    아니라 두 번째 내용이 된다.
+   */
+  colorClass?: string;
 }) {
   /* 트랙 두 벌이 -50% 로 밀려 이음매 없이 순환한다. */
   const track = (key: string) => (
@@ -69,8 +81,8 @@ export function HeroMarquee({
       {Array.from({ length: REPEAT }, (_, i) => (
         <span
           key={`${key}-${i}`}
-          className="display-en flex-none pr-[0.24em] text-mint-400"
-          style={{ fontSize: SIZE, lineHeight: '1' }}
+          className={`display-en flex-none pr-[0.24em] ${colorClass}`}
+          style={{ fontSize: size, lineHeight: '1' }}
         >
           {text}
         </span>
@@ -83,7 +95,7 @@ export function HeroMarquee({
       role="img"
       aria-label={text}
       className={`pointer-events-none relative flex select-none overflow-hidden whitespace-nowrap ${className}`}
-      style={{ paddingBottom: DESCENT_BUFFER }}
+      style={{ paddingBottom: `calc(${size} * 0.2)` }}
     >
       {/* 시각적 복제라 접근성 트리에서는 통째로 뺀다 — 바깥 aria-label 이 대신 읽힌다. */}
       <span aria-hidden className="inline-flex">
