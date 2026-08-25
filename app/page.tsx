@@ -409,7 +409,28 @@ function Hero() {
   );
 }
 
-/** 진료 4대 축 — 기존 홈페이지 '동그라미 치과 진료정보' 섹션. 카피·이미지 모두 원문. */
+/**
+ * 진료 4대 축 — 왼쪽 글은 붙어 있고, 오른쪽 카드가 하나씩 내려온다.
+ *
+ * ★★ 4열 격자 → 붙는 글 + 세로 카드 (2026-08-25 운영자: "하나씩 스크롤하면
+ *    오른쪽에서 내려가게 하고 다 내려가면 저 전체 진료과목 보기 넣고,
+ *    왼쪽 글씨는 저 버전2 애니메이션 모션처럼 글자도 스크롤하면 그 효과 나오게") ★★
+ *    넷을 한 줄에 늘어놓으면 한 번에 다 보여서 **읽는 순서가 없다.** 세로로 세우면
+ *    스크롤이 곧 순서가 되고, 왼쪽 제목이 그동안 붙어 있어 무엇을 보고 있는지가
+ *    계속 남는다. 두 번째 버전의 '둘러보기' 구성과 같은 짜임이다.
+ *
+ * ★ 왼쪽 글은 .seq — 눈금줄과 제목이 **한 글자씩** 올라오고 설명이 뒤따른다
+ *   (components/ui.tsx SeqLetters, globals.css .seq-letter).
+ *   ⚠️ 글자를 쪼개도 inline 이라 문서의 텍스트는 그대로다. inline-block 으로 바꾸면
+ *      innerText 가 "어 떤  진 료 를" 로 깨진다 — 그 이유는 SeqLetters 주석에 있다.
+ *
+ * ★ 오른쪽 카드는 지연을 주지 않는다. 세로로 쌓여 있어 **스크롤 위치 자체가 순서**다.
+ *   지연까지 주면 이미 화면에 들어온 카드가 이유 없이 늦게 뜬다.
+ *
+ * ⚠️ 붙는 것은 lg 이상에서만이다. 좁은 화면은 한 칸이라 붙일 옆자리가 없다 —
+ *    글이 화면 한 칸을 차지한 채 멈춰 있고 그 아래 내용이 그만큼 밀린다.
+ * ⚠️ 카피·이미지는 기존 홈페이지 원문 그대로다(lib/clinic.ts TREATMENT_PILLARS).
+ */
 function PillarSection() {
   const img = [
     IMG.treatment.natural,
@@ -417,86 +438,100 @@ function PillarSection() {
     IMG.treatment.aesthetic,
     IMG.treatment.wisdom,
   ];
+
   return (
     <section className="py-24 lg:py-28">
       <Container>
-        <div className="text-center">
-          <p className="text-[12.5px] font-black tracking-[0.24em] text-brand-500 uppercase">
-            Circle Dental Clinic
-          </p>
-          {/*
-            ★ 제목을 질문형으로 둔다.
-              AI 검색은 문서에서 "질문과 같은 제목 + 바로 뒤에 오는 짧은 답" 을 찾아 인용한다.
-              '동그라미 치과 진료정보' 같은 명사구는 환자가 실제로 치는 문장과 매칭이 약하다.
-              단, 질문만 던지고 끝내면 안 된다 — 바로 아래 한 문장으로 답한 뒤 카드로 펼친다.
-              (진단에서 '질문형 제목 1/23' 으로 잡히던 항목이 이것이다.)
-          */}
-          <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
-            어떤 진료를 받을 수 있나요?
-          </h2>
-          <p className="mx-auto mt-5 max-w-[62ch] text-[16px] leading-[1.85] text-ink-soft">
-            <Sentences text="자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다. 충치·신경·잇몸 치료와 스케일링 같은 기본 진료도 함께 보고 있습니다." />
-          </p>
-        </div>
-
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {TREATMENT_PILLARS.map((p, i) => (
-            <Reveal key={p.key} delay={Math.min(i, 3) * 70} className="h-full">
-            <Link
-              href={p.href}
-              className="group relative flex h-full min-h-[380px] flex-col justify-end overflow-hidden rounded-2xl shadow-[var(--shadow-soft)] transition-all hover:-translate-y-2 hover:shadow-[var(--shadow-lift)]"
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-16">
+          {/* ── 왼쪽: 붙어 있는 글 ── */}
+          <div className="seq lg:sticky lg:top-28 lg:self-start">
+            <p className="t-eyebrow text-brand-500">
+              <SeqLetters text="TREATMENT" step={32} />
+            </p>
+            {/*
+              ★ 제목을 질문형으로 둔다.
+                AI 검색은 문서에서 "질문과 같은 제목 + 바로 뒤에 오는 짧은 답" 을 찾아 인용한다.
+                '동그라미 치과 진료정보' 같은 명사구는 환자가 실제로 치는 문장과 매칭이 약하다.
+                단, 질문만 던지고 끝내면 안 된다 — 바로 아래 한 문장으로 답한 뒤 카드로 펼친다.
+            */}
+            <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
+              <SeqLetters text="어떤 진료를" step={22} start={340} />
+              <br />
+              <SeqLetters text="받을 수 있나요?" step={22} start={560} />
+            </h2>
+            <p
+              className="seq-fade mt-6 max-w-[46ch] text-[16px] leading-[1.85] text-ink-soft"
+              style={{ ['--d' as string]: '900ms' }}
             >
-              {/*
-                alt 를 비워 두었었다. 카드에 제목이 글자로 있으니 스크린리더에는 중복이라는
-                판단이었고 접근성 기준상 틀린 선택은 아니다. 다만 **AI 는 사진의 내용을
-                alt 로만 안다** — 비워 두면 이 사진이 무엇인지 아는 경로가 없다.
-                그래서 제목을 되풀이하지 않고 사진에 찍힌 것을 설명하는 문장을 넣는다.
-                두 목적이 충돌하지 않는 유일한 지점이다.
-              */}
-              <Image
-                src={img[i].src}
-                alt={img[i].alt}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              {/* 사진 위 글씨의 대비를 확보한다. 없으면 밝은 사진에서 흰 글씨가 사라진다. */}
-              <div
-                aria-hidden
-                className="absolute inset-0 bg-gradient-to-t from-brand-900/90 via-brand-900/40 to-transparent"
-              />
-              <div className="relative p-7">
-                <span aria-hidden className="block h-px w-9 bg-white/70" />
-                <h3 className="display-sm mt-4 text-[21px] text-white">{p.name}</h3>
-                <p className="mt-3 text-[14px] leading-[1.75] text-white/85">{p.copy}</p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-[12px] font-black tracking-[0.14em] text-white/90 uppercase">
-                  More View
-                  <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
-                </span>
-              </div>
-            </Link>
-            </Reveal>
-          ))}
-        </div>
+              <Sentences text="자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다. 충치·신경·잇몸 치료와 스케일링 같은 기본 진료도 함께 보고 있습니다." />
+            </p>
+          </div>
 
-        {/*
-          ★ 홈에서 열 줄 목록을 뺀 대신 여기로 길을 낸다 (2026-08-14).
-            카드 넷은 '무엇을 잘하는가' 를 보여 주지만 나머지 여섯(신경·잇몸·충치·보철·
-            스케일링·어린이)으로 가는 길이 이 섹션 안에 없었다. 링크가 없으면 그 여섯은
-            홈에서 존재하지 않는 것과 같다.
-        */}
-        <div className="mt-12 text-center">
-          <Link
-            href="/treatment"
-            className="group inline-flex items-center gap-2.5 rounded-full border border-brand-300 bg-white px-7 py-3.5 text-[15px] font-black text-brand-700 transition-colors hover:border-brand-400 hover:bg-brand-50"
-          >
-            전체 진료과목 {TREATMENTS.length}가지 보기
-            <span aria-hidden className="transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
+          {/* ── 오른쪽: 카드가 하나씩 내려온다 ── */}
+          <div className="flex flex-col gap-6">
+            {TREATMENT_PILLARS.map((p, i) => (
+              <Reveal key={p.key}>
+                <Link
+                  href={p.href}
+                  className="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl shadow-[var(--shadow-soft)] transition-all hover:-translate-y-2 hover:shadow-[var(--shadow-lift)] sm:min-h-[340px]"
+                >
+                  {/*
+                    alt 를 비워 두었었다. 카드에 제목이 글자로 있으니 스크린리더에는 중복이라는
+                    판단이었고 접근성 기준상 틀린 선택은 아니다. 다만 **AI 는 사진의 내용을
+                    alt 로만 안다** — 비워 두면 이 사진이 무엇인지 아는 경로가 없다.
+                    그래서 제목을 되풀이하지 않고 사진에 찍힌 것을 설명하는 문장을 넣는다.
+                    두 목적이 충돌하지 않는 유일한 지점이다.
+                  */}
+                  <Image
+                    src={img[i].src}
+                    alt={img[i].alt}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 55vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* 사진 위 글씨의 대비를 확보한다. 없으면 밝은 사진에서 흰 글씨가 사라진다. */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-t from-brand-900/92 via-brand-900/45 to-transparent"
+                  />
+                  <div className="relative p-7 sm:p-9">
+                    <span aria-hidden className="block h-px w-9 bg-white/70" />
+                    <h3 className="display-sm mt-4 text-[22px] text-white sm:text-[24px]">{p.name}</h3>
+                    <p className="mt-3 max-w-[46ch] text-[14.5px] leading-[1.75] text-white/85">
+                      {p.copy}
+                    </p>
+                    <span className="mt-5 inline-flex items-center gap-1.5 text-[12px] font-black tracking-[0.14em] text-white/90 uppercase">
+                      More View
+                      <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+
+            {/*
+              ★ 홈에서 열 줄 목록을 뺀 대신 여기로 길을 낸다 (2026-08-14).
+                카드 넷은 '무엇을 잘하는가' 를 보여 주지만 나머지 여섯(신경·잇몸·충치·보철·
+                스케일링·어린이)으로 가는 길이 이 섹션 안에 없었다. 링크가 없으면 그 여섯은
+                홈에서 존재하지 않는 것과 같다.
+              ⚠️ 자리를 카드 줄 **맨 끝**에 둔다 (2026-08-25 운영자: "다 내려가면 저 전체
+                 진료과목 보기 넣고"). 카드를 다 본 사람에게 다음 걸음을 주는 자리다 —
+                 가운데나 위로 옮기면 아직 안 본 사람에게 먼저 보인다.
+            */}
+            <Reveal>
+              <Link
+                href="/treatment"
+                className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-brand-300 bg-white px-7 py-4 text-[15px] font-black text-brand-700 transition-colors hover:border-brand-400 hover:bg-brand-50"
+              >
+                전체 진료과목 {TREATMENTS.length}가지 보기
+                <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+            </Reveal>
+          </div>
         </div>
       </Container>
     </section>
