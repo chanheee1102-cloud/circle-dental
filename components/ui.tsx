@@ -94,12 +94,19 @@ export function SectionHead({
   const H = as;
   return (
     <div className="max-w-2xl">
-      {eyebrow && (
-        <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
-          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-          {eyebrow}
-        </p>
-      )}
+      {/*
+        ★★ 점 + 900 굵기 → 점 없이 600 · 넓은 자간 (2026-08-25 운영자: "저 의료진 소개
+           대신 DOCTOR 저 폰트로 하자 너무 클로드 티나서") ★★
+           앞에 작은 점을 찍는 라벨은 요즘 자동 생성 화면의 서명이라 그것만으로
+           '만들어 준 티'가 난다. globals.css 의 .t-eyebrow 한 곳에서 정의한다.
+        ⚠️ 이 컴포넌트는 하위 페이지도 전부 쓴다 — 여기를 고치면 사이트 전체의
+           눈금줄이 같이 바뀐다. 그게 의도다(한 페이지 안에서 두 스타일이 섞이면
+           고친 게 아니라 빠뜨린 것처럼 보인다).
+        ⚠️ 라벨 글자를 영문으로 바꾸는 것은 **호출하는 쪽**이 정한다. 지금은 홈만
+           영문이고 하위 페이지는 한글 그대로다 — 뜻은 바로 아래 제목이 지므로
+           어느 쪽이든 읽는 사람이 잃는 정보는 없다.
+      */}
+      {eyebrow && <p className="t-eyebrow text-brand-500">{eyebrow}</p>}
       {/*
         페이지 제목은 한 단계 크게 — 문서의 머리라는 것이 눈으로도 보여야 한다.
         ★★ 제목이 문자열이면 앵커 id 를 자동으로 붙인다 (2026-08-14) ★★

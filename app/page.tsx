@@ -536,10 +536,7 @@ function DoctorSection() {
       />
       <Container className="relative">
         <div className="max-w-3xl">
-          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-            의료진 소개
-          </p>
+          <p className="t-eyebrow text-brand-500">DOCTORS</p>
           <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">누가 진료하나요?</h2>
           <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
             <Sentences text="세 분 원장 모두 보건복지부 인정 통합치의학과 전문의입니다. 대표원장은 경희대학교 치의학전문대학원 외래교수이자 치의학박사입니다." />
@@ -588,10 +585,7 @@ function DoctorSection() {
              줄이면 인증패가 의료진 경력 줄에 붙어 한 덩어리로 읽힌다.
         */}
         <div className="mt-20 lg:mt-24">
-          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-500 uppercase">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-            인증 · 수료
-          </p>
+          <p className="t-eyebrow text-brand-500">CREDENTIALS</p>
 
           {/*
             ★★ 조명 hover → 부채꼴 펼침 + 커서 3D (2026-08-25 운영자: "이렇게 버전2에서
@@ -662,9 +656,8 @@ function DoctorSection() {
               />
 
               <div className="wipe-inner relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
-                <p className="on-photo flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-gold-400 uppercase">
-                  <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-400" />
-                  발표 논문
+                <p className="t-eyebrow on-photo text-gold-400">
+                  PUBLICATION
                 </p>
                 <p className="on-photo mt-5 text-[17px] leading-[1.55] font-bold text-white sm:text-[19px]">
                   {PUBLICATION_DETAIL.title}
@@ -714,10 +707,7 @@ function InteriorSection() {
     <section className="py-24 lg:py-28">
       <Container>
         <Reveal className="max-w-3xl">
-          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-            공간
-          </p>
+          <p className="t-eyebrow text-brand-500">INTERIOR</p>
           <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
             어떤 공간에서 진료하나요?
           </h2>
@@ -776,7 +766,7 @@ function HoursSection() {
                 <div className="min-w-0 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-x-14">
             {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
             <SectionHead
-              eyebrow="진료시간 안내"
+              eyebrow="HOURS"
               title="진료시간이 어떻게 되나요?"
               desc="평일은 오전 9시 30분에 시작합니다. 화요일과 목요일은 저녁 8시 30분까지 야간 진료를 하고, 토요일은 오후 2시까지 봅니다. 일요일과 공휴일은 쉽니다."
             />
@@ -843,7 +833,7 @@ function HoursSection() {
                 <div className="min-w-0 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-x-14">
             {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
             <SectionHead
-              eyebrow="오시는 길"
+              eyebrow="VISIT"
               title="어디에 있고 주차는 되나요?"
               desc={`고양시 덕양구 화정동 ${CLINIC.address.building} 3층입니다. 주차는 ${CLINIC.parking.type}이며 ${CLINIC.parking.fee}입니다.`}
             />

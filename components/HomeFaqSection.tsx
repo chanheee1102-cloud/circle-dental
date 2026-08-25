@@ -28,10 +28,7 @@ export function HomeFaqSection() {
           {/* 왼쪽 — 제목과 전체 보기. 오른쪽 목록이 길어도 이 열은 위에 붙어 따라온다. */}
           <Reveal className="lg:sticky lg:top-28 lg:self-start">
           <div>
-            <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-              FAQ
-            </p>
+            <p className="t-eyebrow text-brand-500">FAQ</p>
             <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[36px]">
               자주 묻는 질문
             </h2>

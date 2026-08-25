@@ -50,10 +50,7 @@ export function ConcernsSection() {
 
       <Container>
         <Reveal className="reveal-plain relative max-w-3xl">
-          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-gold-400 uppercase">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-400" />
-            망설임
-          </p>
+          <p className="t-eyebrow text-gold-400">CONCERNS</p>
           <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px]">
             {words.map((w, i) => (
               /*
