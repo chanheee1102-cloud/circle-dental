@@ -78,7 +78,7 @@ export function CredentialFan() {
                     /* ⚠️ box-shadow 가 아니라 drop-shadow — 이 PNG 들은 배경이 지워져 있어
                        상자 그림자를 주면 없는 네모가 보인다. drop-shadow 는 실제 윤곽을 따른다. */
                     filter:
-                      'drop-shadow(0 20px 24px rgba(58,33,26,.30)) drop-shadow(0 3px 6px rgba(58,33,26,.18))',
+                      'drop-shadow(0 20px 24px rgba(15, 48, 42,.30)) drop-shadow(0 3px 6px rgba(15, 48, 42,.18))',
                   }}
                 />
               </div>

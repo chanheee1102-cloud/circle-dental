@@ -210,7 +210,7 @@ function Hero() {
            위(헤더)와 아래(문구·띠)를 누르고 가운데는 40% 만 눌러 사진을 살린다.
            예전에는 가운데가 가장 어두운 타원을 한 겹 더 깔았는데, 글이 아래로 내려온
            지금은 그 타원이 글도 없는 화면 한가운데만 거무스름하게 만든다.
-        ⚠️ 색이 brand-900(#22201d, 웜)이 아니라 중성 먹색(8,12,14)이다 — v2 와 같은
+        ⚠️ 색이 brand-900 이 아니라 중성 먹색(8,12,14)이다 — v2 와 같은
            인상을 내려면 스크림 색부터 같아야 한다. 갈색 스크림은 사진을 누렇게 만든다.
       */}
       <div
@@ -664,7 +664,7 @@ function DoctorSection() {
                     가운데가 70%쯤 덮여 논문이 회색으로 뭉개지기 때문이다.
                 */}
                 <div className="absolute inset-0 bg-brand-900/82 lg:hidden" />
-                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(34,32,29,0.94)_0%,rgba(34,32,29,0.88)_34%,rgba(34,32,29,0.45)_54%,rgba(34,32,29,0)_70%)]" />
+                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(15, 48, 42,0.94)_0%,rgba(15, 48, 42,0.88)_34%,rgba(15, 48, 42,0.45)_54%,rgba(15, 48, 42,0)_70%)]" />
               </div>
 
               <div className="relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">

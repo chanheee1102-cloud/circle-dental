@@ -94,7 +94,7 @@ export function SiteHeader() {
           : openMenu
             ? 'border-b border-brand-200/60 bg-cream/95 backdrop-blur-xl'
             : scrolled
-              ? 'border-b border-brand-200/60 bg-cream/85 shadow-[0_4px_24px_-12px_rgba(58,33,26,0.25)] backdrop-blur-xl'
+              ? 'border-b border-brand-200/60 bg-cream/85 shadow-[0_4px_24px_-12px_rgba(15, 48, 42,0.25)] backdrop-blur-xl'
               : 'border-b border-transparent bg-cream/60 backdrop-blur-md'
       }`}
     >
@@ -177,7 +177,7 @@ export function SiteHeader() {
           ★ 높이를 h-10 으로 **둘 다 못 박는다**. 전화 버튼에만 테두리가 있어
             여백으로 맞추면 1px 씩 어긋난다(히어로에서 겪은 것과 같은 문제다).
           ★ 무게로 나눈다 — 전화는 테두리만, 예약은 채운다.
-            헤더가 밝은 크림색이라 채운 갈색 버튼이 가장 먼저 눈에 든다.
+            헤더가 거의 흰 바탕이라 채운 초록 버튼이 가장 먼저 눈에 든다.
         */}
         <div className="flex items-center gap-2">
           <a
@@ -370,7 +370,7 @@ function MegaPanel({ item, onNavigate }: { item: NavItem; onNavigate: () => void
        좌우로 펼쳐지므로, 폭이 화면을 넘으면 한쪽이 잘려 나간다.
   */
   return (
-    <div className="w-[600px] max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-2xl border border-brand-200/70 bg-white p-5 shadow-[0_24px_60px_-24px_rgba(58,33,26,0.45)]">
+    <div className="w-[600px] max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-2xl border border-brand-200/70 bg-white p-5 shadow-[0_24px_60px_-24px_rgba(15, 48, 42,0.45)]">
       {/* 머리 줄 — 왼쪽에 지금 연 메뉴, 오른쪽에 그 그룹 대표 페이지로 가는 길. */}
       <div className="flex items-baseline justify-between gap-4 border-b-2 border-ink pb-3">
         <p className="text-[16px] font-black text-ink">{item.label}</p>
