@@ -738,7 +738,7 @@ function DoctorSection() {
                     가운데가 70%쯤 덮여 논문이 회색으로 뭉개지기 때문이다.
                 */}
                 <div className="absolute inset-0 bg-brand-900/82 lg:hidden" />
-                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(15, 48, 42,0.94)_0%,rgba(15, 48, 42,0.88)_34%,rgba(15, 48, 42,0.45)_54%,rgba(15, 48, 42,0)_70%)]" />
+                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(34,32,29,0.94)_0%,rgba(34,32,29,0.88)_34%,rgba(34,32,29,0.45)_54%,rgba(34,32,29,0)_70%)]" />
               </div>
 
               <div className="relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
