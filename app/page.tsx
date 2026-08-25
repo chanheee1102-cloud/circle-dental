@@ -20,6 +20,7 @@ import { TREATMENTS } from '@/lib/treatments';
 import { Container, SectionHead, ContactCta, Sentences, SeqLetters } from '@/components/ui';
 import { CopyButton } from '@/components/CopyButton';
 import { ClinicMap } from '@/components/ClinicMap';
+import { HoursStrip } from '@/components/HoursStrip';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
@@ -766,222 +767,155 @@ function InteriorSection() {
     </section>
   );
 }
-
+/**
+ * 진료시간 + 오시는 길 — 어두운 초록 판 위의 마감 구획.
+ *
+ * ★★ 두 번째 버전(circle-dental-2)의 디자인으로 갈아탔다
+ *    (2026-08-25 운영자: "진료시간이나 어디에 주차 저런거 버전2 디자인으로 넣어줘") ★★
+ *    흰 바탕에 카드를 얹던 것을 **깊은 초록 한 판**으로 바꾸고, 그 위에
+ *    ① 7칸 가로 진료시간(components/HoursStrip.tsx)
+ *    ② 줄 단위 주소·주차·전화 + 오른쪽 지도
+ *    를 얹는다. 페이지 맨 아래가 한 덩어리로 닫혀 마감이 분명해진다.
+ *
+ * ★★ 여기 오기까지 버린 것들 (되돌리기 전에 읽을 것) ★★
+ *    2026-08-18 에 이 자리를 네 번 고쳤다. 그때 버린 이유는 지금도 유효하다.
+ *      ① 좌우 2단(진료시간 | 오시는 길) → 둘 다 좁아져 시간표의 요일과 시간이 붙었다.
+ *      ② 탭으로 하나씩                → 운영자: "탭으로 나누지 말고."
+ *      ③ 위아래로 쌓기                → 네 덩이가 세로로 늘어서 너무 길어졌다.
+ *      ④ 각 덩이 안에서 왼쪽 제목 · 오른쪽 표
+ *    지금(⑤)은 ①의 문제를 다른 방식으로 푼다 — 진료시간은 **가로 7칸**이라 폭을
+ *    나눌 필요가 없고, 오시는 길만 좌우로 나눈다.
+ *
+ * ⚠️ 어두운 판 위이므로 글자·테두리를 전부 흰색 계열로 둔다. 밝은 바탕용 색
+ *    (text-ink / border-brand-200)을 여기에 쓰면 통째로 안 보인다.
+ */
 function HoursSection() {
-  /* 진료하는 시간과 쉬는 시간을 나눈다 — 화면에서 같은 줄에 섞이면 안 되는 두 종류다. */
-  const open = UNVERIFIED.hours.display.filter((h) => h.label !== '점심시간');
-  const lunch = UNVERIFIED.hours.display.find((h) => h.label === '점심시간');
-
   return (
-    <section className="border-t border-brand-200/60 bg-brand-50/40 py-24 lg:py-28">
+    <section className="bg-brand-900 py-24 text-white lg:py-28">
       <Container>
-        {/*
-          ★★ 한 덩이 안에서 **왼쪽 설명 · 오른쪽 표** (2026-08-18 운영자) ★★
-            오늘 이 자리를 네 번 고쳤다. 남기는 이유가 아니라 **버린 이유**를 적어 둔다.
+        {/* ── 진료시간 ─────────────────────────────────────────── */}
+        <Reveal className="max-w-3xl">
+          <p className="t-eyebrow text-white/55">HOURS</p>
+          {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
+          <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px]">
+            진료시간이
+            <br />
+            어떻게 되나요?
+          </h2>
+        </Reveal>
 
-              ① 좌우 2단(진료시간 | 오시는 길)  → 버림. 둘 다 넣으려다 둘 다 좁아졌다.
-                 시간표는 요일과 시간을 양 끝으로 벌려야 읽히는데 폭이 없어 줄이 붙었다.
-              ② 탭으로 하나씩              → 버림. 운영자: "탭으로 나누지 말고."
-              ③ 위아래로 쌓기              → 버림. 폭은 넉넉해졌는데 **너무 길어졌다**
-                 (설명 아래 표, 그 아래 또 설명 아래 카드로 네 덩이가 세로로 늘어섰다).
-              ④ 지금 — 각 덩이 안에서 왼쪽에 제목·설명, 오른쪽에 표·카드.
-                 설명과 표가 **같은 높이를 나눠 쓰므로** 세로가 절반이 되고 폭도 산다.
+        <Reveal delay={120}>
+          <HoursStrip />
+        </Reveal>
 
-          ★ 좌우를 5:5 로 나눈다 (2026-08-18 운영자: "너무 비율이 별론데").
-            처음엔 왼쪽을 330px 로 좁게 잡았는데, 오른쪽 표가 과하게 넓어져
-            제목과 표의 무게가 어긋나 보였다. 반씩 나누면 두 덩이가 같은 크기로 읽힌다.
-          ⚠️ 여기서 오른쪽을 더 줄이지 말 것 — 시간표의 요일과 시간이 붙는다.
-            (앞서 "왼쪽을 키우지 말 것" 이라고 적었던 것은 이 수정으로 뒤집혔다.)
-          ⚠️ 좁은 화면에서는 그냥 쌓인다(lg 미만). 한 칸에서 좌우로 나누면 둘 다 못 읽는다.
-        */}
-        <div className="space-y-16 lg:space-y-20">
-                <div className="min-w-0 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-x-14">
-            {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
-            <SectionHead
-              eyebrow="HOURS"
-              title="진료시간이 어떻게 되나요?"
-              desc="평일은 오전 9시 30분에 시작합니다. 화요일과 목요일은 저녁 8시 30분까지 야간 진료를 하고, 토요일은 오후 2시까지 봅니다. 일요일과 공휴일은 쉽니다."
-            />
+        {/* ── 오시는 길 ─────────────────────────────────────────── */}
+        <div className="mt-24 lg:mt-28">
+          <Reveal className="max-w-3xl">
+            <p className="t-eyebrow text-white/55">VISIT</p>
+            {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
+            <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px]">
+              어디에 있고
+              <br />
+              주차는 되나요?
+            </h2>
+          </Reveal>
 
-            <div className="overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)]">
-              {/*
-                ★ 요일과 시간을 **양 끝으로** 벌리지 않고 시간을 크게 세운다.
-                  치과 시간표에서 사람이 찾는 것은 요일이 아니라 **시간**이다.
-                ★ 시간은 tabular-nums — 자릿수가 어긋나면 표가 흔들려 보인다.
-              */}
-              <dl>
-                {open.map((h, i) => (
-                  <div
-                    key={h.label}
-                    className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-5 sm:px-7 ${
-                      i > 0 ? 'border-t border-brand-100' : ''
-                    }`}
-                  >
-                    <dt className="flex items-center gap-2.5">
-                      <span className="text-[15.5px] font-black text-ink">{h.label}</span>
-                      {h.note && (
-                        <span className="rounded-full bg-gold-500/15 px-2 py-0.5 text-[11.5px] font-black text-gold-600">
-                          {h.note}
-                        </span>
-                      )}
-                    </dt>
-                    <dd className="tabular text-[19px] font-black text-brand-700 sm:text-[21px]">
-                      {h.time}
+          <div className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
+            <div>
+              <Reveal delay={120}>
+                <dl className="divide-y divide-white/10 border-y border-white/10">
+                  <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
+                    <dt className="text-[13px] tracking-[0.1em] text-white/50">주소</dt>
+                    <dd className="text-[16px] leading-[1.8] text-white/90">
+                      <span className="block">{CLINIC.address.full}</span>
+                      <span className="mt-1.5 block text-[14px] text-white/55">
+                        {CLINIC.address.building} · {CLINIC.nearestStation} 인근
+                      </span>
+                      {/*
+                        ★★ 주소는 '읽는 값' 이 아니라 '쓰는 값' 이다 ★★
+                          택시 앱·카톡·지도 검색창에 붙여 넣으려고 보는 정보인데, 긴 주소를
+                          손으로 드래그하는 것은 휴대폰에서 특히 성가시다. 복사 버튼을 둔다.
+                        ⚠️ 디자인을 바꿨다고 이 버튼을 빼지 말 것 — 두 번째 버전에는 없지만
+                           여기서는 실제로 쓰이는 기능이다.
+                      */}
+                      <span className="mt-3 block">
+                        <CopyButton text={CLINIC.address.full} />
+                      </span>
                     </dd>
                   </div>
-                ))}
-              </dl>
 
-              {/*
-                ★★ 쉬는 시간·휴진은 **아래 칸으로 분리한다** ★★
-                  진료 시간과 같은 목록에 두면 "이때도 여는구나" 로 읽힌다.
-                  배경을 눌러 색을 다르게 하고, 여는 시간이 아님을 글자로도 밝힌다.
-              */}
-              <div className="border-t border-brand-200/70 bg-brand-50/70 px-6 py-5 sm:px-7">
-                <p className="text-[11.5px] font-black tracking-[0.14em] text-ink-muted uppercase">
-                  이 시간에는 진료하지 않습니다
-                </p>
-                <div className="mt-3 space-y-2">
-                  {lunch && (
-                    <p className="flex items-center justify-between gap-4 text-[14.5px]">
-                      <span className="font-bold text-ink-soft">{lunch.label}</span>
-                      <span className="tabular font-black text-ink-soft">{lunch.time}</span>
-                    </p>
-                  )}
-                  <p className="flex items-center gap-2 text-[14.5px] font-bold text-ink-soft">
-                    <span
-                      aria-hidden
-                      className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-brand-300 text-[10px] text-white"
-                    >
-                      ✕
-                    </span>
-                    {UNVERIFIED.hours.closed}
-                  </p>
-                </div>
-              </div>
-            </div>
-                </div>
-
-                <div className="min-w-0 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-x-14">
-            {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
-            <div>
-              <SectionHead
-                eyebrow="VISIT"
-                title="어디에 있고 주차는 되나요?"
-                desc={`고양시 덕양구 화정동 ${CLINIC.address.building} 3층입니다. 주차는 ${CLINIC.parking.type}이며 ${CLINIC.parking.fee}입니다.`}
-              />
-
-              {/*
-                ★★ 지도를 홈에 되돌렸다 (2026-08-25 운영자: "여기 왼쪽밑에 지도 나오게
-                   못하나?") ★★
-                   2026-08-18 에 홈을 덜어내면서 지도(약 550px)를 /visit 로만 보냈다.
-                   그런데 오른쪽 주소 카드가 그 자리를 다 못 채워 **왼쪽 아래가 통째로
-                   비어** 있었다. 비어 있던 것은 '여기가 어디인지 보이는 그림' 하나였다.
-                ⚠️ variant="compact" 다 — 주소 바와 지도 앱 버튼 셋은 빼고 지도만 넣는다.
-                   full 을 그대로 넣으면 이 화면 안에서 주소가 세 번, 길찾기 버튼이
-                   두 벌 나온다(오른쪽 카드 + 그 아래 '지도 · 길찾기 보기').
-                ⚠️⚠️ lg 이상에서만 보인다 ⚠️⚠️
-                   좁은 화면은 한 칸으로 쌓여 **빈 자리가 애초에 없다.** 거기에 지도를
-                   넣으면 2026-08-18 에 덜어낸 그 높이가 그대로 돌아온다.
-                   hidden 이면 iframe 을 아예 안 받으므로 모바일 로딩에도 영향이 없다.
-                   모바일에서 지도가 필요한 사람은 아래 '지도 · 길찾기 보기'로 간다.
-              */}
-              <div className="mt-9 hidden lg:block">
-                <ClinicMap height={360} variant="compact" />
-              </div>
-            </div>
-
-            <div className="min-w-0">
-            {/*
-              ★★ 주소는 '읽는 값' 이 아니라 '쓰는 값' 이다 ★★
-                택시 앱·카톡·지도 검색창에 붙여 넣으려고 보는 정보인데, 긴 주소를 손으로
-                드래그하는 것은 휴대폰에서 특히 성가시다. 복사 버튼을 옆에 둔다.
-            */}
-            <div className="rounded-2xl border border-brand-200/70 bg-white p-6 shadow-[var(--shadow-soft)] sm:p-7">
-              <p className="text-[11.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
-                주소
-              </p>
-              <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
-                <p className="max-w-[36ch] text-[16.5px] leading-relaxed font-bold text-ink">
-                  {CLINIC.address.full}
-                </p>
-                <CopyButton text={CLINIC.address.full} />
-              </div>
-              <p className="mt-2.5 text-[13.5px] text-ink-muted">
-                {CLINIC.address.building} · {CLINIC.nearestStation} 인근
-              </p>
-
-              {/* 전화는 가장 큰 요소로. 내원 결정의 마지막 한 걸음은 여전히 전화다. */}
-              {/*
-                ⚠️ 좁은 화면에서는 **세로로 쌓는다** (2026-08-14 실측).
-                   라벨과 번호를 양 끝으로 벌리면 390px 화면에서 둘 다 두 줄로 쪼개져
-                   "대표전화 /" / "FAX" · "031-972-" / "2875" 로 깨졌다.
-                   번호는 절대 쪼개지면 안 되는 값이라 whitespace-nowrap 을 함께 건다.
-              */}
-              <a
-                href={CLINIC.phoneHref}
-                className="group mt-6 flex flex-col items-center gap-1 rounded-xl bg-brand-700 px-6 py-4 text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-              >
-                <span className="text-[11.5px] font-black tracking-[0.14em] whitespace-nowrap text-brand-200 uppercase sm:text-[12px]">
-                  대표전화 / FAX
-                </span>
-                <span className="tabular text-[24px] font-black whitespace-nowrap">
-                  {CLINIC.phone}
-                </span>
-              </a>
-
-              {/*
-                ★ 빈자리를 '오는 방법' 으로 채운다.
-                  전에는 이메일 아래가 통째로 비어 있었다. 여기 들어갈 값은 전부
-                  이미 확인된 것들이라 새로 만들 필요가 없었다.
-                ⚠️ 기계식 주차장 주의사항을 빼지 말 것 — 큰 차량이 헛걸음하는 것을 막는다.
-              */}
-              <dl className="mt-6 space-y-3.5 border-t border-brand-100 pt-6">
-                <div className="flex gap-3">
-                  <dt className="w-[62px] shrink-0 text-[13px] font-black text-ink-muted">주차</dt>
-                  <dd className="text-[14.5px] leading-relaxed text-ink-soft">
-                    {CLINIC.parking.type} · <strong className="font-black text-brand-700">{CLINIC.parking.fee}</strong>
-                    <span className="mt-1 block text-[13px] text-ink-muted">{CLINIC.parking.note}</span>
-                  </dd>
-                </div>
-                <div className="flex gap-3">
-                  <dt className="w-[62px] shrink-0 text-[13px] font-black text-ink-muted">이메일</dt>
-                  <dd className="min-w-0 text-[14.5px] break-all text-ink-soft">
-                    <a href={`mailto:${CLINIC.email}`} className="hover:text-brand-700 hover:underline">
-                      {CLINIC.email}
-                    </a>
-                  </dd>
-                </div>
-              </dl>
-            </div>
-
-                  {/*
-                    ⚠️ 지도는 여기 두지 않는다 (2026-08-18 운영자: 홈을 덜어내기).
-                       420px 짜리 지도가 홈에서 두 번째로 큰 덩어리였는데, 같은 지도가
-                       /visit 에 이미 있다. 홈에는 **주소와 전화**만 남기고 길찾기는
-                       아래 버튼으로 넘긴다.
-                    ★ 지도를 뺐으면 **가는 길을 반드시 열어 둬야 한다.** 안 그러면
-                      "여기 있습니다" 로 끝나고 길찾기까지 가는 통로가 사라진다.
-                  */}
-                  <div className="mt-8 flex flex-wrap gap-2.5">
-                    <Link
-                      href="/visit"
-                      className="group inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-[14.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
-                    >
-                      지도 · 길찾기 보기
-                      <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                        →
+                  <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
+                    <dt className="text-[13px] tracking-[0.1em] text-white/50">주차</dt>
+                    <dd className="text-[16px] leading-[1.8] text-white/90">
+                      {CLINIC.parking.type} ·{' '}
+                      <strong className="font-bold text-mint-400">{CLINIC.parking.fee}</strong>
+                      {/* ⚠️ 기계식 주차장 주의사항을 빼지 말 것 — 큰 차량이 헛걸음하는 것을 막는다. */}
+                      <span className="mt-1.5 block text-[14px] leading-[1.8] text-white/55">
+                        {CLINIC.parking.note}
                       </span>
-                    </Link>
-                    <a
-                      href={CLINIC.phoneHref}
-                      className="inline-flex items-center gap-2 rounded-full border border-brand-300 bg-white px-6 py-3 text-[14.5px] font-black text-brand-700 transition-colors hover:border-brand-400"
-                    >
-                      {CLINIC.phone}
-                    </a>
+                    </dd>
                   </div>
-            </div>
+
+                  <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
+                    <dt className="text-[13px] tracking-[0.1em] text-white/50">전화</dt>
+                    <dd>
+                      {/* 내원 결정의 마지막 한 걸음은 여전히 전화다 — 이 구획에서 가장 큰 글자. */}
+                      <a
+                        href={CLINIC.phoneHref}
+                        className="tabular text-[30px] font-black whitespace-nowrap text-mint-400 transition-opacity hover:opacity-80"
+                      >
+                        {CLINIC.phone}
+                      </a>
+                    </dd>
+                  </div>
+
+                  <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
+                    <dt className="text-[13px] tracking-[0.1em] text-white/50">이메일</dt>
+                    <dd className="min-w-0 text-[15px] break-all text-white/80">
+                      <a href={`mailto:${CLINIC.email}`} className="hover:text-mint-400 hover:underline">
+                        {CLINIC.email}
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
+              </Reveal>
+
+              <Reveal delay={200}>
+                <div className="mt-9 flex flex-wrap gap-3">
+                  <a
+                    href={CLINIC.booking.naver}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="예약하기 — 네이버 예약 새 창으로 열기"
+                    className="group inline-flex items-center gap-2 rounded-full bg-mint-500 px-7 py-3.5 text-[15px] font-bold text-white transition-transform hover:-translate-y-0.5"
+                  >
+                    예약하기
+                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
+                  </a>
+                  {/* ⚠️ 지도 전체와 길찾기 앱 버튼은 /visit 이 맡는다 — 여기 지도는 보기용이다. */}
+                  <Link
+                    href="/visit"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/35 px-7 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
+                  >
+                    지도 · 길찾기 보기
+                  </Link>
                 </div>
+              </Reveal>
+            </div>
+
+            {/*
+              ⚠️ compact — 주소 바와 지도 앱 버튼 셋은 뺀다. 바로 왼쪽에 주소가 있고
+                 아래에 '지도 · 길찾기 보기' 가 있어서, full 을 쓰면 한 화면에서
+                 주소가 세 번 · 길찾기 버튼이 두 벌 나온다(components/ClinicMap.tsx 주석).
+              ⚠️ 여기서는 좁은 화면에서도 보여 준다. 왼쪽 칸 아래로 쌓이는 자리라
+                 '빈 자리를 채우는' 용도가 아니라 이 구획의 한 축이다.
+            */}
+            <Reveal delay={160}>
+              <ClinicMap height={420} variant="compact" />
+            </Reveal>
+          </div>
         </div>
       </Container>
     </section>
