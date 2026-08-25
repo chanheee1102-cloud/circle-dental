@@ -100,7 +100,23 @@ export function HoursStrip() {
         ⚠️ 칸 사이 선은 grid 의 gap-px 에 **바탕색이 비쳐** 만들어진다. 그래서 선 색을
            바꾸려면 dl 의 배경색을 바꿔야 한다(border 를 칸마다 주면 모서리에서 두 겹이 된다).
       */}
-      <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border border-white/25 bg-white/22 sm:grid-cols-4 lg:grid-cols-7">
+      {/*
+        ★★ 표를 판 위로 띄운다 (2026-08-25 운영자: "날짜 표 좀 입체감 주든지") ★★
+           바깥에 큰 그림자를 깔아 표 전체가 어두운 판에서 떠 보이게 하고,
+           칸마다 위쪽에 아주 옅은 흰 선(inset)을 넣어 타일이 하나씩 솟은 것처럼 만든다.
+        ⚠️ 그림자는 **바깥 상자**가 진다. dl 은 overflow-hidden 이라(둥근 모서리를 위해)
+           안쪽에 건 그림자는 잘려 나가 아무것도 안 보인다.
+      */}
+      {/*
+        ⚠️ 그림자는 인라인 style 로 준다. Tailwind 임의값(shadow-[0_26px_64px_-28px_rgba(...)])
+           으로 썼더니 **적용이 안 됐다** — 계산값이 투명 두 겹으로 나왔다(실측).
+           한 번 쓰는 장식값이라 유틸리티를 고집할 이유가 없다.
+      */}
+      <div
+        className="mt-10 rounded-[20px]"
+        style={{ boxShadow: '0 26px 64px -28px rgba(0,0,0,0.75)' }}
+      >
+        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border border-white/25 bg-white/22 sm:grid-cols-4 lg:grid-cols-7">
         {week.map((d, n) => {
           const on = today === n;
           return (
@@ -111,28 +127,42 @@ export function HoursStrip() {
                *    좁은 화면에서 **빈 슬롯이 회색 사각형으로 남는다**(칸 사이 1px 선의
                *    바탕색이 그대로 보인다). 마지막 칸이 남은 폭을 차지하게 한다.
                */
-              className={`relative flex flex-col gap-3 px-5 py-7 ${
+              className={`relative flex flex-col gap-3 px-5 pt-7 pb-7 ${
                 n === week.length - 1 ? 'col-span-2 lg:col-span-1' : ''
-              } ${on ? 'bg-mint-400' : 'bg-brand-900'}`}
+              } ${
+                on
+                  ? 'bg-[#eafaf6] shadow-[inset_0_-1px_0_rgba(15,48,42,0.10)]'
+                  : 'bg-brand-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]'
+              }`}
             >
+              {/*
+                오늘 칸 위쪽의 굵은 초록 띠 — 표에서 한 칸만 '꽂혀 있는' 인상을 만든다.
+                ⚠️ 장식이라 화면 낭독기에서 숨긴다. 오늘이라는 사실은 아래 배지가 말한다.
+              */}
+              {on && <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-brand-700" />}
               {/*
                 ★★ 오늘 칸을 통째로 밝게 (2026-08-25 운영자: "실시간으로 오늘이라는거
                    딱 티나게 해줘") ★★
                    전에는 배경을 살짝 섞어 놓기만 해서 어두운 판 위에서 옆 칸과 잘
-                   구분되지 않았다. 이제 칸 하나만 밝은 초록으로 채우고 글자를 뒤집는다.
+                   구분되지 않았다. 이제 칸 하나만 밝게 채우고 글자를 뒤집는다.
+                ★★ 연두(mint-400) → 거의 흰색(#eafaf6) (2026-08-25 운영자: "저거 화요일
+                   연두색보다 좀 더 가시성 좋은거 없나?") ★★
+                   연두는 어두운 초록 판과 **같은 색 계열**이라 멀리서 보면 톤 차이로만
+                   읽혔다. 흰색은 계열 밖이라 훑는 눈에 바로 걸린다.
+                   실측 배경 명도차: 연두 6.86:1 → 흰색 계열 14.6:1.
                 ⚠️ 색만으로 알리지 않는다 — 색을 못 보는 사람에게는 '오늘' 이라는 글자가
                    유일한 근거다. 배지를 지우지 말 것.
                 ⚠️ 밝은 칸 위에서는 흰 글자가 안 보인다. 아래 글자·비고 색을 전부
                    뒤집는 이유다. 배경만 바꾸고 글자색을 두면 통째로 안 읽힌다.
               */}
               {on && (
-                <span className="absolute top-4 right-4 rounded-full bg-brand-900 px-2.5 py-[3px] text-[11px] font-bold tracking-[0.02em] text-mint-400">
+                <span className="absolute top-4 right-4 rounded-full bg-brand-700 px-2.5 py-[3px] text-[11px] font-bold tracking-[0.02em] text-white">
                   오늘
                 </span>
               )}
               <dt
                 className={`text-[14px] font-semibold tracking-[0.02em] ${
-                  on ? 'text-brand-900/75' : d.closed ? 'text-white/45' : 'text-white/55'
+                  on ? 'text-brand-900/70' : d.closed ? 'text-white/45' : 'text-white/55'
                 }`}
               >
                 {/* 화면에는 '월', 낭독기에는 '월요일'. */}
@@ -150,7 +180,7 @@ export function HoursStrip() {
                 {d.note && (
                   <span
                     className={`mt-2 block text-[13px] leading-[1.5] font-medium ${
-                      on ? 'text-brand-900/75' : d.closed ? 'text-white/65' : 'text-mint-400'
+                      on ? 'text-brand-900/70' : d.closed ? 'text-white/65' : 'text-mint-400'
                     }`}
                   >
                     {d.note}
@@ -160,7 +190,8 @@ export function HoursStrip() {
             </div>
           );
         })}
-      </dl>
+        </dl>
+      </div>
 
       {/*
         점심시간은 요일 칸에 넣지 않는다 — 7칸 전부에 같은 값을 반복하게 되고,
