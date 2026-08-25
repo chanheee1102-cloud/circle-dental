@@ -11,6 +11,7 @@ import { IMG } from '@/lib/assets';
 import { heroFacts } from '@/lib/heroFacts';
 import { HeroMedia } from '@/components/HeroMedia';
 import { HeroMarquee } from '@/components/HeroMarquee';
+import { CredentialFan } from '@/components/CredentialFan';
 import { Reveal } from '@/components/Reveal';
 import { InteriorSlider } from '@/components/InteriorSlider';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
@@ -624,64 +625,18 @@ function DoctorSection() {
           </p>
 
           {/*
-            ★★ 올리면 조명이 켜지듯 뜬다 (2026-08-14 운영자: "마우스 갖다대면 임팩트") ★★
-              상패·인증서는 실물이 유리와 금속이라 **빛을 받는 물건**이다. 그 성질을 그대로 쓴다.
-                ① 뒤에서 옅은 빛이 번지고(스포트라이트)
-                ② 액자가 살짝 떠오르며 커지고
-                ③ 그림자가 깊고 길어진다.
-              세 가지가 함께 움직여야 '조명이 켜졌다' 로 읽힌다. 하나만 하면 그냥 커진 것이다.
-
-            ★ 스포트라이트를 쓰는 이유 — 이 PNG 들은 배경이 지워져 있어(누끼) 테두리가 없다.
-              카드처럼 배경을 밝히는 방법이 안 통한다. 뒤에 번지는 빛은 모양과 무관하게
-              먹히고, 오히려 물건이 떠 있는 느낌을 만든다.
-
-            ★★ 링크로 만든다 — 손이 올라가면 눌리는 것이어야 한다 ★★
-              움직이기만 하고 눌리지 않으면 사용자는 두 번 세 번 눌러 본 뒤에야 포기한다.
-              누르면 실물 사진이 크게 있는 의료진 페이지로 간다.
-            ⚠️ 움직임에 민감한 사용자에게는 확대·이동을 끈다(motion-reduce). 빛과 그림자는
-               남겨 둔다 — 그것만으로도 어디에 손이 있는지 알 수 있다.
-               ⚠️ Tailwind v4 는 translate/scale 을 **transform 이 아니라 각각의 CSS 속성**으로 낸다.
-                  그래서 `transform-none` 으로는 안 꺼진다(실측: 껐다고 생각했는데 그대로 움직였다).
-                  `translate-none` + `scale-100` 두 개를 써야 한다.
-                  그리고 **hover 변형까지 겹쳐 써야** 한다 — `motion-reduce:translate-none` 만으로는
-                  CSS 출력 순서상 뒤에 오는 `group-hover:-translate-y-2.5` 에 밀린다(실측).
+            ★★ 조명 hover → 부채꼴 펼침 + 커서 3D (2026-08-25 운영자: "이렇게 버전2에서
+               스크롤 이벤트를 버전 1에도 입혀보자") ★★
+               전에는 손을 올리면 뒤에서 빛이 번지고 액자가 떠오르는 연출이었다
+               (2026-08-14 운영자: "마우스 갖다대면 임팩트"). 그 의도 — 상패는 빛을 받는
+               물건이라는 것 — 는 그대로 살리되, 두 번째 버전의 **스크롤로 펼쳐지는 진열**
+               로 바꿨다. 손을 올려야만 반응하던 것이 이제 스크롤만 해도 움직인다.
+            ⚠️ 스포트라이트는 뺐다 — 펼침·기울기·층·바닥 그림자 넷이 이미 충분히 말한다.
+               넷 위에 빛까지 겹치면 지저분해진다. 되살릴 거면 넷 중 하나를 빼고 넣을 것.
+            ★ 링크·밑변 정렬·두 줄 캡션 높이는 그대로 유지했다(컴포넌트 주석 참조).
+              세 가지 다 여기서 겪고 고친 것들이라 연출이 바뀌어도 끌고 간다.
           */}
-          <ul className="mt-9 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
-            {IMG.credentials.map((c) => (
-              <li key={c.src} className="flex flex-col">
-                <Link
-                  href="/about/doctors"
-                  aria-label={`${c.label} — 의료진 페이지에서 크게 보기`}
-                  className="group flex flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-4 focus-visible:ring-offset-brand-50"
-                >
-                  {/* 밑변 정렬 — 비율이 달라도 네 장이 같은 선 위에 선다. */}
-                  <div className="relative flex h-[170px] items-end justify-center sm:h-[200px]">
-                    {/* 스포트라이트 — 액자 뒤에서 번지는 빛. 장식이라 스크린리더에서 숨긴다. */}
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-[86%] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(168,115,92,0.34),transparent_68%)] opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100"
-                    />
-                    <Image
-                      src={c.src}
-                      alt={c.label}
-                      width={236}
-                      height={242}
-                      loading="lazy"
-                      sizes="(max-width: 640px) 40vw, 220px"
-                      className="relative h-auto max-h-full w-auto drop-shadow-[0_10px_26px_rgba(58,33,26,0.18)] transition-all duration-500 ease-out group-hover:-translate-y-2.5 group-hover:scale-[1.07] group-hover:drop-shadow-[0_22px_38px_rgba(58,33,26,0.34)] motion-reduce:group-hover:translate-none motion-reduce:group-hover:scale-100"
-                    />
-                  </div>
-                  {/*
-                    캡션 자리를 두 줄 높이로 고정한다 — 이름 길이가 달라 한 줄/두 줄이 오가면
-                    카드 아래 선이 어긋난다(원본이 정확히 그랬다).
-                  */}
-                  <p className="mt-5 flex min-h-[2.9rem] items-start justify-center text-center text-[13px] leading-snug text-ink-soft transition-colors duration-300 group-hover:font-bold group-hover:text-brand-700">
-                    {c.label}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <CredentialFan />
 
           {/*
             발표 논문 — 원본도 인증패 아래에 가로로 긴 배너로 뒀다.

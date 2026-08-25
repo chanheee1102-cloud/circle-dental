@@ -531,3 +531,19 @@ time,
     animation: none !important;
   }
 }
+
+/*
+ * -- 커서를 따라 기우는 판 (components/CredentialFan.tsx) --------------
+ * 두 번째 버전(circle-dental-2)에서 옮겨 왔다 (2026-08-25).
+ * 주의: perspective 는 바깥(.tilt-host)에, preserve-3d 는 안쪽(.tilt)에 있어야 한다.
+ *       한쪽에 몰아 주면 자식의 translateZ 가 납작해져 층이 사라진다.
+ */
+.tilt-host { perspective: 900px; }
+.tilt {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-style: preserve-3d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt { transition: none; transform: none !important; }
+}
