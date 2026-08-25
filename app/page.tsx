@@ -19,6 +19,7 @@ import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { TREATMENTS } from '@/lib/treatments';
 import { Container, SectionHead, ContactCta, Sentences, SeqLetters } from '@/components/ui';
 import { CopyButton } from '@/components/CopyButton';
+import { ClinicMap } from '@/components/ClinicMap';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { HomeFaqSection } from '@/components/HomeFaqSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
@@ -849,11 +850,32 @@ function HoursSection() {
 
                 <div className="min-w-0 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-x-14">
             {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
-            <SectionHead
-              eyebrow="VISIT"
-              title="어디에 있고 주차는 되나요?"
-              desc={`고양시 덕양구 화정동 ${CLINIC.address.building} 3층입니다. 주차는 ${CLINIC.parking.type}이며 ${CLINIC.parking.fee}입니다.`}
-            />
+            <div>
+              <SectionHead
+                eyebrow="VISIT"
+                title="어디에 있고 주차는 되나요?"
+                desc={`고양시 덕양구 화정동 ${CLINIC.address.building} 3층입니다. 주차는 ${CLINIC.parking.type}이며 ${CLINIC.parking.fee}입니다.`}
+              />
+
+              {/*
+                ★★ 지도를 홈에 되돌렸다 (2026-08-25 운영자: "여기 왼쪽밑에 지도 나오게
+                   못하나?") ★★
+                   2026-08-18 에 홈을 덜어내면서 지도(약 550px)를 /visit 로만 보냈다.
+                   그런데 오른쪽 주소 카드가 그 자리를 다 못 채워 **왼쪽 아래가 통째로
+                   비어** 있었다. 비어 있던 것은 '여기가 어디인지 보이는 그림' 하나였다.
+                ⚠️ variant="compact" 다 — 주소 바와 지도 앱 버튼 셋은 빼고 지도만 넣는다.
+                   full 을 그대로 넣으면 이 화면 안에서 주소가 세 번, 길찾기 버튼이
+                   두 벌 나온다(오른쪽 카드 + 그 아래 '지도 · 길찾기 보기').
+                ⚠️⚠️ lg 이상에서만 보인다 ⚠️⚠️
+                   좁은 화면은 한 칸으로 쌓여 **빈 자리가 애초에 없다.** 거기에 지도를
+                   넣으면 2026-08-18 에 덜어낸 그 높이가 그대로 돌아온다.
+                   hidden 이면 iframe 을 아예 안 받으므로 모바일 로딩에도 영향이 없다.
+                   모바일에서 지도가 필요한 사람은 아래 '지도 · 길찾기 보기'로 간다.
+              */}
+              <div className="mt-9 hidden lg:block">
+                <ClinicMap height={360} variant="compact" />
+              </div>
+            </div>
 
             <div className="min-w-0">
             {/*

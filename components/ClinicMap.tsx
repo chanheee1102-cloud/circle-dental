@@ -22,7 +22,25 @@ import { CLINIC, UNVERIFIED } from '@/lib/clinic';
  * ★ 좌표가 확인되지 않은 상태면 지도를 아예 렌더하지 않는다. 틀린 위치를 가리키는 지도는
  *   없는 것보다 나쁘다(환자가 엉뚱한 곳으로 간다).
  */
-export function ClinicMap({ height = 420 }: { height?: number }) {
+export function ClinicMap({
+  height = 420,
+  variant = 'full',
+}: {
+  height?: number;
+  /**
+   * full    — 지도 + 주소 바 + 지도 앱 버튼 셋. 오시는 길 **전용 페이지**용.
+   * compact — 지도만. 다른 정보(주소·전화·주차) 옆에 곁들일 때 쓴다.
+   *
+   * ★★ 왜 나눴나 (2026-08-25 운영자: "여기 왼쪽밑에 지도 나오게 못하나?") ★★
+   *   홈의 '오시는 길' 은 오른쪽에 주소 카드가 이미 있고 그 아래 '지도 · 길찾기 보기'
+   *   버튼도 있다. 거기에 full 을 그대로 넣으면 **주소가 세 번, 길찾기 버튼이 두 벌**
+   *   나온다. 홈에서 비어 있던 것은 '여기가 어디인지 보이는 그림' 하나였으므로
+   *   그것만 넣는다.
+   * ⚠️ /visit · /contact 는 full 그대로 둔다. 그 페이지들에는 곁들일 카드가 없어서
+   *    주소 바와 앱 버튼이 유일한 길찾기 수단이다.
+   */
+  variant?: 'full' | 'compact';
+}) {
   const { lat, lng, verified } = UNVERIFIED.geo;
   if (!verified || lat == null || lng == null) return null;
 
@@ -68,11 +86,14 @@ export function ClinicMap({ height = 420 }: { height?: number }) {
           className="w-full border-0"
         />
         {/* 주소 바 — 지도 아래에 붙여 두면 스크린샷을 찍어 공유해도 주소가 함께 남는다. */}
-        <p className="bg-brand-600 px-6 py-4 text-center text-[14.5px] font-semibold text-white">
-          {CLINIC.address.full} ({CLINIC.address.dong}, {CLINIC.address.building})
-        </p>
+        {variant === 'full' && (
+          <p className="bg-brand-600 px-6 py-4 text-center text-[14.5px] font-semibold text-white">
+            {CLINIC.address.full} ({CLINIC.address.dong}, {CLINIC.address.building})
+          </p>
+        )}
       </div>
 
+      {variant === 'compact' ? null : (
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         {links.map((l) => (
           <a
@@ -92,6 +113,7 @@ export function ClinicMap({ height = 420 }: { height?: number }) {
           </a>
         ))}
       </div>
+      )}
     </div>
   );
 }
