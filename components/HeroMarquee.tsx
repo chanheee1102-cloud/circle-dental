@@ -30,13 +30,15 @@
  */
 
 /**
- * 글자 크기 — 화면 폭을 따라간다.
- * ⚠️ 아래 하한(38px)은 임의값이 아니다. 작은 폰(375×667)에서 이 값이 크면
- *    히어로 전체가 한 화면을 넘겨 **사실 띠가 첫 화면 밖으로 밀린다.**
- *    띠가 첫 화면에 들어오는 것이 이 히어로 구성의 전제라(app/page.tsx Hero 주석)
- *    여기를 키우려면 그쪽 여백도 함께 봐야 한다.
+ * 글자 크기 — 화면 폭을 따라간다. 두 번째 버전과 같은 값(56~268px, 13.9vw).
+ *
+ * ⚠️ 이 값은 임의가 아니다. 작은 폰에서 키우면 히어로가 한 화면을 넘겨
+ *    **사실 띠가 첫 화면 밖으로 밀린다** — 띠가 첫 화면에 들어오는 것이 이 히어로
+ *    구성의 전제다(app/page.tsx Hero 주석). 헤더가 투명해지며 히어로가 화면 전체를
+ *    쓰게 돼 세로가 126px 늘어난 덕에 이 크기가 들어간다. 헤더를 다시 불투명하게
+ *    되돌리면 이 값도 함께 줄여야 한다.
  */
-const SIZE = 'clamp(38px, 12.4vw, 232px)';
+const SIZE = 'clamp(56px, 13.9vw, 268px)';
 /** 상자를 아래로만 키우는 양 — 위 디센더 주석 참조. */
 const DESCENT_BUFFER = `calc(${SIZE} * 0.2)`;
 
@@ -67,7 +69,7 @@ export function HeroMarquee({
       {Array.from({ length: REPEAT }, (_, i) => (
         <span
           key={`${key}-${i}`}
-          className="display-en flex-none pr-[0.24em] text-gold-400/80"
+          className="display-en flex-none pr-[0.24em] text-mint-400"
           style={{ fontSize: SIZE, lineHeight: '1' }}
         >
           {text}

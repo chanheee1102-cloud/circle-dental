@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NAV, type NavItem } from '@/lib/nav';
 import { CLINIC } from '@/lib/clinic';
@@ -36,6 +37,20 @@ export function SiteHeader() {
   const [mobileGroup, setMobileGroup] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+
+  /*
+   * ★★ 첫 화면 위에서는 헤더를 투명하게 (2026-08-25 운영자: "아예 똑같이 해줘. 헤더랑 전부") ★★
+   *   두 번째 버전처럼 사진이 화면 맨 위까지 이어지고 헤더가 그 위에 얹힌다.
+   * ⚠️⚠️ 조건에서 pathname 을 빼지 말 것 ⚠️⚠️
+   *   투명하게 만들면 로고·메뉴·전화번호를 전부 흰색으로 뒤집어야 하는데, 하위 페이지는
+   *   맨 위가 밝은 크림색이라 흰 글자가 통째로 사라진다. 어두운 히어로가 깔린 홈에서,
+   *   그것도 아직 안 내렸을 때만 투명이다.
+   * ⚠️ 홈에서 이 모드가 성립하려면 히어로가 헤더 아래로 파고들어야 한다 —
+   *   app/page.tsx 의 Hero 에 음수 위쪽 여백(-mt)이 그 짝이다. 한쪽만 고치면
+   *   헤더 자리에 크림색 띠가 남거나 히어로가 헤더에 잘린다.
+   */
+  const pathname = usePathname();
+  const overHero = pathname === '/' && !scrolled && !openMenu && !mobileOpen;
   const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -74,11 +89,13 @@ export function SiteHeader() {
       onMouseLeave={() => setOpenMenu(null)}
       onBlur={onHeaderBlur}
       className={`sticky top-0 z-50 transition-all duration-300 ${
-        openMenu
-          ? 'border-b border-brand-200/60 bg-cream/95 backdrop-blur-xl'
-          : scrolled
-            ? 'border-b border-brand-200/60 bg-cream/85 shadow-[0_4px_24px_-12px_rgba(58,33,26,0.25)] backdrop-blur-xl'
-            : 'border-b border-transparent bg-cream/60 backdrop-blur-md'
+        overHero
+          ? 'border-b border-transparent bg-transparent'
+          : openMenu
+            ? 'border-b border-brand-200/60 bg-cream/95 backdrop-blur-xl'
+            : scrolled
+              ? 'border-b border-brand-200/60 bg-cream/85 shadow-[0_4px_24px_-12px_rgba(58,33,26,0.25)] backdrop-blur-xl'
+              : 'border-b border-transparent bg-cream/60 backdrop-blur-md'
       }`}
     >
       <div
@@ -96,7 +113,7 @@ export function SiteHeader() {
         */}
         <div className="flex items-center gap-3">
           <Link href="/" aria-label={`${CLINIC.name} 홈`} className="transition-opacity hover:opacity-80">
-            <LogoLockup />
+            <LogoLockup tone={overHero ? 'light' : 'brand'} />
           </Link>
         </div>
 
@@ -125,7 +142,11 @@ export function SiteHeader() {
                   onFocus={() => setOpenMenu(item.children ? item.label : null)}
                   aria-expanded={item.children ? open : undefined}
                   className={`relative inline-flex items-center gap-1 rounded-lg px-4 py-2.5 text-[15.5px] font-bold transition-colors ${
-                    open ? 'text-brand-700' : 'text-ink-soft hover:text-brand-700'
+                    overHero
+                      ? 'text-white/90 hover:text-white'
+                      : open
+                        ? 'text-brand-700'
+                        : 'text-ink-soft hover:text-brand-700'
                   }`}
                 >
                   {item.label}
@@ -161,7 +182,11 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <a
             href={CLINIC.phoneHref}
-            className="hidden h-10 items-center gap-2 rounded-full border border-brand-300 bg-white/80 px-5 text-[15px] font-black text-brand-700 transition-colors hover:border-brand-500 hover:bg-white md:inline-flex"
+            className={`hidden h-10 items-center gap-2 rounded-full border px-5 text-[15px] font-black transition-colors md:inline-flex ${
+              overHero
+                ? 'border-white/40 bg-transparent text-white hover:border-white hover:bg-white/10'
+                : 'border-brand-300 bg-white/80 text-brand-700 hover:border-brand-500 hover:bg-white'
+            }`}
           >
             <PhoneIcon />
             <span className="tabular-nums">{CLINIC.phone}</span>
@@ -185,7 +210,14 @@ export function SiteHeader() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-            className="group hidden h-10 items-center gap-2 rounded-full bg-gradient-to-b from-brand-600 to-brand-700 px-6 text-[15px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5 sm:inline-flex"
+            /*
+              ⚠️ 색을 갈색 → 민트로 바꿨다 (2026-08-25). 히어로의 주 버튼도 '예약하기'
+                 인데 그쪽이 민트라, 같은 화면에 **같은 글자의 버튼이 두 색**으로 있었다.
+                 사이트의 주 행동 버튼은 한 색이어야 한다.
+              ⚠️ 스크롤 상태에 따라 색을 바꾸지 않는다 — 같은 버튼이 스크롤 중에
+                 색이 변하면 다른 버튼처럼 보인다.
+            */
+            className="group hidden h-10 items-center gap-2 rounded-full bg-mint-500 px-6 text-[15px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5 hover:bg-mint-400 sm:inline-flex"
           >
             예약하기
             <span aria-hidden className="text-[13px] transition-transform group-hover:translate-x-0.5">
@@ -195,7 +227,9 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand-300 text-brand-700 sm:h-10 sm:w-10 lg:hidden"
+            className={`inline-flex h-9 w-9 items-center justify-center rounded-full border sm:h-10 sm:w-10 lg:hidden ${
+              overHero ? 'border-white/40 text-white' : 'border-brand-300 text-brand-700'
+            }`}
             aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
             aria-expanded={mobileOpen}
           >

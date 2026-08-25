@@ -183,33 +183,41 @@ function Hero() {
      *   첫 화면에서 사실을 보여 주는 것이 이 띠의 존재 이유라 그러면 의미가 없다.
      */
     /*
-     * ★ 높이를 '한 화면 - 헤더' 로 정확히 잡는다.
-     *   92vh 처럼 어림으로 두면 헤더(86px)만큼 넘쳐 **사실 띠 아래가 잘린다**(실측 13px).
-     *   첫 화면에 띠 전체가 들어오는 것이 이 구성의 전제라 어림값을 쓰지 않는다.
+     * ★★ 헤더 아래로 파고든다 (2026-08-25 운영자: "아예 똑같이 해줘. 헤더랑 전부") ★★
+     *   두 번째 버전처럼 사진이 화면 맨 위까지 이어지고 헤더가 그 위에 투명하게 얹힌다.
+     *   헤더는 sticky 라 흐름에서 자리를 차지하므로, 음수 위쪽 여백으로 그만큼 끌어올린다.
+     *   ⚠️ 값(60/86)은 SiteHeader 의 안 내린 상태 높이와 **같아야 한다**. 헤더 높이를
+     *      바꾸면 여기도 같이 바꿀 것 — 안 그러면 위에 크림색 띠가 남는다.
+     *   ⚠️ 헤더 쪽 짝은 SiteHeader 의 overHero 다. 한쪽만 되돌리면 흰 글씨가 크림색
+     *      배경 위에 놓여 통째로 사라지거나, 사진이 헤더에 잘린다.
+     *
+     * ★ 높이 — 이제 화면 맨 위에서 시작하므로 한 화면 전체를 쓴다.
+     *   ⚠️ 모바일은 하단 고정 바(66px)를 빼야 사실 띠가 그 바에 가리지 않는다.
+     *   ⚠️ vh 가 아니라 svh/dvh — 주소창이 접히며 vh 가 변해 화면이 한 번 출렁인다.
      */
-    /*
-     * ★ 모바일 높이를 '한 화면 − 헤더(60) − 하단 고정 바(66)' 로 잡는다.
-     *   620px 고정이라 기기마다 어중간하게 남거나 잘렸다.
-     *   ⚠️ vh 가 아니라 dvh — 주소창이 접히며 vh 가 변해 화면이 한 번 출렁인다.
-     */
-    <section className="relative flex min-h-[calc(100dvh-126px)] flex-col overflow-hidden sm:min-h-[620px] lg:min-h-[calc(100vh-86px)]">
+    <section className="relative -mt-[60px] flex min-h-[calc(100dvh-66px)] flex-col overflow-hidden sm:-mt-[86px] lg:min-h-screen">
       {/* 폴백 배경 — 사진마저 늦게 뜨는 회선에서도 화면이 비지 않는다. */}
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-brand-700 to-brand-900" />
+      <div aria-hidden className="absolute inset-0 bg-[#0d1113]" />
 
       {/* 사진을 깔고 그 위로 영상이 서서히 겹친다 — components/HeroMedia.tsx 주석 참조. */}
       <HeroMedia />
 
       {/*
         가독성 오버레이 — 배경 위 흰 글씨의 대비를 확보한다.
-        ★★ 글이 가운데 → 왼쪽 아래로 내려오면서 아래를 더 눌렀다 (2026-08-25) ★★
-           예전에는 가운데가 가장 어두운 타원 오버레이를 한 겹 더 깔았다. 지금은
-           글이 아래 왼쪽에 모여 있으므로 **아래로 갈수록 짙어지는 세로 그라데이션
-           한 겹**이면 충분하다. 타원을 남기면 글이 없는 화면 한가운데만 거무스름해져
-           배경 사진이 이유 없이 죽는다.
+        ★★ 두 번째 버전의 값을 그대로 쓴다 (2026-08-25) ★★
+           위(헤더)와 아래(문구·띠)를 누르고 가운데는 40% 만 눌러 사진을 살린다.
+           예전에는 가운데가 가장 어두운 타원을 한 겹 더 깔았는데, 글이 아래로 내려온
+           지금은 그 타원이 글도 없는 화면 한가운데만 거무스름하게 만든다.
+        ⚠️ 색이 brand-900(#22201d, 웜)이 아니라 중성 먹색(8,12,14)이다 — v2 와 같은
+           인상을 내려면 스크림 색부터 같아야 한다. 갈색 스크림은 사진을 누렇게 만든다.
       */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-brand-900/62 via-brand-900/40 to-brand-900/88"
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(180deg,rgba(8,12,14,.62) 0%,rgba(8,12,14,.40) 40%,rgba(8,12,14,.88) 100%)',
+        }}
       />
 
       {/*
@@ -219,11 +227,16 @@ function Hero() {
       */}
       {/*
         ★ 마퀴 — 화면 맨 위를 가로지른다. 흐름 안에 둔다(absolute 금지).
-          띄워 두면 글자 크기가 화면 **폭**(12.4vw)을 따르는 탓에, 폭이 넓고 세로가
+          띄워 두면 글자 크기가 화면 **폭**(13.9vw)을 따르는 탓에, 폭이 넓고 세로가
           짧은 창에서 아래 글 덩어리와 서로를 모른 채 겹친다. flex 열에 넣어 두면
           겹칠 수가 없다.
+        ⚠️ 위 여백은 '헤더 높이 + 4vh' 다 — 헤더가 투명하게 겹쳐 있으므로 그만큼
+           내려야 로고·메뉴와 글자가 부딪히지 않는다. 헤더 높이를 바꾸면 여기도 같이.
       */}
-      <div className="enter relative shrink-0 pt-[3.5vh] sm:pt-[5vh]" style={{ animationDelay: '60ms' }}>
+      <div
+        className="enter relative shrink-0 pt-[calc(60px+4vh)] sm:pt-[calc(86px+4vh)]"
+        style={{ animationDelay: '60ms' }}
+      >
         <HeroMarquee text="Save your own tooth" />
       </div>
 
@@ -234,6 +247,8 @@ function Hero() {
            히어로가 조금 길어질 뿐 마퀴와 겹치지 않는다.
         ⚠️ 글은 왼쪽 정렬이지만 **컨테이너는 본문과 같은 Container** 를 쓴다. 다른
            섹션들과 왼쪽 기준선이 어긋나면 첫 화면만 따로 노는 것처럼 보인다.
+           (두 번째 버전은 자기만의 여백 식(7.24vw)을 쓰는데, 그걸 그대로 옮기면
+            이 사이트에서는 히어로만 오른쪽으로 밀려 아래 섹션들과 어긋난다.)
       */}
       <Container className="relative mt-auto pb-7 pt-10 sm:pb-9 sm:pt-16">
         {/*
@@ -243,14 +258,22 @@ function Hero() {
              같은 말을 두 번 하지 않으려고 뺐고, 대신 히어로에 없던 지역을 넣었다.
         */}
         <p
-          className="enter on-photo text-[13px] font-bold tracking-[0.01em] text-white/75 sm:text-[14px]"
+          className="enter on-photo text-[13px] font-bold tracking-[-0.01em] text-white/75"
           style={{ animationDelay: '140ms' }}
         >
           고양시 덕양구 화정동
         </p>
 
+        {/*
+          ⚠️ 여기만 이 사이트의 .display(900, 자간 -0.042em)를 쓰지 않는다.
+             두 번째 버전과 같은 인상을 내려면 크기·굵기·자간이 같아야 한다
+             (extrabold 800 / -0.03em / clamp 18~44px). .display 를 다시 씌우면
+             글자가 두 단계 굵어지고 커져서 배치가 통째로 달라진다.
+          ⚠️ clamp 로 화면 폭을 따라가므로 어느 폭에서도 한 줄이다 — 줄바꿈을 억지로
+             넣지 말 것.
+        */}
         <h1
-          className="display enter on-photo mt-3 text-[32px] text-white sm:text-[50px] lg:text-[62px]"
+          className="enter on-photo mt-3 text-[clamp(18px,7vw,44px)] leading-[1.34] font-extrabold tracking-[-0.03em] text-white"
           style={{ animationDelay: '220ms' }}
         >
           환자 중심 진료, 소통하는 치과
@@ -262,14 +285,22 @@ function Hero() {
              같은 원본이라, 한쪽만 바뀌면 첫 화면과 본문이 어긋난다.
         */}
         <p
-          className="enter on-photo mt-4 text-[14px] font-bold text-white/70 sm:text-[15.5px]"
+          className="enter on-photo mt-4 text-[15px] font-medium tracking-[-0.01em] text-white/70"
           style={{ animationDelay: '280ms' }}
         >
           {TREATMENT_PILLARS.map((p) => p.name).join(' · ')}
         </p>
 
+        {/*
+          ★★ 버튼 규격을 두 번째 버전에 맞췄다 (2026-08-25 운영자: "아예 똑같이") ★★
+             전에는 흰 알약 두 개가 h-64px / w-236px 로 크게 못 박혀 있었다. v2 는
+             더 작고(px-8 py-3.5, 15px) **주 버튼이 흰색이 아니라 브랜드색으로 채워진다.**
+             글자 크기·굵기·여백을 v2 값 그대로 가져오고, 폭은 못 박지 않는다(내용만큼).
+          ⚠️ 폭을 안 박으므로 두 버튼의 폭이 글자 수만큼 달라진다 — v2 도 그렇다.
+             예전의 '둘을 정확히 같은 크기로' 규칙은 이 배치에는 적용하지 않는다.
+        */}
         <div
-          className="enter mt-8 flex flex-wrap gap-3.5"
+          className="enter mt-7 flex flex-wrap items-center gap-3"
           style={{ animationDelay: '340ms' }}
         >
           {/*
@@ -303,7 +334,7 @@ function Hero() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-            className="group inline-flex h-[54px] w-[228px] items-center justify-center gap-2.5 rounded-full bg-white text-[16px] font-black text-brand-800 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1 sm:h-[64px] sm:w-[236px] sm:text-[17px]"
+            className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-mint-500 px-8 py-3.5 text-[15px] font-bold text-white transition-transform hover:-translate-y-0.5"
           >
             예약하기
             <span aria-hidden className="transition-transform group-hover:translate-x-1">
@@ -312,7 +343,7 @@ function Hero() {
           </a>
           <Link
             href="/insight/symptom"
-            className="group inline-flex h-[54px] w-[228px] items-center justify-center gap-2.5 rounded-full border-[1.5px] border-white/70 text-[16px] font-black text-white backdrop-blur-[2px] transition-all hover:-translate-y-1 hover:border-white hover:bg-white/15 sm:h-[64px] sm:w-[236px] sm:text-[17px]"
+            className="group inline-flex items-center justify-center gap-2.5 rounded-full border border-white/35 px-7 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
           >
             증상으로 찾아보기
             <span aria-hidden className="transition-transform group-hover:translate-x-1">
@@ -357,10 +388,11 @@ function Hero() {
                   key={f.label}
                   className={`py-4 pr-6 sm:py-5 ${i === 4 ? 'col-span-2 sm:col-span-1' : ''}`}
                 >
-                  <dt className="text-[10.5px] font-black tracking-[0.18em] text-white/50 uppercase">
+                  {/* 라벨·값 규격도 두 번째 버전 값 그대로 (11.5px / 0.14em, 15px bold). */}
+                  <dt className="text-[11.5px] font-bold tracking-[0.14em] text-white/60 uppercase">
                     {f.label}
                   </dt>
-                  <dd className="mt-1.5 text-[13.5px] font-bold leading-snug tabular-nums text-white/95 sm:text-[14.5px]">
+                  <dd className="mt-1.5 text-[14px] font-bold leading-snug tabular-nums text-white sm:text-[15px]">
                     {f.value}
                   </dd>
                 </div>
