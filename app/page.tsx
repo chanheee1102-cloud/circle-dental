@@ -12,6 +12,7 @@ import { heroFacts } from '@/lib/heroFacts';
 import { HeroMedia } from '@/components/HeroMedia';
 import { HeroMarquee } from '@/components/HeroMarquee';
 import { CredentialFan } from '@/components/CredentialFan';
+import { DoctorStage } from '@/components/DoctorStage';
 import { Reveal } from '@/components/Reveal';
 import { InteriorSlider } from '@/components/InteriorSlider';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
@@ -545,60 +546,20 @@ function DoctorSection() {
           </p>
         </div>
 
-        {/* 세 장을 같은 크기로. 원본 비율(625×670)을 그대로 써 인물이 잘리지 않는다. */}
-        <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {DOCTORS.map((d, i) => (
-            <li key={d.slug}>
-              <Reveal delay={i * 70}>
-                <Link
-                  href={`/about/doctors/${d.slug}`}
-                  className="group block h-full overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
-                >
-                  <div className="relative aspect-[625/670] overflow-hidden bg-brand-100">
-                    <Image
-                      src={d.photo}
-                      alt={`${CLINIC.name} ${d.role} ${d.name}`}
-                      fill
-                      priority={i === 0}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                    />
-                  </div>
-
-                  <div className="p-6">
-                    <p className="text-[12px] font-black tracking-[0.08em] text-gold-600">{d.role}</p>
-                    <h3 className="display mt-2 text-[24px] tracking-[0.04em] text-ink group-hover:text-brand-700">
-                      {d.name}
-                    </h3>
-                    <p className="mt-3 text-[13.5px] font-bold text-brand-600">
-                      보건복지부 인정 통합치의학과 전문의
-                    </p>
-
-                    {/* 경력 두 줄만 — 카드에서 다 읽히지 않는다. 나머지는 개별 페이지에 있다. */}
-                    <ul className="mt-4 space-y-1.5 border-t border-brand-100 pt-4">
-                      {d.career
-                        .filter((c) => !/통합치의학과 전문의/.test(c))
-                        .slice(0, 2)
-                        .map((c) => (
-                          <li key={c} className="text-[13px] leading-relaxed text-ink-soft">
-                            {c}
-                          </li>
-                        ))}
-                    </ul>
-
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-black text-brand-700">
-                      프로필 보기
-                      <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                        →
-                      </span>
-                    </span>
-                  </div>
-                </Link>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
-
+        {/*
+          ★★ 카드 세 장 → 무대 구도 (2026-08-25 운영자: "대표원장 가운데에 딱 뜨고
+             그 왼쪽 오른쪽 밑에 각각 원장들 뜨고, 좀 카드 형식 말고 이렇게 원래
+             동그라미치과 참고해서 스크롤이벤트랑 넣고") ★★
+             원본(circle-dental.co.kr)은 세 분을 누끼로 따서 가운데가 크고 높게,
+             양옆이 작고 낮게 세워 뒀다. 한 줄로 늘어놓은 카드 세 장과 달리 **구도
+             자체가 위계를 말한다** — 누가 대표원장인지 글을 안 읽어도 보인다.
+          ⚠️ 흰 카드·테두리·그림자를 없앤 대신 사진 아래를 마스크로 지운다. 안 지우면
+             스튜디오 배경의 회색 네모가 바닥에 남아 '상자를 없앤' 게 아니라
+             '테두리만 지운' 것이 된다(components/DoctorStage.tsx 주석 참조).
+          ⚠️ 여기서 IntersectionObserver 를 새로 만들지 않는다 — 등장은 이 사이트의
+             .reveal 클래스와 레이아웃에 하나뿐인 RevealScript 가 맡는다.
+        */}
+        <DoctorStage />
         {/*
           ★★ 원본 홈페이지와 같은 배치 — 네 장을 한 줄에 (2026-08-14 운영자) ★★
             자동으로 넘기는 쇼케이스를 만들었다가 되돌렸다. 운영자 판단은
