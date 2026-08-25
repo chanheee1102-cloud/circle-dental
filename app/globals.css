@@ -489,3 +489,34 @@ time,
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/*
+ * -- 첫 화면 대형 마퀴 --------------------------------
+ * 두 번째 버전(circle-dental-2)의 히어로에서 옮겨 왔다 (2026-08-25 운영자).
+ * 트랙 두 벌이 -50% 로 밀려 이음매 없이 순환한다. 글자는 아주 조금씩 숨 쉰다.
+ * 주의: 글자 애니메이션은 인라인 style 로 붙는다 -- 아래 모션 감소 규칙에서
+ *       !important 로 눌러야 실제로 꺼진다.
+ */
+.marquee-track {
+  animation-name: marqueeSlide;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 30s;
+}
+
+@keyframes marqueeSlide {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes letterBreathe {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-0.018em); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .marquee-track span {
+    animation: none !important;
+  }
+}

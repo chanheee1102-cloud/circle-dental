@@ -10,6 +10,7 @@ import {
 import { IMG } from '@/lib/assets';
 import { heroFacts } from '@/lib/heroFacts';
 import { HeroMedia } from '@/components/HeroMedia';
+import { HeroMarquee } from '@/components/HeroMarquee';
 import { Reveal } from '@/components/Reveal';
 import { InteriorSlider } from '@/components/InteriorSlider';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
@@ -198,19 +199,17 @@ function Hero() {
       {/* 사진을 깔고 그 위로 영상이 서서히 겹친다 — components/HeroMedia.tsx 주석 참조. */}
       <HeroMedia />
 
-      {/* 가독성 오버레이 — 배경 위 흰 글씨의 대비를 확보한다. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-brand-900/65 via-brand-900/50 to-brand-900/80"
-      />
       {/*
-        ★ 글자가 놓이는 가운데만 한 번 더 눌러 준다.
-          화면 전체를 균일하게 어둡게 하면 배경이 통째로 죽는다. 타원으로 가운데만 누르면
-          글자는 읽히고 영상·사진은 산다.
+        가독성 오버레이 — 배경 위 흰 글씨의 대비를 확보한다.
+        ★★ 글이 가운데 → 왼쪽 아래로 내려오면서 아래를 더 눌렀다 (2026-08-25) ★★
+           예전에는 가운데가 가장 어두운 타원 오버레이를 한 겹 더 깔았다. 지금은
+           글이 아래 왼쪽에 모여 있으므로 **아래로 갈수록 짙어지는 세로 그라데이션
+           한 겹**이면 충분하다. 타원을 남기면 글이 없는 화면 한가운데만 거무스름해져
+           배경 사진이 이유 없이 죽는다.
       */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(34,32,29,0.5),transparent_72%)]"
+        className="absolute inset-0 bg-gradient-to-b from-brand-900/62 via-brand-900/40 to-brand-900/88"
       />
 
       {/*
@@ -218,33 +217,60 @@ function Hero() {
           한 번에 다 나타나는 것보다 '읽는 순서' 를 몸으로 알려 준다. 60~80ms 씩만 어긋내
           알아채기 전에 끝난다 — 기다림으로 느껴지는 순간부터는 방해다.
       */}
-      <Container className="relative flex flex-1 flex-col justify-center py-24 text-center">
+      {/*
+        ★ 마퀴 — 화면 맨 위를 가로지른다. 흐름 안에 둔다(absolute 금지).
+          띄워 두면 글자 크기가 화면 **폭**(12.4vw)을 따르는 탓에, 폭이 넓고 세로가
+          짧은 창에서 아래 글 덩어리와 서로를 모른 채 겹친다. flex 열에 넣어 두면
+          겹칠 수가 없다.
+      */}
+      <div className="enter relative shrink-0 pt-[3.5vh] sm:pt-[5vh]" style={{ animationDelay: '60ms' }}>
+        <HeroMarquee text="Save your own tooth" />
+      </div>
+
+      {/*
+        ★★ 가운데 정렬 → 왼쪽 아래 (2026-08-25 운영자: "히어로는 두번째버전 디자인이
+           좋은것 같아") ★★ 두 번째 버전처럼 문구·버튼·사실 띠를 한 덩어리로 묶어
+           화면 아래에 붙인다. mt-auto 가 남는 자리를 위에 몰아준다 — 자리가 모자라면
+           히어로가 조금 길어질 뿐 마퀴와 겹치지 않는다.
+        ⚠️ 글은 왼쪽 정렬이지만 **컨테이너는 본문과 같은 Container** 를 쓴다. 다른
+           섹션들과 왼쪽 기준선이 어긋나면 첫 화면만 따로 노는 것처럼 보인다.
+      */}
+      <Container className="relative mt-auto pb-7 pt-10 sm:pb-9 sm:pt-16">
+        {/*
+          지역 한 줄 — 첫 화면에서 "어디 병원인지" 를 못박는다.
+          ⚠️ 예전 이 자리의 "10년 이상 경력의 대학 병원 출신 의료진…" 문장은 아래
+             사실 띠가 더 구체적으로 말한다(전문의 3인 / 대표원장 외래교수).
+             같은 말을 두 번 하지 않으려고 뺐고, 대신 히어로에 없던 지역을 넣었다.
+        */}
         <p
-          className="enter on-photo text-[13px] font-bold tracking-[0.01em] text-white/80 sm:text-[15px]"
-          style={{ animationDelay: '60ms' }}
+          className="enter on-photo text-[13px] font-bold tracking-[0.01em] text-white/75 sm:text-[14px]"
+          style={{ animationDelay: '140ms' }}
         >
-          10년 이상 경력의 대학 병원 출신 의료진, 디지털 의료장비 활용
+          고양시 덕양구 화정동
         </p>
 
         <h1
-          className="display enter on-photo mt-5 text-[36px] text-white sm:text-[58px] lg:text-[72px]"
-          style={{ animationDelay: '140ms' }}
+          className="display enter on-photo mt-3 text-[32px] text-white sm:text-[50px] lg:text-[62px]"
+          style={{ animationDelay: '220ms' }}
         >
           환자 중심 진료, 소통하는 치과
         </h1>
 
+        {/*
+          무엇을 보는지 — 항목만. 문장으로 늘리지 않는다.
+          ⚠️ 이름을 여기 직접 적지 않는다. TREATMENT_PILLARS 가 진료 카드 섹션과
+             같은 원본이라, 한쪽만 바뀌면 첫 화면과 본문이 어긋난다.
+        */}
         <p
-          className="enter on-photo mx-auto mt-7 max-w-2xl text-[15px] leading-[1.85] text-white/85 sm:text-[17px]"
-          style={{ animationDelay: '220ms' }}
+          className="enter on-photo mt-4 text-[14px] font-bold text-white/70 sm:text-[15.5px]"
+          style={{ animationDelay: '280ms' }}
         >
-          환자들의 치과에 대한 두려움을 깊이 공감하며, 최대한 아프지 않고
-          <br className="hidden sm:block" /> 과잉 진료없이 편안하게 치료를 받고 가실 수 있도록
-          노력합니다.
+          {TREATMENT_PILLARS.map((p) => p.name).join(' · ')}
         </p>
 
         <div
-          className="enter mt-10 flex flex-wrap justify-center gap-3.5"
-          style={{ animationDelay: '300ms' }}
+          className="enter mt-8 flex flex-wrap gap-3.5"
+          style={{ animationDelay: '340ms' }}
         >
           {/*
             ★★ 첫 버튼을 전화번호 → '예약하기' 로 (2026-08-14 운영자) ★★
@@ -304,32 +330,37 @@ function Hero() {
       */}
       {facts.length >= 2 && (
         <div
-          className="enter relative border-t border-white/15 bg-brand-900/45 backdrop-blur-sm"
-          style={{ animationDelay: '400ms' }}
+          className="enter relative border-t border-white/15"
+          style={{ animationDelay: '420ms' }}
         >
           <Container>
             {/*
-              ⚠️ 열 수를 항목 수에 맞춘다.
-                4열에 5칸이면 마지막 하나가 다음 줄에 혼자 떨어져 빈 칸 셋이 남는다(실측).
-                항목 수는 병원이 확인해 준 사실의 개수라 미리 알 수 없으므로 계산해서 넣는다.
+              ★★ 가운데 정렬 · 세로 칸막이 → 왼쪽 정렬 (2026-08-25, 두 번째 버전 이식) ★★
+                 위 문구가 왼쪽으로 내려오면서 가운데 정렬한 띠만 따로 놀았다. 칸막이도
+                 뺐다 — 위에 이미 가로 경계선이 있어 두 겹이 되고, 값의 길이가 제각각이라
+                 칸막이가 글자와 붙는 자리가 생긴다.
+              ⚠️ 배경 판(bg-brand-900/45 + backdrop-blur)도 뺐다. 아래로 갈수록 짙어지는
+                 오버레이가 이미 이 자리를 충분히 눌러 준다. 판을 겹치면 띠만 도드라져
+                 첫 화면이 두 덩어리로 갈린다.
+              ⚠️ 열 수를 항목 수에 맞춘다 — 5열에 5칸. 넉 줄짜리 --cols 를 지우면
+                 lg 에서 마지막 칸이 다음 줄로 떨어진다.
+              ⚠️ 좁은 화면은 2열이고 다섯 번째(주차)는 한 줄을 통째로 쓴다. 예전에는
+                 다섯 번째를 lg 미만에서 아예 감췄는데, 주차 여부는 **모바일에서 가장
+                 많이 확인하는 값**이라 감출 것이 아니었다.
             */}
             <dl
-              className="fact-strip grid grid-cols-2 divide-x divide-white/10 sm:grid-cols-3"
+              className="fact-strip grid grid-cols-2 gap-y-1 sm:grid-cols-3"
               style={{ ['--cols' as string]: facts.length }}
             >
               {facts.map((f, i) => (
-                /*
-                 * ⚠️ 좁은 화면에서는 앞의 넷만 — 2열이라 다섯이면 세 번째 줄에 하나만 남고
-                 *    히어로가 두 화면을 넘긴다. 넷이면 2×2 로 딱 떨어진다.
-                 */
                 <div
                   key={f.label}
-                  className={`px-5 py-6 text-center ${i >= 4 ? 'hidden lg:block' : ''}`}
+                  className={`py-4 pr-6 sm:py-5 ${i === 4 ? 'col-span-2 sm:col-span-1' : ''}`}
                 >
-                  <dt className="text-[10.5px] font-black tracking-[0.22em] text-white/45 uppercase">
+                  <dt className="text-[10.5px] font-black tracking-[0.18em] text-white/50 uppercase">
                     {f.label}
                   </dt>
-                  <dd className="mt-2 text-[14px] font-bold leading-snug tabular-nums text-white/95 sm:text-[15px]">
+                  <dd className="mt-1.5 text-[13.5px] font-bold leading-snug tabular-nums text-white/95 sm:text-[14.5px]">
                     {f.value}
                   </dd>
                 </div>
