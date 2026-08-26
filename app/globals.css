@@ -53,7 +53,15 @@
    */
   --color-ink: #2a2724;
   --color-ink-soft: #625b55;
-  --color-ink-muted: #948c85;
+  /*
+   * ⚠️⚠️ #948c85 로 되돌리지 말 것 — 밝은 바탕에서 3.12:1 이라 기준(4.5)에 미달했다.
+   *    "장식용이니 작은 본문에 쓰지 말 것" 이라고 적어 뒀지만 실제로는 빵부스러기·
+   *    메타·캡션 등 **읽어야 하는 글**에 34곳이 쓰고 있었다(전 페이지 실측 466건 중
+   *    62건이 이 색 하나). 규칙을 지키게 만드는 것보다 색을 통과시키는 편이 확실하다.
+   *    지금 값: 크림 바탕 4.74:1 · 흰 면 5.02:1.
+   * ⚠️ 어두운 면에서는 쓰지 않는다(실측 0곳). 어두운 쪽은 brand-200/300 이 맡는다.
+   */
+  --color-ink-muted: #756e67;
 
   /* 웜 뉴트럴 — 따뜻한 회갈색 축 */
   --color-brand-50: #f8f6f4;
@@ -360,6 +368,47 @@ time,
 }
 
 /* 카드 진입 — .reveal(26px)보다 세게. 어두운 면이라 이 정도는 튀지 않는다. */
+/*
+ * ⚠️ .concern 은 2026-08-25 에 쓰는 곳이 없어졌다 — 망설임이 가로 레일이 되면서
+ *    등장은 레일 전체가 .reveal 하나로 받는다. RevealScript 의 선택자에는 남아 있어도
+ *    비용이 없어 그대로 뒀다(다시 세로로 되돌릴 때 필요하다).
+ */
+/*
+ * 계단식 등장 — 묶음 하나에 클래스 하나만 붙이면 **자식들이 차례로** 올라온다.
+ *
+ * ★ 왜 필요한가 (2026-08-25 전 페이지 실측)
+ *   27개 중 22개 페이지에 움직이는 것이 하나도 없었다. 낱장마다 지연 시간을 손으로
+ *   적으면 반드시 빠뜨리는 페이지가 생기므로, 목록·격자에는 이 클래스 하나만 건다.
+ *
+ * ⚠️ 관찰자는 늘어나지 않는다 — RevealScript 가 .reveal 을 보는 그대로다.
+ *    is-shown 이 붙으면 자식들이 nth-child 순서로 열린다.
+ * ⚠️ 12번째까지만 계단을 준다. 그보다 긴 목록에서 계속 늦추면 마지막 항목이
+ *    한참 뒤에 나타나 '고장 난 화면' 으로 보인다. 13번째부터는 12번째와 같이 뜬다.
+ */
+.reveal-stack > * {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-stack.is-shown > * {
+  opacity: 1;
+  transform: none;
+}
+.reveal-stack.is-shown > *:nth-child(1) { transition-delay: 0ms }
+.reveal-stack.is-shown > *:nth-child(2) { transition-delay: 70ms }
+.reveal-stack.is-shown > *:nth-child(3) { transition-delay: 140ms }
+.reveal-stack.is-shown > *:nth-child(4) { transition-delay: 210ms }
+.reveal-stack.is-shown > *:nth-child(5) { transition-delay: 280ms }
+.reveal-stack.is-shown > *:nth-child(6) { transition-delay: 350ms }
+.reveal-stack.is-shown > *:nth-child(7) { transition-delay: 420ms }
+.reveal-stack.is-shown > *:nth-child(8) { transition-delay: 490ms }
+.reveal-stack.is-shown > *:nth-child(9) { transition-delay: 560ms }
+.reveal-stack.is-shown > *:nth-child(10) { transition-delay: 630ms }
+.reveal-stack.is-shown > *:nth-child(11) { transition-delay: 700ms }
+.reveal-stack.is-shown > *:nth-child(n + 12) { transition-delay: 770ms }
+
 .concern {
   opacity: 0;
   transform: translateY(40px) scale(0.96);
@@ -372,9 +421,11 @@ time,
   transform: none;
 }
 
+
 /*
  * 포인터 스포트라이트 — 커서 자리에서 빛이 번진다.
- * 좌표는 ConcernCard 가 --mx / --my 로 넣는다(리렌더 없이).
+ * 좌표는 RevealScript 가 문서 하나에 위임해 --mx / --my 로 넣는다(리렌더 없이).
+ * ★ 이 훅이 붙는 곳은 대화의 **답변 면**이다(components/ConcernExchange.tsx).
  * ★ 어두운 면에서만 성립하는 효과다. 밝은 면에 옮기면 얼룩으로 보인다.
  */
 .concern-card::before {
@@ -419,7 +470,8 @@ time,
   .enter,
   .reveal,
   .mega-in,
-  .concern {
+  .concern,
+  .reveal-stack > * {
     opacity: 1;
     transform: none;
     animation: none;

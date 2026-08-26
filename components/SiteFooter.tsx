@@ -84,7 +84,7 @@ export function SiteFooter() {
                  나머지 셋과 어긋났다(실제로 그런 상태였다).
             */}
             <div className="mt-7 sm:max-w-[340px] lg:max-w-none">
-              <p className="text-[11.5px] font-black tracking-[0.16em] text-brand-200/60 uppercase">
+              <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/60 uppercase">
                 공식 채널
               </p>
               {/*
@@ -108,7 +108,7 @@ export function SiteFooter() {
                       </span>
                       <span
                         aria-hidden
-                        className="shrink-0 text-[11px] text-brand-200/60 transition-transform group-hover:translate-x-0.5"
+                        className="shrink-0 text-[12.5px] text-brand-200/60 transition-transform group-hover:translate-x-0.5"
                       >
                         ↗
                       </span>
@@ -155,7 +155,7 @@ export function SiteFooter() {
         */}
         <dl className="mt-14 grid gap-x-8 gap-y-9 border-t border-white/10 pt-9 text-[12.5px] sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <dt className="text-[11px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
+            <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
               주소
             </dt>
             <dd className="mt-2.5 space-y-1 leading-relaxed text-brand-200/80">
@@ -167,7 +167,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <dt className="text-[11px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
+            <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
               연락처
             </dt>
             <dd className="mt-2.5 space-y-1 leading-relaxed text-brand-200/80">
@@ -177,7 +177,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <dt className="text-[11px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
+            <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
               사업자 정보
             </dt>
             <dd className="mt-2.5 space-y-1 leading-relaxed text-brand-200/80">
@@ -188,7 +188,7 @@ export function SiteFooter() {
 
           {UNVERIFIED.hours.verified && (
             <div>
-              <dt className="text-[11px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
+              <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
                 진료시간
               </dt>
               <dd className="mt-2.5 space-y-1 leading-relaxed text-brand-200/80">
@@ -211,7 +211,7 @@ export function SiteFooter() {
              글줄 길이는 문단이, 선은 칸이 각각 맡는다.
         */}
         <div className="mt-12 border-t border-white/10 pt-8">
-          <p className="max-w-[86ch] text-[11.5px] leading-relaxed text-brand-200/50">
+          <p className="max-w-[86ch] text-[12.5px] leading-relaxed text-brand-200/50">
             본 사이트의 진료 정보는 일반적인 이해를 돕기 위한 것으로 개별 진단을 대신하지 않습니다. 치료
             결과는 개인의 구강 상태와 전신 건강에 따라 다를 수 있으며, 모든 의료 행위에는 부작용이 따를 수
             있습니다.
@@ -239,7 +239,7 @@ export function SiteFooter() {
           좁은 화면에서는 세로로 쌓는다. 셋을 한 줄에 흘려 두면 줄바꿈 위치가 화면 폭마다
           달라져 어디서 끊길지 알 수 없었다.
         */}
-        <div className="mt-8 flex flex-col gap-3 text-[11.5px] sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-3 text-[12.5px] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link
               href="/privacy"

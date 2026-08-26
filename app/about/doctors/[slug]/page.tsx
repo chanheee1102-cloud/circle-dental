@@ -172,7 +172,7 @@ export default async function DoctorDetailPage({
                       <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
                         <span
                           aria-hidden
-                          className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[11px] text-white"
+                          className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[12.5px] text-white"
                         >
                           ✓
                         </span>
@@ -234,7 +234,7 @@ export default async function DoctorDetailPage({
                     <Image src={o.photo} alt="" fill sizes="80px" className="object-cover object-top" />
                   </div>
                   <div>
-                    <p className="text-[12px] font-black tracking-wide text-brand-500">{o.role}</p>
+                    <p className="text-[12.5px] font-black tracking-wide text-brand-500">{o.role}</p>
                     <p className="mt-1 text-[18px] font-black tracking-[0.05em] text-ink group-hover:text-brand-700">
                       {o.name}
                     </p>

@@ -117,10 +117,10 @@ export default async function SpecialDetailPage({
                   <StrengthIcon name={s.key} />
                 </span>
                 <div>
-                  <p className="text-[11.5px] font-black tracking-[0.16em] text-brand-500">
+                  <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-500">
                     {s.eyebrow}
                   </p>
-                  <p className="text-[26px] font-black leading-none text-brand-200">{s.no}</p>
+                  <p className="text-[26px] font-black leading-none text-ink-muted">{s.no}</p>
                 </div>
               </div>
 
@@ -150,7 +150,7 @@ export default async function SpecialDetailPage({
         {/* 용어 풀이 — 일반적인 치과 지식 */}
         <section className="border-y border-brand-200/60 bg-white py-16">
           <Container>
-            <p className="text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
+            <p className="text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
               알아 두면 좋은 것
             </p>
             <div className="mb-10 max-w-[70ch]">

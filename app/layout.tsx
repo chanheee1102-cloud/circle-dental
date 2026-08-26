@@ -83,7 +83,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* eslint-disable-next-line react/no-danger */}
           <style
             dangerouslySetInnerHTML={{
-              __html: '.reveal,.concern{opacity:1!important;transform:none!important}',
+              /* ⚠️ 새 등장 클래스를 만들면 여기에도 반드시 더할 것 — 빠뜨리면
+                 자바스크립트를 끈 사람에게 그 글이 통째로 안 보인다.
+                 (.wipe / .seq / .reveal-stack 이 실제로 빠져 있었다) */
+              __html:
+                '.reveal,.concern,.wipe,.seq,.reveal-stack>*{opacity:1!important;transform:none!important;clip-path:none!important}',
             }}
           />
         </noscript>

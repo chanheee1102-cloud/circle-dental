@@ -123,13 +123,13 @@ export default async function JourneyDetailPage({
 
           <dl className="mt-9 grid max-w-2xl gap-px overflow-hidden rounded-xl border border-brand-200/70 bg-brand-200/70 sm:grid-cols-2">
             <div className="bg-white px-6 py-5">
-              <dt className="text-[11.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
+              <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
                 내원 횟수
               </dt>
               <dd className="mt-2 text-[19px] font-black text-ink">{j.visits}</dd>
             </div>
             <div className="bg-white px-6 py-5">
-              <dt className="text-[11.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
+              <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
                 전체 기간
               </dt>
               <dd className="mt-2 text-[19px] font-black text-ink">{j.duration}</dd>
@@ -166,7 +166,7 @@ export default async function JourneyDetailPage({
                 <li key={st.label} className="relative pb-8 last:pb-0">
                   <span
                     aria-hidden
-                    className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-white text-[12px] font-black text-brand-600"
+                    className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-white text-[12.5px] font-black text-brand-600"
                   >
                     {i + 1}
                   </span>

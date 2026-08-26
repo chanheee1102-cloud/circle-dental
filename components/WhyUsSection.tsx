@@ -38,7 +38,7 @@ export function WhyUsSection() {
       <Container>
         <div className="lg:grid lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-x-16">
           <div className="lg:sticky lg:top-28 lg:self-start lg:pt-1">
-            <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
+            <p className="flex items-center gap-2.5 text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
               무엇이 다른가
             </p>
@@ -65,7 +65,7 @@ export function WhyUsSection() {
                   <span className="text-[13px] font-black tracking-[0.06em] text-gold-600">
                     {group.key}
                   </span>
-                  <span aria-hidden className="text-brand-300">·</span>
+                  <span aria-hidden className="text-ink-muted">·</span>
                   <span className="text-[13.5px] font-bold text-ink-muted">{group.label}</span>
                 </div>
 
@@ -96,7 +96,7 @@ export function WhyUsSection() {
                         >
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <p className="text-[11.5px] font-black tracking-[0.06em] text-brand-400">
+                        <p className="text-[12.5px] font-black tracking-[0.06em] text-brand-500">
                           {group.key}
                         </p>
                       </div>

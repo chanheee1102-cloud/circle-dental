@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
+import { buildWeek, liveOf, useSeoulNow } from '@/lib/liveHours';
 
 /**
  * 진료시간 — 한 주가 한 줄에 들어가고, 오늘 칸에 지금 상태가 실시간으로 뜬다.
@@ -37,104 +37,22 @@ import { CLINIC, UNVERIFIED } from '@/lib/clinic';
  *    시각이 다르면 hydration 이 깨진다.
  */
 
-/** 'HH:MM' → 분. 못 읽으면 -1. */
-function toMin(t: string): number {
-  const m = /^(\d{1,2}):(\d{2})$/.exec(t.trim());
-  return m ? Number(m[1]) * 60 + Number(m[2]) : -1;
-}
-
-type Cell = {
-  ko: string;
-  time: string;
-  note: string;
-  closed: boolean;
-  /** 분 단위 — 지금 상태를 판정할 때만 쓴다. */
-  open: number;
-  close: number;
-  hasLunch: boolean;
-};
-
-/** rows(묶음 표기) → 월요일부터 일요일까지 7칸. */
-function buildWeek(): Cell[] {
-  const { rows, lunch, closed } = UNVERIFIED.hours;
-  const KO = ['월', '화', '수', '목', '금', '토'];
-  const EN = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const lunchStart = toMin(lunch.start);
-  const lunchEnd = toMin(lunch.end);
-
-  const week: Cell[] = EN.map((en, i) => {
-    const r = rows.find((x) => x.day === en);
-    if (!r) {
-      return { ko: KO[i], time: '휴진', note: '', closed: true, open: -1, close: -1, hasLunch: false };
-    }
-    const open = toMin(r.open);
-    const close = toMin(r.close);
-    /* 마감이 19시 이후면 야간 진료 — 묶음 note 에 기대지 않는다(위 주석 참조). */
-    const night = close >= 19 * 60;
-    /* 점심이 그날 진료시간 안에 온전히 들어가야 '점심시간 있음' 이다. */
-    const hasLunch = open <= lunchStart && lunchEnd <= close;
-
-    return {
-      ko: KO[i],
-      time: `${r.open} – ${r.close}`,
-      note: night ? '야간 진료' : hasLunch ? '' : '점심시간 없음',
-      closed: false,
-      open,
-      close,
-      hasLunch,
-    };
-  });
-
-  /* 일요일 — rows 에 없다. 휴진 문구에서 부가 설명만 떼어 온다. */
-  week.push({
-    ko: '일',
-    time: '휴진',
-    note: /공휴일/.test(closed) ? '공휴일 포함' : '',
-    closed: true,
-    open: -1,
-    close: -1,
-    hasLunch: false,
-  });
-
-  return week;
-}
-
-type Live = { text: string; open: boolean };
-
-/** 지금이 진료 중인지 — 오늘 칸에만 쓴다. */
-function liveOf(cell: Cell, nowMin: number): Live {
-  const { lunch } = UNVERIFIED.hours;
-  if (cell.closed) return { text: '오늘 휴진', open: false };
-  if (nowMin < cell.open) return { text: '진료 전', open: false };
-  if (nowMin >= cell.close) return { text: '진료 종료', open: false };
-  if (cell.hasLunch && nowMin >= toMin(lunch.start) && nowMin < toMin(lunch.end)) {
-    return { text: '점심시간', open: false };
-  }
-  return { text: '진료 중', open: true };
-}
+/*
+ * ⚠️ 진료시간 계산(buildWeek · liveOf · 지금 시각)은 **lib/liveHours.ts 한 곳**에 있다.
+ *    대화 화면(ConcernPhone) 상단에도 같은 표시가 필요해져 2026-08-26 에 빼냈다.
+ *    여기에 다시 적으면 진료시간이 바뀔 때 두 곳이 어긋난다 — 한쪽은 '진료 중',
+ *    다른 쪽은 '진료 종료' 가 뜨는 화면이 된다.
+ */
 
 export function HoursStrip() {
-  /** [요일 index, 자정부터 지난 분] — 서울 기준. 서버 렌더 때는 null. */
-  const [now, setNow] = useState<[number, number] | null>(null);
+  /** 서울 기준 '지금'. 서버 렌더 때는 null 이다(hydration 보호). */
+  const now = useSeoulNow();
   const week = buildWeek();
   const { lunch } = UNVERIFIED.hours;
   /** 점심시간이 없는 요일 — 아래 한 줄에서 예외를 밝힌다. */
   const noLunch = week.filter((d) => d.note === '점심시간 없음').map((d) => `${d.ko}요일`);
 
-  useEffect(() => {
-    const read = () => {
-      const seoul = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-      /* 0=일 … 6=토. 이 표는 월요일부터라 일요일은 마지막 칸이다. */
-      const dow = seoul.getDay() === 0 ? 6 : seoul.getDay() - 1;
-      setNow([dow, seoul.getHours() * 60 + seoul.getMinutes()]);
-    };
-    read();
-    /* ⚠️ 1분마다 다시 읽는다 — 안 하면 페이지를 열어 둔 채로 진료가 끝나도 '진료 중'이 남는다. */
-    const id = window.setInterval(read, 60_000);
-    return () => window.clearInterval(id);
-  }, []);
-
-  const todayIdx = now?.[0] ?? null;
+  const todayIdx = now?.dow ?? null;
 
   return (
     <>
@@ -157,7 +75,7 @@ export function HoursStrip() {
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border border-white/25 bg-white/22 sm:grid-cols-4 lg:grid-cols-7">
           {week.map((d, n) => {
             const on = todayIdx === n;
-            const live = on && now ? liveOf(d, now[1]) : null;
+            const live = on && now ? liveOf(d, now.min) : null;
             return (
               <div
                 key={d.ko}
@@ -187,7 +105,7 @@ export function HoursStrip() {
                      글자가 유일한 근거다. 배지를 지우지 말 것.
                 */}
                 {on && (
-                  <span className="absolute top-4 right-4 rounded-full border border-mint-400/60 px-2.5 py-[3px] text-[10.5px] font-bold tracking-[0.14em] text-mint-400 uppercase">
+                  <span className="absolute top-4 right-4 rounded-full border border-mint-400/60 px-2.5 py-[3px] text-[12.5px] font-bold tracking-[0.14em] text-mint-400 uppercase">
                     Today
                   </span>
                 )}
@@ -226,7 +144,7 @@ export function HoursStrip() {
                   */}
                   {live && (
                     <span
-                      className={`mt-3 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[12px] font-bold ${
+                      className={`mt-3 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[12.5px] font-bold ${
                         live.open
                           ? 'bg-mint-400/15 text-mint-400'
                           : 'bg-white/10 text-white/70'

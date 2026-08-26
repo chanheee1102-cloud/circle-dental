@@ -129,7 +129,7 @@ export default async function ImplantTopicPage({
                     <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[11px] text-white"
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[12.5px] text-white"
                       >
                         ✓
                       </span>
@@ -148,7 +148,7 @@ export default async function ImplantTopicPage({
                     <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500 text-[11px] text-white"
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500 text-[12.5px] text-white"
                       >
                         !
                       </span>

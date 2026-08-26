@@ -186,7 +186,7 @@ export default function CostPage() {
                   </th>
                   <td className="px-6 py-4 align-top">
                     <span
-                      className={`inline-flex rounded-full px-3 py-1 text-[11.5px] font-black ${BADGE[c.covered]}`}
+                      className={`inline-flex rounded-full px-3 py-1 text-[12.5px] font-black ${BADGE[c.covered]}`}
                     >
                       {COST_LABEL[c.covered]}
                     </span>
@@ -208,7 +208,7 @@ export default function CostPage() {
               className="scroll-mt-28 rounded-2xl border border-brand-100 bg-white p-7"
             >
               <span
-                className={`inline-flex rounded-full px-3 py-1 text-[11.5px] font-black ${BADGE[c.covered]}`}
+                className={`inline-flex rounded-full px-3 py-1 text-[12.5px] font-black ${BADGE[c.covered]}`}
               >
                 {COST_LABEL[c.covered]}
               </span>

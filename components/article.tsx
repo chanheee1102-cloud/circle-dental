@@ -63,9 +63,9 @@ export function KeyPoints({ items, title = '한눈에 보기' }: { items: string
   return (
     <aside
       aria-label={title}
-      className="rounded-2xl border border-brand-200/70 bg-brand-50/60 p-6 sm:p-7"
+      className="reveal rounded-2xl border border-brand-200/70 bg-brand-50/60 p-6 sm:p-7"
     >
-      <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.16em] text-brand-600 uppercase">
+      <p className="flex items-center gap-2.5 text-[12.5px] font-black tracking-[0.16em] text-brand-600 uppercase">
         <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
         {title}
       </p>
@@ -93,12 +93,13 @@ export function KeyPoints({ items, title = '한눈에 보기' }: { items: string
 export function TableOfContents({ items }: { items: string[] }) {
   if (items.length < 3) return null; // 두 줄짜리 목차는 자리만 차지한다
   return (
-    <nav aria-label="목차" className="rounded-2xl border border-brand-200/70 bg-white p-6 sm:p-7">
-      <p className="text-[12px] font-black tracking-[0.16em] text-brand-600 uppercase">목차</p>
+    <nav aria-label="목차" className="reveal rounded-2xl border border-brand-200/70 bg-white p-6 sm:p-7">
+      <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-600 uppercase">목차</p>
       <ol className="mt-4 space-y-2">
         {items.map((t, i) => (
           <li key={t} className="flex gap-3 text-[14.5px] leading-relaxed">
-            <span aria-hidden className="shrink-0 tabular-nums font-black text-brand-300">
+            {/* ⚠️ brand-300 은 밝은 바탕에서 2.08:1 이었다. 번호도 읽는 글이다. */}
+            <span aria-hidden className="shrink-0 tabular-nums font-black text-brand-500">
               {String(i + 1).padStart(2, '0')}
             </span>
             <a
@@ -142,7 +143,7 @@ export function ArticleMeta({ path }: { path: string }) {
         </Link>
         <span className="ml-1.5 text-ink-muted">· 보건복지부 인정 통합치의학과 전문의</span>
       </span>
-      <span aria-hidden className="text-brand-200">
+      <span aria-hidden className="text-ink-muted">
         |
       </span>
       <span>
@@ -175,7 +176,7 @@ export interface Reference {
 export function References({ items }: { items: Reference[] }) {
   if (items.length === 0) return null;
   return (
-    <section aria-labelledby="references" className="rounded-2xl border border-brand-200/70 bg-white p-6 sm:p-7">
+    <section aria-labelledby="references" className="reveal rounded-2xl border border-brand-200/70 bg-white p-6 sm:p-7">
       <h2 id="references" className="text-[15px] font-black text-ink">
         참고자료 · 출처
       </h2>
@@ -191,7 +192,7 @@ export function References({ items }: { items: Reference[] }) {
             >
               {r.title}
             </a>
-            <span aria-hidden className="ml-1 text-[11px] text-ink-muted">
+            <span aria-hidden className="ml-1 text-[12.5px] text-ink-muted">
               ↗
             </span>
           </li>

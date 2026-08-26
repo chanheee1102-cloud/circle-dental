@@ -77,7 +77,7 @@ export function HomeFaqSection() {
               <Reveal key={qa.q} delay={Math.min(i, 5) * 50}>
               <details className="group">
                 <summary className="flex cursor-pointer list-none items-start gap-4 py-6 transition-colors hover:text-brand-700 [&::-webkit-details-marker]:hidden">
-                  <span className="mt-0.5 shrink-0 text-[11.5px] font-black tracking-[0.14em] text-gold-600 uppercase">
+                  <span className="mt-0.5 shrink-0 text-[12.5px] font-black tracking-[0.14em] text-gold-600 uppercase">
                     Q {String(i + 1).padStart(2, '0')}
                   </span>
                   <span className="flex-1 text-[16px] font-bold leading-snug text-ink transition-colors group-hover:text-brand-700 sm:text-[17px]">
@@ -89,7 +89,7 @@ export function HomeFaqSection() {
                   */}
                   <span
                     aria-hidden
-                    className="relative mt-1 h-3.5 w-3.5 shrink-0 text-brand-400 transition-transform duration-300 group-open:rotate-45"
+                    className="relative mt-1 h-3.5 w-3.5 shrink-0 text-brand-500 transition-transform duration-300 group-open:rotate-45"
                   >
                     <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current" />
                     <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-current" />

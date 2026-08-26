@@ -60,7 +60,7 @@ export default function JourneyIndexPage() {
               href={`/insight/journey/${j.slug}`}
               className="group flex h-full flex-col rounded-xl border border-brand-200/70 bg-white p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
             >
-              <span className="inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[11.5px] font-black text-brand-700">
+              <span className="inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[12.5px] font-black text-brand-700">
                 {j.treatment}
               </span>
               <h2 className="display-sm mt-4 text-[18px] text-ink group-hover:text-brand-700">

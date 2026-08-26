@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
  * 이 사이트의 스크롤 효과를 **혼자서** 담당하는 스크립트. 레이아웃에 한 번만 놓는다.
  *
  * ★★ 왜 한 곳으로 모았나 (2026-08-18 성능 실측) ★★
- *   전에는 Reveal 과 ConcernCard 가 각자 클라이언트 컴포넌트였고, 인스턴스마다
+ *   전에는 Reveal 과 고민 카드가 각자 클라이언트 컴포넌트였고, 인스턴스마다
  *   IntersectionObserver 를 하나씩 만들었다. 홈 기준으로 래퍼 34개 + 고민 카드 6개 =
  *   **관찰자 40개, 하이드레이션 경계 40개**다. 실측에서 홈의 긴 작업이 1,748ms 로
  *   본문 페이지(160~212ms)의 여덟 배였고, 그 대부분이 한 덩어리의 하이드레이션이었다.
@@ -35,7 +35,9 @@ export function RevealScript() {
      *    .wipe = 왼쪽에서 오른쪽으로 닦이며 열리는 배너(2026-08-25).
      *    .seq  = 안쪽 글자가 한 글자씩 올라오고 마지막에 사진이 뜨는 묶음(2026-08-25).
      */
-    const targets = document.querySelectorAll<HTMLElement>('.reveal, .concern, .wipe, .seq');
+    const targets = document.querySelectorAll<HTMLElement>(
+      '.reveal, .reveal-stack, .concern, .wipe, .seq',
+    );
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduce) {
@@ -58,6 +60,22 @@ export function RevealScript() {
     targets.forEach((el) => io.observe(el));
 
     /*
+     * ★★ 구제 타이머 — 없으면 화면 아래쪽 글이 영영 안 보인다 ★★
+     *   위 rootMargin 은 아래쪽을 12% 잘라 둔다(읽던 글이 흔들리지 않게 하려고).
+     *   그래서 **더 이상 스크롤할 수 없는 페이지의 맨 아랫부분**은 관찰자가 영원히
+     *   못 잡는다. .reveal 은 opacity 0 으로 시작하므로 그 글은 그냥 사라진 것이 된다.
+     *   짧은 페이지(개인정보·문의 등)에서 실제로 일어날 수 있는 일이라 받침을 둔다.
+     * ⚠️ 1.2초를 기다리는 이유 — 그 전에 켜 버리면 화면에 들어와 있던 요소들이
+     *    등장 연출 없이 그냥 나타난다. 관찰자가 할 일을 다 한 뒤에 남은 것만 줍는다.
+     */
+    const rescue = window.setTimeout(() => {
+      targets.forEach((el) => {
+        if (el.classList.contains('is-shown')) return;
+        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-shown');
+      });
+    }, 1200);
+
+    /*
      * 고민 카드의 스포트라이트 — 커서 자리에서 빛이 번진다.
      *
      * ★ 카드마다 핸들러를 달지 않고 문서 하나에 위임한다. 카드가 여섯 장이든 스무 장이든
@@ -78,6 +96,7 @@ export function RevealScript() {
 
     return () => {
       io.disconnect();
+      window.clearTimeout(rescue);
       if (hasCards) document.removeEventListener('pointermove', onMove);
     };
   }, [pathname]);

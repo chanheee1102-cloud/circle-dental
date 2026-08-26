@@ -220,7 +220,7 @@ export default async function ConditionDetailPage({
               <li key={st.step} className="relative pb-8 last:pb-0">
                 <span
                   aria-hidden
-                  className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-cream text-[12px] font-black text-brand-600"
+                  className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-cream text-[12.5px] font-black text-brand-600"
                 >
                   {i + 1}
                 </span>
@@ -252,7 +252,7 @@ export default async function ConditionDetailPage({
                     <li key={p} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-400 text-[11px] text-brand-600"
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-400 text-[12.5px] text-brand-600"
                       >
                         ✓
                       </span>

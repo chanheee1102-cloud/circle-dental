@@ -79,18 +79,20 @@ export default function DoctorsPage() {
           eyebrow="의료진 소개"
           title={
             <>
-              대학병원 교수출신
+              {/* ⚠️ 줄바꿈 앞에 공백을 둔다 — 없으면 문서의 제목이 "교수출신대표원장님과" 로
+                     붙는다(화면은 멀쩡한데 크롤러가 읽는 글자만 망가진다). */}
+              대학병원 교수출신{' '}
               <br />
-
-        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
-        <div className="mt-8 max-w-[70ch]">
-          <ArticleMeta path="/about/doctors" />
-        </div>
               대표원장님과 의료진
             </>
           }
           desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부 인정 전문의들로만 구성된 의료진이 한차원 높은 의료서비스를 제공합니다."
         />
+
+        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
+        <div className="reveal mt-8 max-w-[70ch]">
+          <ArticleMeta path="/about/doctors" />
+        </div>
 
         {/* 원장 3인 */}
         <div className="mt-14 space-y-6">
@@ -224,7 +226,7 @@ export default function DoctorsPage() {
               </h2>
               <p className="mt-4 text-[14px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
               <div className="mt-6 rounded-2xl bg-brand-50 p-5">
-                <p className="text-[11.5px] font-black tracking-[0.14em] text-brand-600 uppercase">
+                <p className="text-[12.5px] font-black tracking-[0.14em] text-brand-600 uppercase">
                   Clinical Relevance
                 </p>
                 <p className="mt-2.5 text-[14px] leading-relaxed text-ink-soft">

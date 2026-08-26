@@ -159,7 +159,7 @@ export function QuickMenu() {
         <div className="grid grid-cols-4">
           <Link
             href="/visit"
-            className="flex flex-col items-center gap-1.5 py-3 text-[11.5px] font-bold text-ink-soft"
+            className="flex flex-col items-center gap-1.5 py-3 text-[12.5px] font-bold text-ink-soft"
           >
             <PinIcon />
             오시는 길
@@ -168,7 +168,7 @@ export function QuickMenu() {
             href={CLINIC.booking.kakao}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-1.5 border-x border-brand-100 py-3 text-[11.5px] font-bold text-ink-soft"
+            className="flex flex-col items-center gap-1.5 border-x border-brand-100 py-3 text-[12.5px] font-bold text-ink-soft"
           >
             <KakaoIcon />
             카톡 상담
@@ -177,14 +177,14 @@ export function QuickMenu() {
             href={CLINIC.booking.naver}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-1.5 border-r border-brand-100 py-3 text-[11.5px] font-bold text-ink-soft"
+            className="flex flex-col items-center gap-1.5 border-r border-brand-100 py-3 text-[12.5px] font-bold text-ink-soft"
           >
             <NaverIcon />
             네이버 예약
           </a>
           <a
             href={CLINIC.phoneHref}
-            className="flex flex-col items-center gap-1.5 bg-gradient-to-b from-brand-500 to-brand-600 py-3 text-[11.5px] font-black text-white"
+            className="flex flex-col items-center gap-1.5 bg-gradient-to-b from-brand-500 to-brand-600 py-3 text-[12.5px] font-black text-white"
           >
             <PhoneIcon />
             전화
@@ -291,7 +291,7 @@ function RailItem({
    *   그래서 delay 는 열릴 때만 건다.
    */
   const cls =
-    'flex w-full flex-col items-center gap-1.5 px-1 py-3 text-[11px] font-bold text-white/80 transition-[color,opacity,transform] duration-300 hover:text-white' +
+    'flex w-full flex-col items-center gap-1.5 px-1 py-3 text-[12.5px] font-bold text-white/80 transition-[color,opacity,transform] duration-300 hover:text-white' +
     (open ? ' translate-y-0 opacity-100' : ' translate-y-2 opacity-0');
   const style = { transitionDelay: open ? `${delay ?? 0}ms` : '0ms' };
   const body = (

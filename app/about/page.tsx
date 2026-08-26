@@ -140,7 +140,7 @@ export default function AboutPage() {
                 eyebrow="의료진"
                 title={
                   <>
-                    대학병원 교수출신
+                    대학병원 교수출신{' '}
                     <br />
                     대표원장님과 의료진
                   </>
@@ -152,7 +152,7 @@ export default function AboutPage() {
                   <li key={c} className="flex items-start gap-3 text-[15px] text-ink-soft">
                     <span
                       aria-hidden
-                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[11px] text-white"
+                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[12.5px] text-white"
                     >
                       ✓
                     </span>

@@ -13,7 +13,7 @@ import { StrengthIcon } from '@/components/StrengthIcons';
  */
 export function SpecialGrid({ eager = false }: { eager?: boolean }) {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="reveal-stack grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {SPECIALS.map((s, i) => (
         <Link
           key={s.slug}
@@ -49,7 +49,7 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
           </div>
 
           <div className="flex flex-1 flex-col p-7">
-            <p className="text-[11.5px] font-black tracking-[0.12em] text-brand-500">{s.eyebrow}</p>
+            <p className="text-[12.5px] font-black tracking-[0.12em] text-brand-500">{s.eyebrow}</p>
             <h3 className="display-sm mt-2.5 text-[20px] text-ink group-hover:text-brand-700">
               {s.title}
             </h3>
@@ -58,7 +58,7 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
               자세히 보기
               <span
                 aria-hidden
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[11px] transition-all group-hover:bg-brand-500 group-hover:text-white"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[12.5px] transition-all group-hover:bg-brand-500 group-hover:text-white"
               >
                 →
               </span>

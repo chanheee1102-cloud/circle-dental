@@ -87,7 +87,7 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
 
               <span
                 aria-hidden
-                className="hidden text-[18px] text-brand-300 transition-all group-hover:translate-x-1 group-hover:text-gold-600 lg:inline"
+                className="hidden text-[18px] text-brand-500 transition-all group-hover:translate-x-1 group-hover:text-gold-600 lg:inline"
               >
                 →
               </span>
@@ -110,7 +110,7 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
     <section className="py-24 lg:py-28">
       <Container>
         <div className="max-w-3xl">
-          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
+          <p className="flex items-center gap-2.5 text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
             진료 영역
           </p>

@@ -46,7 +46,7 @@ export function CopyButton({ text, label = '주소 복사' }: { text: string; la
       aria-live="polite"
       className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-brand-300 bg-white px-3.5 py-2 text-[13px] font-black text-brand-700 transition-colors hover:border-brand-400 hover:bg-brand-50"
     >
-      <span aria-hidden className="text-[12px]">
+      <span aria-hidden className="text-[12.5px]">
         {done ? '✓' : '⧉'}
       </span>
       {done ? '복사됨' : label}

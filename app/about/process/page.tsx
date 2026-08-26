@@ -116,7 +116,7 @@ export default function ProcessPage() {
             <li key={f.n} className="relative pb-10 last:pb-0">
               <span
                 aria-hidden
-                className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-cream text-[12px] font-black text-brand-600"
+                className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-cream text-[12.5px] font-black text-brand-600"
               >
                 {f.n}
               </span>

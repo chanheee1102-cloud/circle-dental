@@ -171,7 +171,7 @@ export default function EmergencyPage() {
               className="scroll-mt-28 overflow-hidden rounded-2xl border border-brand-100 bg-white"
             >
               <div className="border-b border-brand-50 p-7">
-                <span className="inline-flex rounded-full bg-gold-400/20 px-3 py-1 text-[11.5px] font-black text-gold-600">
+                <span className="inline-flex rounded-full bg-gold-400/20 px-3 py-1 text-[12.5px] font-black text-gold-600">
                   {c.urgency}
                 </span>
                 <h2 className="mt-3.5 text-[20px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[22px]">
@@ -201,7 +201,7 @@ export default function EmergencyPage() {
                   <ul className="mt-3.5 space-y-2.5">
                     {c.dontList.map((d) => (
                       <li key={d} className="flex gap-2.5 text-[14.5px] leading-relaxed text-ink-soft">
-                        <span aria-hidden className="mt-0.5 shrink-0 font-black text-gold-500">
+                        <span aria-hidden className="mt-0.5 shrink-0 font-black text-gold-600">
                           ✕
                         </span>
                         {d}

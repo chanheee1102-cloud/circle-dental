@@ -22,7 +22,7 @@ export function Container({
 
 /** 좁은 본문 폭 — 읽기 위한 글은 한 줄이 길면 눈이 다음 줄을 놓친다. */
 export function Prose({ children }: { children: React.ReactNode }) {
-  return <div className="prose-body max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{children}</div>;
+  return <div className="reveal prose-body max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{children}</div>;
 }
 
 /**
@@ -93,7 +93,7 @@ export function SectionHead({
 }) {
   const H = as;
   return (
-    <div className="max-w-2xl">
+    <div className="reveal max-w-2xl">
       {/*
         ★★ 점 + 900 굵기 → 점 없이 600 · 넓은 자간 (2026-08-25 운영자: "저 의료진 소개
            대신 DOCTOR 저 폰트로 하자 너무 클로드 티나서") ★★
@@ -122,7 +122,28 @@ export function SectionHead({
             : 'display-sm mt-4 scroll-mt-28 text-[28px] text-ink sm:text-[36px]'
         }
       >
-        {title}
+        {/*
+          ★★ 어절마다 가면을 씌워 아래에서 밀어 올린다 (2026-08-25 운영자:
+             "모션이나 임팩트 애니메이션 최대로") ★★
+             이 컴포넌트를 17개 페이지가 쓰므로 여기 한 곳이면 사이트 전체 제목이
+             같이 살아난다. 실측에서 27개 중 22개 페이지에 움직이는 것이 하나도 없었다.
+
+          ⚠️⚠️ 어절 사이 공백은 가면 **바깥**에 둔다 ⚠️⚠️
+             .word-mask 는 inline-block 이라 안에 공백을 넣으면 그 공백을 먹는다.
+             그러면 문서의 제목이 "누가진료하나요?" 처럼 붙어 버린다 — 화면은 멀쩡한데
+             크롤러와 답변 엔진이 읽는 제목만 망가진다. (히어로 마퀴에서 실제로 겪은 일)
+          ⚠️ 제목이 JSX 면 쪼개지 않는다. 문자열이 아니면 어절을 알 수 없다.
+        */}
+        {typeof title === 'string'
+          ? title.split(' ').map((w, i, arr) => (
+              <span key={`${i}-${w}`}>
+                <span className="word-mask">
+                  <span style={{ transitionDelay: `${i * 85}ms` }}>{w}</span>
+                </span>
+                {i < arr.length - 1 ? ' ' : ''}
+              </span>
+            ))
+          : title}
       </H>
       {/*
         설명은 **문장 단위로** 줄을 나눈다 (2026-08-14 운영자: "전 페이지로 해").
@@ -184,7 +205,7 @@ export function Breadcrumb({ trail }: { trail: Array<{ name: string; path: strin
  */
 export function QABlock({ items }: { items: Array<{ q: string; a: string }> }) {
   return (
-    <div className="divide-y divide-brand-100">
+    <div className="reveal-stack divide-y divide-brand-100">
       {items.map((it) => (
         <article key={it.q} className="py-7 first:pt-0 last:pb-0">
           <h2
@@ -214,7 +235,7 @@ export function NeedsInfo({ label, note }: { label: string; note: string }) {
       <p className="flex items-center gap-2 text-[13px] font-black text-gold-600">
         <span
           aria-hidden
-          className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gold-500 text-[11px] text-white"
+          className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gold-500 text-[12.5px] text-white"
         >
           !
         </span>
@@ -228,7 +249,7 @@ export function NeedsInfo({ label, note }: { label: string; note: string }) {
 /** 의료 정보 페이지 하단 고지. 시술·증상 설명이 있는 모든 페이지에 붙인다. 빼지 말 것. */
 export function MedicalNotice({ extra }: { extra?: string }) {
   return (
-    <aside className="mt-12 rounded-2xl bg-brand-50 p-6 text-[13px] leading-relaxed text-ink-soft">
+    <aside className="reveal mt-12 rounded-2xl bg-brand-50 p-6 text-[13px] leading-relaxed text-ink-soft">
       <p className="font-bold text-brand-700">안내</p>
       <p className="mt-2">{MEDICAL_DISCLAIMER}</p>
       {extra && <p className="mt-2">{extra}</p>}
@@ -245,7 +266,7 @@ export function ContactCta({
   desc?: string;
 }) {
   return (
-    <Container className="mt-24">
+    <Container className="reveal mt-24">
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-brand-800 px-8 py-14 text-white shadow-[var(--shadow-lift)] sm:px-14">
         {/* 겹친 원 — 히어로와 같은 모티프로 페이지 양끝을 묶는다. */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -319,7 +340,7 @@ export function CardLink({
         className="absolute -right-14 -top-14 h-32 w-32 rounded-full bg-brand-50 transition-transform duration-500 group-hover:scale-[1.8]"
       />
       {tag && (
-        <span className="relative mb-3.5 inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[11.5px] font-black text-brand-700">
+        <span className="relative mb-3.5 inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[12.5px] font-black text-brand-700">
           {tag}
         </span>
       )}
@@ -331,7 +352,7 @@ export function CardLink({
         자세히 보기
         <span
           aria-hidden
-          className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[11px] transition-all group-hover:bg-brand-500 group-hover:text-white"
+          className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[12.5px] transition-all group-hover:bg-brand-500 group-hover:text-white"
         >
           →
         </span>

@@ -52,14 +52,14 @@ export default function VisitPage() {
             <h2 className="text-[18px] font-black text-ink">어디에 있나요?</h2>
             <dl className="mt-6 space-y-5">
               <div>
-                <dt className="text-[12px] font-black tracking-[0.14em] text-ink-muted uppercase">주소</dt>
+                <dt className="text-[12.5px] font-black tracking-[0.14em] text-ink-muted uppercase">주소</dt>
                 <dd className="mt-2 text-[16px] font-semibold leading-relaxed text-ink">
                   {CLINIC.address.full}
                 </dd>
                 <dd className="mt-1 text-[14px] text-ink-soft">{CLINIC.address.building}</dd>
               </div>
               <div>
-                <dt className="text-[12px] font-black tracking-[0.14em] text-ink-muted uppercase">전화</dt>
+                <dt className="text-[12.5px] font-black tracking-[0.14em] text-ink-muted uppercase">전화</dt>
                 <dd className="mt-2">
                   <a
                     href={CLINIC.phoneHref}
@@ -70,14 +70,14 @@ export default function VisitPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-[12px] font-black tracking-[0.14em] text-ink-muted uppercase">
+                <dt className="text-[12.5px] font-black tracking-[0.14em] text-ink-muted uppercase">
                   가까운 역
                 </dt>
                 <dd className="mt-2 text-[15.5px] text-ink-soft">{CLINIC.nearestStation}</dd>
               </div>
               {/* 주차 — 무료 여부는 방문 결정에 직접 영향을 주므로 위치 정보와 같은 층위에 둔다. */}
               <div>
-                <dt className="text-[12px] font-black tracking-[0.14em] text-ink-muted uppercase">
+                <dt className="text-[12.5px] font-black tracking-[0.14em] text-ink-muted uppercase">
                   주차
                 </dt>
                 <dd className="mt-2 flex flex-wrap items-center gap-2">
@@ -129,7 +129,7 @@ export default function VisitPage() {
                     <span className="text-right text-[15.5px] text-ink-soft">
                       {h.time}
                       {h.note && (
-                        <span className="ml-2 rounded-full bg-gold-500/15 px-2 py-0.5 text-[11.5px] font-black text-gold-600">
+                        <span className="ml-2 rounded-full bg-gold-500/15 px-2 py-0.5 text-[12.5px] font-black text-gold-600">
                           {h.note}
                         </span>
                       )}

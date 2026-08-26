@@ -105,7 +105,7 @@ export function ClinicMap({
           >
             <span>
               <span className="block text-[15px] font-black">{l.label}</span>
-              <span className="mt-0.5 block text-[12px] opacity-75">{l.sub}</span>
+              <span className="mt-0.5 block text-[12.5px] opacity-75">{l.sub}</span>
             </span>
             <span aria-hidden className="text-[15px] opacity-70">
               ↗

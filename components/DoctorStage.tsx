@@ -121,7 +121,7 @@ export function DoctorStage() {
                   ⚠️ 대표원장만 글자를 키운다 — 구도가 말하는 위계를 글자가 한 번 더 확인해 준다.
                 */}
                 <div className={`mt-6 text-center ${lead ? '' : 'lg:mt-5'}`}>
-                  <p className="text-[12px] font-black tracking-[0.08em] text-gold-600">{d.role}</p>
+                  <p className="text-[12.5px] font-black tracking-[0.08em] text-gold-600">{d.role}</p>
                   <h3
                     className={`display mt-2 tracking-[0.04em] text-ink transition-colors group-hover:text-brand-700 ${
                       lead ? 'text-[30px] sm:text-[34px]' : 'text-[24px] sm:text-[26px]'

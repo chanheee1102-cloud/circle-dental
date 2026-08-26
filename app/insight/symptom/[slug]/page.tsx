@@ -142,7 +142,7 @@ export default async function SymptomDetailPage({
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-[14px] font-black text-white"
               >
                 !
-              </span>
+              </span>{' '}
               어떤 경우에 미루면 안 되나요?
             </h2>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
@@ -200,7 +200,7 @@ export default async function SymptomDetailPage({
                 <li key={c} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
                   <span
                     aria-hidden
-                    className="mt-1.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[11px] text-brand-600"
+                    className="mt-1.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[12.5px] text-brand-600"
                   >
                     ✓
                   </span>

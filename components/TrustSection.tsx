@@ -39,7 +39,7 @@ export function TrustSection({ headless = false }: { headless?: boolean }) {
         */}
         {!headless && (
         <Reveal className="max-w-3xl">
-          <p className="flex items-center gap-2.5 text-[12px] font-black tracking-[0.2em] text-brand-500 uppercase">
+          <p className="flex items-center gap-2.5 text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
             근거
           </p>

@@ -60,7 +60,7 @@ export default function PrivacyPage() {
       </Container>
 
       <Container className="py-12 lg:py-16">
-        <h1 className="display text-[30px] text-ink sm:text-[38px]">개인정보처리방침</h1>
+        <h1 className="reveal display text-[30px] text-ink sm:text-[38px]">개인정보처리방침</h1>
         <p className="mt-5 max-w-[70ch] text-[16px] leading-[1.85] text-ink-soft">
           {CLINIC.name}은 「개인정보 보호법」과 「의료법」에 따라 환자의 개인정보를 보호하고 관련 고충을
           신속하게 처리하기 위해 다음과 같이 처리방침을 두고 있습니다. 이 방침은 {CLINIC.name} 홈페이지
@@ -256,8 +256,8 @@ function Article({
   children: React.ReactNode;
 }) {
   return (
-    <section>
-      <p className="text-[12px] font-black tracking-[0.18em] text-brand-500">제 {n} 조</p>
+    <section className="reveal">
+      <p className="text-[12.5px] font-black tracking-[0.18em] text-brand-500">제 {n} 조</p>
       <h2 className="display-sm mt-2.5 text-[20px] leading-snug text-ink sm:text-[23px]">{title}</h2>
       <p className="mt-3.5 max-w-[70ch] text-[15.5px] font-semibold leading-[1.8] text-brand-700">
         {lead}

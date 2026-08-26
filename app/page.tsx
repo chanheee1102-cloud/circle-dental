@@ -389,7 +389,7 @@ function Hero() {
                   className={`py-4 pr-6 sm:py-5 ${i === 4 ? 'col-span-2 sm:col-span-1' : ''}`}
                 >
                   {/* 라벨·값 규격도 두 번째 버전 값 그대로 (11.5px / 0.14em, 15px bold). */}
-                  <dt className="text-[11.5px] font-bold tracking-[0.14em] text-white/60 uppercase">
+                  <dt className="text-[12.5px] font-bold tracking-[0.14em] text-white/60 uppercase">
                     {f.label}
                   </dt>
                   <dd className="mt-1.5 text-[14px] font-bold leading-snug tabular-nums text-white sm:text-[15px]">
@@ -451,7 +451,7 @@ function PillarSection() {
                 단, 질문만 던지고 끝내면 안 된다 — 바로 아래 한 문장으로 답한 뒤 카드로 펼친다.
             */}
             <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
-              <SeqLetters text="어떤 진료를" step={22} start={340} />
+              <SeqLetters text="어떤 진료를" step={22} start={340} />{' '}
               <br />
               <SeqLetters text="받을 수 있나요?" step={22} start={560} />
             </h2>
@@ -496,7 +496,7 @@ function PillarSection() {
                     <p className="mt-3 max-w-[46ch] text-[14.5px] leading-[1.75] text-white/85">
                       {p.copy}
                     </p>
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-[12px] font-black tracking-[0.14em] text-white/90 uppercase">
+                    <span className="mt-5 inline-flex items-center gap-1.5 text-[12.5px] font-black tracking-[0.14em] text-white/90 uppercase">
                       More View
                       <span aria-hidden className="transition-transform group-hover:translate-x-1">
                         →
@@ -870,7 +870,8 @@ function HoursSection() {
           <p className="t-eyebrow text-white/55">HOURS</p>
           {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
           <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px]">
-            진료시간이
+            {/* ⚠️ 줄바꿈 앞 {' '} — 없으면 문서 제목이 "진료시간이어떻게" 로 붙는다. */}
+            진료시간이{' '}
             <br />
             어떻게 되나요?
           </h2>
@@ -886,7 +887,7 @@ function HoursSection() {
             <p className="t-eyebrow text-white/55">VISIT</p>
             {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
             <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px]">
-              어디에 있고
+              어디에 있고{' '}
               <br />
               주차는 되나요?
             </h2>

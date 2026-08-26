@@ -14,7 +14,7 @@ import type { ComparisonTable as Data } from '@/lib/comparisons';
  */
 export function ComparisonTable({ data }: { data: Data }) {
   return (
-    <section aria-labelledby={data.id} className="scroll-mt-28">
+    <section aria-labelledby={data.id} className="reveal scroll-mt-28">
       <h2 id={data.id} className="display-sm scroll-mt-28 text-[22px] text-ink sm:text-[26px]">
         {data.title}
       </h2>
