@@ -33,6 +33,16 @@ export interface Symptom {
   urgent: string[];
   /** 연결되는 진료과목 slug. */
   relatedTreatments: string[];
+  /**
+   * 본문 삽화. **선택**이다 — 없으면 그냥 렌더하지 않는다.
+   *
+   * ★ 왜 사진이 아니라 삽화인가
+   *   증상 페이지에 실제 환자 사진은 쓸 수 없고(초상·의료광고), 시술 장면은 겁을 준다.
+   *   AI 로 만든 정서 삽화는 '이 글이 누구 이야기인지' 만 전달하는 역할이다.
+   * ⚠️ 진단 근거로 읽히면 안 된다 — 구강 내 사진·엑스레이·기구는 넣지 않는다.
+   *   alt 는 화면에 안 보이는 사람에게 '분위기' 가 아니라 '무엇이 찍혔는지' 를 준다.
+   */
+  image?: { src: string; alt: string };
 }
 
 export const SYMPTOMS: Symptom[] = [
@@ -40,6 +50,10 @@ export const SYMPTOMS: Symptom[] = [
     slug: 'toothache-night',
     title: '밤에 이가 욱신거려서 잠을 못 자요',
     short: '밤에 욱신거리는 통증',
+    image: {
+      src: '/img/ai/symptom-toothache-night.webp',
+      alt: '늦은 밤 어두운 침실에서 잠들지 못하고 한 손으로 턱 옆을 감싼 채 누워 있는 사람. 머리맡 스탠드 불빛만 켜져 있다.',
+    },
     answer:
       '가만히 있어도 욱신거리고 특히 밤에 심해지는 통증은 치아 속 신경에 염증이 생겼을 때 나타나는 대표적인 양상입니다. 누우면 머리 쪽 혈류가 늘어 신경이 받는 압력이 커지기 때문에 밤에 더 아프게 느껴집니다. 이 단계에서는 진통제로 잠시 가라앉혀도 원인이 남아 있어 다시 아파지므로, 신경 상태를 확인하는 검사가 필요합니다.',
     causes: [

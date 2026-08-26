@@ -40,6 +40,20 @@ export interface Treatment {
   relatedSymptoms: string[];
   /** 이 진료에 해당하는 국제 표준 분류(JSON-LD MedicalProcedure.procedureType 힌트). */
   procedureType: 'SurgicalProcedure' | 'TherapeuticProcedure' | 'DiagnosticProcedure' | 'PreventiveProcedure';
+  /**
+   * 구조·과정 설명용 이미지. **선택**이다 — 없으면 섹션 자체가 렌더되지 않는다.
+   *
+   * ★★ 이것은 '우리 병원 장비 사진' 이 아니다 ★★
+   *   AI 로 만든 설명용 이미지다. 실제 진료 사진처럼 보이게 두면 그 순간
+   *   "이 병원이 이 장비를 갖췄다" 는 확인되지 않은 주장이 된다(의료법 제56조).
+   *   그래서 ① 병원 공간·유닛체어를 재현하지 않고 ② 제조사 각인을 넣지 않으며
+   *   ③ 섹션 하단에 설명용이라는 고지를 함께 렌더한다. 셋 다 지울 수 없는 조건이다.
+   * ⚠️ 실제 원내 장비 사진을 확보하면 이 배열을 그 사진으로 교체하고 고지를 뺀다.
+   *   그때가 이 자리의 값이 '설명' 에서 '증거' 로 바뀌는 지점이다.
+   */
+  figures?: Array<{ src: string; alt: string; caption: string }>;
+  /** figures 섹션의 h2. 그 그림들이 실제로 답하는 질문을 적는다(목차·답변 엔진이 읽는 자리). */
+  figuresTitle?: string;
 }
 
 export const TREATMENTS: Treatment[] = [
@@ -72,6 +86,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['cracked-tooth', 'toothache-night', 'loose-tooth'],
     procedureType: 'TherapeuticProcedure',
+    figuresTitle: '살릴 수 있는 치아와 그렇지 않은 치아는 무엇이 다른가요?',
+    figures: [
+      {
+        src: '/img/ai/save-cross-section.webp',
+        alt: '어금니와 잇몸뼈를 세로로 자른 모형. 치아 속 빈 방과 관이 보이고, 뿌리 바깥면과 뼈 사이에 얇은 인대층이 띠처럼 이어져 있다.',
+        caption: '자연치아는 뼈에 직접 붙어 있지 않고 뿌리와 뼈 사이의 얇은 인대에 매달려 있습니다. 씹는 힘의 세기와 방향을 느끼는 감각이 이 층에서 나오기 때문에, 같은 자리를 임플란트로 대신해도 이 감각까지 돌아오지는 않습니다.',
+      },
+      {
+        src: '/img/ai/save-crack.webp',
+        alt: '같은 어금니 단면 모형 두 개. 왼쪽은 씹는면 근처에서 멈춘 가는 금이, 오른쪽은 뿌리까지 갈라져 주변 뼈가 어두워진 금이 보인다.',
+        caption: '같은 금이라도 어디까지 내려갔는지에 따라 갈립니다. 씹는면 근처에서 멈춘 금은 씌워서 쓸 수 있지만, 뿌리까지 쪼개져 주변 뼈에 염증이 번진 금은 살리기 어렵습니다.',
+      },
+      {
+        src: '/img/ai/save-magnifier.webp',
+        alt: '어금니와 잇몸뼈 단면 모형 세 개. 왼쪽은 뿌리 끝에만 병소가 있고, 가운데는 충치가 잇몸선 아래까지 내려왔으며, 오른쪽은 뿌리가 갈라지고 뼈가 크게 녹아 있다.',
+        caption: '뽑아야 한다는 말을 들으셨더라도 남은 뿌리와 그 둘레의 뼈가 어떤 상태인지에 따라 판단이 달라집니다. 뿌리 끝 병소는 다시 치료해 볼 수 있고 잇몸선 아래 충치도 남은 부분이 있으면 살릴 여지가 있지만, 뿌리가 세로로 갈라진 경우는 그렇지 않습니다.',
+      },
+    ],
   },
   {
     slug: 'implant',
@@ -110,6 +142,29 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['missing-tooth', 'loose-denture', 'chewing-difficulty'],
     procedureType: 'SurgicalProcedure',
+    figuresTitle: '임플란트는 어떤 모양이고, 어떻게 심나요?',
+    figures: [
+      {
+        src: '/img/ai/implant-structure.webp',
+        alt: '임플란트를 이루는 세 부품이 비스듬히 벌어져 놓인 모습. 나사 모양 고정체, 연결 기둥, 치아 모양 보철물이다.',
+        caption: '임플란트는 세 부분으로 나뉩니다. 뼈 속에 심는 고정체 위에 연결 기둥을 올리고, 그 위에 치아 모양 보철물을 씌우는 순서로 완성됩니다.',
+      },
+      {
+        src: '/img/ai/implant-in-bone.webp',
+        alt: '잇몸뼈를 세로로 자른 모형. 가운데 임플란트 고정체가 뼈에 맞물려 있고, 양옆으로 뿌리를 인대층에 매단 자연치아가 서 있다.',
+        caption: '자연치아 뿌리와 뼈 사이에는 얇은 인대층이 있지만, 임플란트는 그 층 없이 뼈와 바로 맞붙습니다. 그래서 흔들림은 적은 대신 씹는 힘을 완충해 주는 구조가 없고, 주변 잇몸이 나빠지면 뼈가 자연치아보다 빠르게 물러납니다.',
+      },
+      {
+        src: '/img/ai/implant-planning.webp',
+        alt: '책상 위 태블릿에 아래턱을 가로로 자른 회색 단면 영상이 떠 있고, 아래쪽 신경관까지의 거리를 재는 선이 그어져 있다.',
+        caption: '아래턱 어금니 자리에는 신경이 지나는 관이 뼈 속을 따라 흐릅니다. 심을 자리에서 그 관까지 남은 높이를 미리 재야 깊이와 각도를 정할 수 있어서, 단면으로 보는 영상이 필요합니다.',
+      },
+      {
+        src: '/img/ai/implant-bone-graft.webp',
+        alt: '아래턱 잇몸뼈 단면 모형 두 개. 왼쪽은 뼈 폭이 칼날처럼 얇고, 오른쪽은 바깥면에 흰 알갱이 이식재를 덧대 폭이 넓어져 있다.',
+        caption: '치아가 빠진 자리는 시간이 지나면서 뼈 폭이 좁아집니다. 폭이 모자라면 고정체가 들어갈 자리부터 만들어야 하고, 부족한 정도에 따라 심으면서 함께 채우기도 하고 먼저 채운 뒤 기다리기도 합니다.',
+      },
+    ],
   },
   {
     slug: 'endodontic',
@@ -144,6 +199,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['toothache-night', 'cold-sensitivity', 'gum-boil'],
     procedureType: 'TherapeuticProcedure',
+    figuresTitle: '신경치료는 치아 안쪽에서 무슨 일을 하나요?',
+    figures: [
+      {
+        src: '/img/ai/endo-canal.webp',
+        alt: '어금니를 세로로 자른 단면 모형. 치아 가운데 빈 방과 거기서 뻗어 나온 가느다란 관 세 개가 뿌리 끝까지 이어져 있다.',
+        caption: '치아 속에는 신경과 혈관이 들어 있는 방과, 거기서 뿌리 끝까지 뻗은 가는 관이 있습니다. 앞니는 이 관이 하나뿐이지만 어금니는 서너 개인 경우가 많아 치료 횟수가 더 걸립니다.',
+      },
+      {
+        src: '/img/ai/endo-files.webp',
+        alt: '길이가 모두 같고 굵기만 다른 근관 치료용 파일 여섯 개가 가는 것부터 나란히 놓여 있고, 옆에 머리카락 한 올이 굵기 비교를 위해 놓여 있다.',
+        caption: '뿌리 속 관은 가는 곳이 머리카락 정도밖에 되지 않습니다. 그래서 가장 가는 기구부터 넣어 굵기를 조금씩 올려 가며 안쪽을 넓히고 다듬습니다.',
+      },
+      {
+        src: '/img/ai/endo-isolation.webp',
+        alt: '치아 모형 위에 진한 고무 시트를 씌우고 금속 클램프로 어금니 하나를 물려, 그 치아만 구멍 밖으로 드러낸 모습.',
+        caption: '치료하는 동안 침이 관 안으로 들어가면 애써 소독한 자리가 다시 감염됩니다. 그래서 얇은 고무 시트를 씌우고 클램프로 물려, 치료할 치아 하나만 남기고 나머지를 덮은 뒤에 시작합니다.',
+      },
+    ],
   },
   {
     slug: 'periodontal',
@@ -178,6 +251,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['bleeding-gums', 'bad-breath', 'loose-tooth', 'receding-gums'],
     procedureType: 'TherapeuticProcedure',
+    figuresTitle: '잇몸병은 눈에 안 보이는 곳에서 어떻게 진행되나요?',
+    figures: [
+      {
+        src: '/img/ai/perio-stages.webp',
+        alt: '같은 치아의 잇몸뼈 높이가 왼쪽부터 오른쪽으로 점점 낮아지는 단면 모형 세 개.',
+        caption: '잇몸병은 잇몸 염증에서 시작해 그 아래 뼈가 녹는 순서로 진행되는데, 이 과정에서 아픈 단계가 거의 없습니다. 이가 흔들리는 느낌으로 알아차렸을 때는 이미 오른쪽에 가까워져 있는 경우가 많습니다.',
+      },
+      {
+        src: '/img/ai/perio-probe.webp',
+        alt: '눈금이 새겨진 가느다란 치주 탐침이 치아와 잇몸 사이 홈 안으로 들어가 깊이를 재는 모형 접사.',
+        caption: '잇몸과 치아 사이에는 원래 얕은 홈이 있는데, 염증이 깊어질수록 이 홈도 깊어집니다. 눈금이 있는 가는 기구를 홈 안에 넣어 자리마다 깊이를 재는 것이 잇몸 상태를 확인하는 첫 단계입니다.',
+      },
+      {
+        src: '/img/ai/perio-calculus.webp',
+        alt: '아랫니 잇몸 경계를 따라 누런 치석이 띠처럼 굳어 있고, 그와 맞닿은 잇몸이 붉게 부어 둥글어진 모형 접사.',
+        caption: '치석은 세균 덩어리가 침 속 성분과 굳어 치아에 달라붙은 것이라 칫솔로는 떨어지지 않습니다. 이 딱딱한 표면에 세균이 계속 머물면서 맞닿은 잇몸이 붉게 붓고, 양치할 때 피가 나기 시작합니다.',
+      },
+    ],
   },
   {
     slug: 'cavity',
@@ -208,6 +299,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['cold-sensitivity', 'food-impaction', 'dark-spot'],
     procedureType: 'TherapeuticProcedure',
+    figuresTitle: '충치는 깊이에 따라 무엇이 달라지나요?',
+    figures: [
+      {
+        src: '/img/ai/cavity-depth.webp',
+        alt: '어금니 단면 모형에서 충치가 바깥층, 안쪽층, 신경까지 세 깊이로 진행된 모습.',
+        caption: '같은 충치라도 어디까지 들어갔는지에 따라 치료가 달라집니다. 바깥층에 머물면 때우는 것으로 끝나지만 안쪽 상아질을 지나 신경이 있는 방까지 닿으면 신경치료가 필요해지고, 이 경계가 통증이 시작되는 지점이기도 합니다.',
+      },
+      {
+        src: '/img/ai/cavity-inlay.webp',
+        alt: '옆 치아 사이에 낀 어금니 모형에 매끈하게 다듬어진 와동이 파여 있고, 그 옆에 와동 모양과 꼭 맞는 치아색 세라믹 조각이 놓여 있다.',
+        caption: '넓게 파인 자리는 재료를 눌러 채우는 대신 파인 모양 그대로 조각을 만들어 끼워 넣습니다. 옆 치아와 닿는 면까지 원래 형태로 되살려야 음식이 끼지 않습니다.',
+      },
+      {
+        src: '/img/ai/cavity-resin.webp',
+        alt: '장갑 낀 손이 납작한 기구로 어금니 모형의 파인 자리에 치아색 재료를 채우고 있고, 옆에서 광중합기의 푸른빛이 그 자리를 비추고 있다.',
+        caption: '작은 충치는 치아색 재료를 조금씩 채우고 빛을 쬐어 굳히는 방식으로 마무리합니다. 한 번에 채우지 않고 얇게 나눠 굳혀야 재료가 수축하면서 벌어지는 틈을 줄일 수 있습니다.',
+      },
+    ],
   },
   {
     slug: 'wisdom-tooth',
@@ -242,6 +351,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['wisdom-tooth-pain', 'jaw-swelling', 'food-impaction'],
     procedureType: 'SurgicalProcedure',
+    figuresTitle: '사랑니는 왜 각도부터 보나요?',
+    figures: [
+      {
+        src: '/img/ai/wisdom-impacted.webp',
+        alt: '아래턱 안쪽을 세로로 자른 모형. 사랑니가 앞쪽으로 비스듬히 기울어 앞 어금니 뒷면에 부딪혀 있고, 아래로 신경관이 지난다.',
+        caption: '앞으로 기울어 앞 어금니에 부딪힌 사랑니는 그 맞닿은 면에 칫솔이 닿지 않습니다. 그래서 문제가 사랑니보다 앞 어금니 쪽에 먼저 생기고, 뿌리 아래로 지나는 신경관과의 거리 때문에 빼는 방법도 미리 정해 두어야 합니다.',
+      },
+      {
+        src: '/img/ai/wisdom-angles.webp',
+        alt: '아래턱 단면 모형 세 개. 사랑니가 각각 곧게 선 것, 앞으로 기운 것, 완전히 누운 것이고 아래로 신경관이 지난다.',
+        caption: '사랑니가 곧게 섰는지, 앞으로 기울었는지, 완전히 누웠는지에 따라 잇몸을 열어야 하는지와 치아를 나눠서 빼야 하는지가 갈립니다. 아래로 지나는 신경관과 뿌리가 가까울수록 확인해야 할 것이 늘어납니다.',
+      },
+      {
+        src: '/img/ai/wisdom-planning.webp',
+        alt: '앞으로 기운 사랑니가 앞 어금니에 걸려 있는 턱 단면 모형과, 그 옆에 치관과 뿌리로 나뉜 같은 치아가 놓여 있다.',
+        caption: '뿌리가 벌어져 있거나 앞 치아에 걸린 사랑니는 통째로는 빠져나오지 못합니다. 이럴 때는 치아를 몇 조각으로 나눠 순서대로 꺼내는데, 잇몸과 뼈를 덜 건드리기 위한 방법입니다.',
+      },
+    ],
   },
   {
     slug: 'crown-prosthesis',
@@ -272,6 +399,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['cracked-tooth', 'chewing-difficulty', 'missing-tooth'],
     procedureType: 'TherapeuticProcedure',
+    figuresTitle: '크라운은 치아를 얼마나 깎고, 무엇으로 만드나요?',
+    figures: [
+      {
+        src: '/img/ai/crown-exploded.webp',
+        alt: '잇몸에 둘러싸인 어금니가 원래 모양을 줄인 형태로 다듬어져 있고, 그 바로 위에 씌울 세라믹 크라운이 떠 있다.',
+        caption: '크라운은 남은 치아를 씌울 재료의 두께만큼 고르게 줄여 다듬고 그 위를 덮는 방식입니다. 원래 치아 모양을 그대로 축소하는 것이라 깎는 양은 재료가 정하며, 이미 크게 파였거나 신경치료를 마친 치아일수록 남아 있는 부분이 적습니다.',
+      },
+      {
+        src: '/img/ai/crown-materials.webp',
+        alt: '크라운 네 개가 나란히 서 있고 뒤에서 빛을 받아, 금속은 빛을 막고 오른쪽으로 갈수록 빛이 더 많이 통과한다.',
+        caption: '재료마다 단단함과 빛이 통과하는 정도가 다릅니다. 힘을 크게 받는 어금니에는 얇게 만들어도 잘 견디는 재료가, 앞니에는 빛이 옆 치아만큼 통과하는 재료가 유리해서 자리에 따라 다르게 고릅니다.',
+      },
+      {
+        src: '/img/ai/crown-scan.webp',
+        alt: '장갑 낀 손이 구강 스캐너의 가느다란 팁을 치아 모형 위에 대고 있다.',
+        caption: '본을 뜨는 재료를 입에 가득 물고 굳기를 기다리는 대신, 치아 표면을 훑어 형태를 화면으로 옮기는 방법입니다. 구역 반사가 심한 분에게는 이 차이가 크게 느껴집니다.',
+      },
+    ],
   },
   {
     slug: 'scaling-prevention',
@@ -302,6 +447,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['bleeding-gums', 'bad-breath'],
     procedureType: 'PreventiveProcedure',
+    figuresTitle: '치석은 왜 칫솔로 안 떨어지고, 무엇을 미리 막을 수 있나요?',
+    figures: [
+      {
+        src: '/img/ai/scaling-tip.webp',
+        alt: '초음파 스케일러의 짧고 완만하게 굽은 금속 끝부분 접사. 끝이 뾰족하지 않고 둥글다.',
+        caption: '끝이 눈에 보이지 않을 만큼 빠르게 떨리면서 치석을 치아 표면에서 떼어 냅니다. 치석에 덮여 있던 뿌리 면이 드러나기 때문에 며칠 시린 느낌이 남을 수 있는데, 대개는 차차 줄어듭니다.',
+      },
+      {
+        src: '/img/ai/scaling-before-after.webp',
+        alt: '치석이 쌓인 아랫니 모형과 치석을 제거한 상태의 모형을 나란히 놓아 비교한 설명용 모형 사진.',
+        caption: '치석을 걷어 내면 잇몸에 닿아 있던 자극원이 사라집니다. 다만 붓기가 가라앉고 잇몸이 다시 단단해지기까지는 며칠에서 몇 주가 걸리며, 이미 내려간 뼈가 그만큼 돌아오지는 않습니다.',
+      },
+      {
+        src: '/img/ai/scaling-sealant.webp',
+        alt: '어금니 씹는면 두 개를 위에서 본 접사. 왼쪽은 깊은 홈에 칫솔모 한 올이 걸쳐져 홈보다 굵고, 오른쪽은 홈이 치아색 재료로 메워져 매끈하다.',
+        caption: '어금니 씹는면의 홈은 칫솔모 한 올보다 좁아서 안쪽까지 닦이지 않습니다. 충치가 생기기 전에 이 홈을 미리 메워 두면 세균이 머무를 자리가 줄어듭니다.',
+      },
+    ],
   },
   {
     /*
@@ -348,6 +511,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['kids-cavity', 'tooth-eruption'],
     procedureType: 'PreventiveProcedure',
+    figuresTitle: '유치는 왜 그냥 두면 안 되나요?',
+    figures: [
+      {
+        src: '/img/ai/kids-succession.webp',
+        alt: '아이 턱을 옆으로 넓게 자른 모형. 위쪽 유치 아래 뼈 속에서 영구치가 각각 자리를 잡고 자라고 있다.',
+        caption: '유치 아래 뼈 속에서는 영구치가 이미 자리를 잡고 자라는 중입니다. 유치가 제 시기까지 자리를 지켜 줘야 그 길을 따라 나오기 때문에, 충치로 유치를 일찍 잃으면 옆 치아가 그 공간으로 밀려옵니다.',
+      },
+      {
+        src: '/img/ai/kids-size.webp',
+        alt: '유치 어금니와 영구치 어금니를 세로로 자른 단면 모형 두 개. 유치 쪽이 바깥 법랑질이 얇고 안쪽 신경 방이 훨씬 크다.',
+        caption: '유치는 바깥을 덮은 단단한 층이 얇고 안쪽 신경이 있는 방이 상대적으로 큽니다. 그래서 같은 충치라도 어른보다 훨씬 빨리 신경까지 닿습니다.',
+      },
+      {
+        src: '/img/ai/kids-brushing.webp',
+        alt: '어른 손이 훨씬 작은 아이 손을 감싸 잡고 어린이용 칫솔을 함께 쥐고 있다. 옆에 유치와 영구치가 섞인 어린이 치아 모형이 놓여 있다.',
+        caption: '아이 칫솔질은 손목을 세밀하게 쓰는 동작이라 혼자 되기까지 시간이 걸립니다. 스스로 하게 두되 어금니 안쪽처럼 놓치기 쉬운 자리는 어른이 한 번 더 닦아 주는 편이 좋습니다.',
+      },
+    ],
   },
   {
     slug: 'aesthetic',
@@ -378,6 +559,24 @@ export const TREATMENTS: Treatment[] = [
     ],
     relatedSymptoms: ['dark-spot'],
     procedureType: 'TherapeuticProcedure',
+    figuresTitle: '앞니 색과 모양은 무엇에 맞춰 정하나요?',
+    figures: [
+      {
+        src: '/img/ai/aesthetic-veneer.webp',
+        alt: '가는 집게가 앞니용 세라믹 한 장을 옆에서 들고 있다. 두께가 아주 얇아 뒤에서 오는 빛이 그대로 통과한다.',
+        caption: '라미네이트는 치아 앞면에 아주 얇은 세라믹을 붙이는 방식입니다. 붙일 세라믹이 얇은 만큼 치아를 깎는 양도 적어지는데, 대신 원래 치아 색이 비칠 수 있어 어느 방법이 맞는지는 지금 색과 모양을 함께 보고 정합니다.',
+      },
+      {
+        src: '/img/ai/aesthetic-shades.webp',
+        alt: '조금씩 다른 치아 색 견본 조각들이 부채꼴로 펼쳐져 있다.',
+        caption: '흰 정도는 한 가지가 아닙니다. 그래서 가장 흰 색이 아니라 옆 치아에 가장 가까운 색을 고르는 편이 티가 덜 납니다.',
+      },
+      {
+        src: '/img/ai/aesthetic-ceramic.webp',
+        alt: '올세라믹 앞니 크라운 하나가 잇몸 조각 위에 바로 서 있고, 옆에 자연치아 색 모형이 나란히 놓여 빛 투과 정도가 비교된다.',
+        caption: '앞니는 색만 맞춘다고 티가 안 나는 것이 아니라 빛이 통과하는 정도까지 맞아야 합니다. 잇몸 쪽은 불투명하고 끝으로 갈수록 비치는 자연치아의 층을 재료로 흉내 내는 것이 관건입니다.',
+      },
+    ],
   },
 ];
 

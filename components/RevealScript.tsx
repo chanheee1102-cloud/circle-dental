@@ -34,9 +34,10 @@ export function RevealScript() {
      *    모은 이유가 위 주석에 있다(홈 기준 40개 → 1개).
      *    .wipe = 왼쪽에서 오른쪽으로 닦이며 열리는 배너(2026-08-25).
      *    .seq  = 안쪽 글자가 한 글자씩 올라오고 마지막에 사진이 뜨는 묶음(2026-08-25).
+     *    .img-in / .line-in / .count-in = 랜딩 페이지 모션 3종(2026-08-26).
      */
     const targets = document.querySelectorAll<HTMLElement>(
-      '.reveal, .reveal-stack, .concern, .wipe, .seq',
+      '.reveal, .reveal-stack, .concern, .wipe, .seq, .img-in, .line-in, .count-in',
     );
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -50,6 +51,30 @@ export function RevealScript() {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
           e.target.classList.add('is-shown');
+          /*
+           * 숫자 올리기 — 0 에서 실제 값까지.
+           * ★ 값은 data-count 에 두고 화면 글자는 서버가 이미 최종값으로 렌더해 둔다.
+           *   그래서 이 스크립트가 못 돌아도 **숫자는 맞게 보인다.** 연출만 빠진다.
+           * ★ 단위(명·곳·건·편)는 data-suffix 로 받아 그대로 뒤에 붙인다.
+           * ⚠️ rAF 로만 돈다 — setInterval 로 하면 프레임과 어긋나 숫자가 튄다.
+           */
+          const el = e.target as HTMLElement;
+          const raw = el.dataset.count;
+          if (raw) {
+            const to = Number(raw);
+            const suffix = el.dataset.suffix ?? '';
+            if (Number.isFinite(to)) {
+              const t0 = performance.now();
+              const DUR = 900;
+              const tick = (now: number) => {
+                const p = Math.min(1, (now - t0) / DUR);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.textContent = Math.round(to * eased) + suffix;
+                if (p < 1) requestAnimationFrame(tick);
+              };
+              requestAnimationFrame(tick);
+            }
+          }
           /* 한 번 보였으면 관찰을 끊는다 — 오르내릴 때마다 다시 움직이면 멀미가 난다. */
           io.unobserve(e.target);
         }

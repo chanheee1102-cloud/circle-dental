@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SYMPTOMS, symptomBySlug } from '@/lib/symptoms';
@@ -101,6 +102,26 @@ export default async function SymptomDetailPage({
           <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6">
             <p className="text-[17px] leading-[1.85] text-ink"><Sentences text={s.answer} /></p>
           </div>
+
+          {/*
+            증상 삽화 — 즉답 **다음**에 온다.
+            ★ 순서가 의미다. 이 페이지에서 먼저 읽혀야 할 것은 답이고, 그림은 그 답이
+              누구 이야기인지 붙여 주는 역할이다. 제목 바로 아래로 올리면 즉답이 접힌 화면
+              밖으로 밀린다(= AI 가 인용하는 단락이 첫 화면에서 사라진다).
+            ⚠️ 데이터에 image 가 없는 증상은 아무것도 렌더하지 않는다 — 빈 자리를 남기지 않는다.
+          */}
+          {s.image ? (
+            <figure className="mt-10 max-w-[64ch]">
+              <Image
+                src={s.image.src}
+                alt={s.image.alt}
+                width={1536}
+                height={1024}
+                sizes="(min-width: 1024px) 64ch, 100vw"
+                className="w-full rounded-2xl border border-brand-100 object-cover"
+              />
+            </figure>
+          ) : null}
 
           <div className="mt-8 max-w-[70ch]">
             <ArticleMeta path={`/insight/symptom/${s.slug}`} />
