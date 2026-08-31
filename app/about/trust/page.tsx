@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { CLINIC } from '@/lib/clinic';
 import { TRUST_STATS, CREDENTIAL_ROWS, MEDIA_APPEARANCES } from '@/lib/trustSignals';
-import { Container, SectionHead, Breadcrumb, ContactCta, MedicalNotice } from '@/components/ui';
+import { Container, ContactCta, MedicalNotice, PageHero } from '@/components/ui';
 import { TrustSection } from '@/components/TrustSection';
 import { ArticleMeta, charCount } from '@/components/article';
 import { JsonLd } from '@/components/JsonLd';
@@ -64,17 +64,15 @@ export default function TrustPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="consult"
+        eyebrow="근거"
+        title="무엇을 근거로 믿을 수 있나요?"
+        desc="병원이 스스로 좋다고 말하는 것은 근거가 아닙니다. 제3자가 준 자격과 인증, 학술지에 실린 논문, 방송에 나간 기록이 근거입니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="근거"
-          title="무엇을 근거로 믿을 수 있나요?"
-          desc="병원이 스스로 좋다고 말하는 것은 근거가 아닙니다. 아래는 제3자가 준 자격과 인증, 학술지에 실린 논문, 방송에 나간 기록입니다."
-        />
 
         <div className="mt-8 max-w-[70ch]">
           <ArticleMeta path="/about/trust" />

@@ -53,19 +53,19 @@ export function ClinicMap({
       href: `https://map.naver.com/p/search/${q}`,
       label: '네이버 지도',
       sub: '길찾기 · 대중교통',
-      brand: 'bg-[#03C75A] text-white',
+      dot: '#03C75A',
     },
     {
       href: `https://map.kakao.com/?q=${q}`,
       label: '카카오맵',
       sub: '길찾기 · 로드뷰',
-      brand: 'bg-[#FEE500] text-[#3C1E1E]',
+      dot: '#FEE500',
     },
     {
       href: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
       label: 'Google 지도',
       sub: '새 창에서 크게',
-      brand: 'bg-white text-ink border border-brand-200',
+      dot: '#4285F4',
     },
   ];
 
@@ -87,8 +87,14 @@ export function ClinicMap({
         />
         {/* 주소 바 — 지도 아래에 붙여 두면 스크린샷을 찍어 공유해도 주소가 함께 남는다. */}
         {variant === 'full' && (
-          <p className="bg-brand-600 px-6 py-4 text-center text-[14.5px] font-semibold text-white">
-            {CLINIC.address.full} ({CLINIC.address.dong}, {CLINIC.address.building})
+          <p className="bg-brand-600 px-6 py-4 text-center text-[15.5px] font-semibold text-white">
+            {/*
+              ⚠️ max-w 를 지우지 말 것 — 없으면 넓은 화면에서 한 줄이 81자까지 늘어난다(실측).
+                 한글에서 편한 한 줄은 35~45자다. 가운데 정렬이라 mx-auto 가 함께 있어야 한다.
+            */}
+            <span className="mx-auto block max-w-[40em]">
+              {CLINIC.address.full} ({CLINIC.address.dong}, {CLINIC.address.building})
+            </span>
           </p>
         )}
       </div>
@@ -101,13 +107,19 @@ export function ClinicMap({
             href={l.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center justify-between gap-3 rounded-2xl px-5 py-4 shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1 ${l.brand}`}
+            className="flex items-center gap-3.5 rounded-[12px] border border-brand-200/70 card-glass px-4 py-3.5 transition-colors hover:border-brand-300"
           >
-            <span>
-              <span className="block text-[15px] font-black">{l.label}</span>
-              <span className="mt-0.5 block text-[12.5px] opacity-75">{l.sub}</span>
+            {/* 브랜드 조각 — 이게 '어느 앱인지' 를 말한다. 색을 바꾸지 말 것. */}
+            <span
+              aria-hidden
+              className="h-8 w-8 shrink-0 rounded-[8px]"
+              style={{ backgroundColor: l.dot }}
+            />
+            <span className="min-w-0 flex-1">
+              <span className="block text-[15.5px] font-semibold text-ink">{l.label}</span>
+              <span className="mt-0.5 block text-[13.5px] text-ink-soft">{l.sub}</span>
             </span>
-            <span aria-hidden className="text-[15px] opacity-70">
+            <span aria-hidden className="text-[15px] text-ink-soft">
               ↗
             </span>
           </a>

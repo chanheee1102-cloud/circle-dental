@@ -1,5 +1,7 @@
 /**
- * '동그라미 치과만의 특별함' 아이콘 5종.
+ * '동그라미 치과만의 특별함' 아이콘 7종.
+ * ⚠️ lib/specials.ts 의 key 와 짝이다. 특별함을 추가하면 여기에도 아이콘을 더할 것 —
+ *    없는 key 면 아무것도 안 그려서 그 카드만 아이콘 자리가 빈다.
  *
  * ★ 왜 원본 이미지를 안 쓰는가
  *   기존 홈페이지의 해당 자산(20211105_*.png)은 아이콘이 아니라 **문구가 박힌 캡처 이미지**다.
@@ -76,12 +78,45 @@ function HygieneIcon() {
   );
 }
 
+/**
+ * 맞춤형 임플란트 — 픽스처 위에 얹히는 지대주(어벗트먼트)와 크라운.
+ * ★ '사람마다 다르게 깎아 얹는다' 를 형태로 말한다.
+ */
+function ImplantIcon() {
+  return (
+    <svg {...S}>
+      <path d="M11 7.5h10" />
+      <path d="M13 7.5c0 2.2-.9 3.2-.9 4.7 0 1 .7 1.6 1.5 1.6h4.8c.8 0 1.5-.6 1.5-1.6 0-1.5-.9-2.5-.9-4.7" />
+      <path d="M16 13.8V26" />
+      <path d="M13.4 17h5.2" />
+      <path d="M13.8 20.4h4.4" />
+      <path d="M14.2 23.8h3.6" />
+    </svg>
+  );
+}
+
+/**
+ * 저선량 CT — 머리를 감싸고 도는 촬영 링과 줄어든 선량.
+ * ⚠️ 방사선 기호(삼각 부채꼴)를 쓰지 말 것 — 경고 표지로 읽힌다.
+ */
+function CtIcon() {
+  return (
+    <svg {...S}>
+      <path d="M16 5.5a10.5 10.5 0 1 1 0 21 10.5 10.5 0 0 1 0-21Z" />
+      <path d="M16 10.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z" />
+      <path d="M16 2.8v3.4M16 25.8v3.4M2.8 16h3.4M25.8 16h3.4" />
+    </svg>
+  );
+}
+
 const MAP: Record<string, () => React.JSX.Element> = {
   pain: PainIcon,
   digital: DigitalIcon,
   faculty: FacultyIcon,
   warranty: WarrantyIcon,
   hygiene: HygieneIcon,
+  implant: ImplantIcon,
+  ct: CtIcon,
 };
 
 /** STRENGTHS 의 key 로 아이콘을 고른다. 없는 key 면 아무것도 그리지 않는다(빈 네모 방지). */

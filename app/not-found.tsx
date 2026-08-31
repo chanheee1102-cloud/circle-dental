@@ -15,11 +15,11 @@ export default function NotFound() {
   ];
   return (
     <Container className="py-28 text-center">
-      <p className="text-[13px] font-black tracking-[0.2em] text-gold-600 uppercase">404</p>
+      <p className="text-[14px] font-black tracking-[0.2em] text-gold-600 uppercase">404</p>
       <h1 className="mt-4 text-[30px] font-black tracking-[-0.02em] text-ink sm:text-[38px]">
         찾으시는 페이지가 없습니다
       </h1>
-      <p className="mt-4 text-[15.5px] leading-relaxed text-ink-soft">
+      <p className="mt-4 text-[16.5px] leading-relaxed text-ink-soft">
         주소가 바뀌었거나 삭제된 페이지일 수 있습니다. 아래에서 찾아보세요.
       </p>
 
@@ -28,17 +28,17 @@ export default function NotFound() {
           <Link
             key={l.href}
             href={l.href}
-            className="rounded-2xl border border-brand-100 bg-white p-5 text-left transition-colors hover:border-brand-300 hover:bg-brand-50"
+            className="rounded-2xl border border-brand-100 card-glass p-5 text-left transition-colors hover:border-brand-300 hover:bg-brand-50"
           >
-            <span className="block text-[15.5px] font-black text-ink">{l.t}</span>
-            <span className="mt-1 block text-[13px] text-ink-soft">{l.d}</span>
+            <span className="block text-[16.5px] font-black text-ink">{l.t}</span>
+            <span className="mt-1 block text-[14px] text-ink-soft">{l.d}</span>
           </Link>
         ))}
       </div>
 
       <a
         href={CLINIC.phoneHref}
-        className="mt-10 inline-flex rounded-full bg-brand-700 px-7 py-3.5 text-[16px] font-black text-white transition-colors hover:bg-brand-600"
+        className="mt-10 inline-flex rounded-full bg-brand-700 px-7 py-3.5 text-[17px] font-black text-white transition-colors hover:bg-brand-600"
       >
         {CLINIC.phone}
       </a>

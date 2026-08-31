@@ -50,7 +50,11 @@ export function ConcernsSection() {
   const words = '이런 마음으로 미뤄오셨다면'.split(' ');
 
   return (
-    <section className="relative bg-brand-900 text-white">
+    /*
+     * ⚠️ 여기는 화면 폭 그대로 둔다 — ConcernPhone 이 sticky + h-screen 으로 한 장면을
+     *    통째로 쓰기 때문에 안으로 들이면 그 고정이 깨진다. 색만 dusk 로 맞춘다.
+     */
+    <section className="relative bg-wine-deep text-parchment">
       {/*
         ★ 배경의 큰 동그라미 셋 — 병원 이름이 '동그라미' 다.
           어두운 면을 그냥 두면 평평한 검은 판인데, 여기에 흔한 보라·파랑 그라데이션 얼룩을
@@ -68,13 +72,14 @@ export function ConcernsSection() {
       <ConcernPhone
         heading={
           <Reveal className="reveal-plain relative max-w-xl lg:max-w-[38rem]">
-          <p className="t-eyebrow text-gold-400">CONCERNS</p>
+          {/* ⚠️ 영문 대문자 눈썹을 되살리지 말 것 — 한글에는 대문자가 없다(components/home.tsx 주석). */}
+          <p className="eyebrow-chip text-mist">망설임</p>
           {/*
             ★ 이 섹션의 제목만 다른 섹션보다 크다. 여기는 화면에 고정돼 한 장면을
               통째로 쓰는 자리라 다른 섹션과 같은 크기면 왼쪽이 비어 보인다.
               (기기와의 거리를 좁히는 일도 겸한다 — ConcernPhone 의 격자 폭 주석 참고)
           */}
-          <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px] lg:text-[46px] lg:leading-[1.25]">
+          <h2 className="display-ko mt-5 text-[clamp(30px,4.8vw,50px)] text-parchment">
             {words.map((w, i) => (
               /*
                * 어절마다 가면(overflow:hidden)을 씌우고 그 안에서 밀어 올린다.
@@ -89,7 +94,7 @@ export function ConcernsSection() {
               </span>
             ))}
           </h2>
-          <p className="mt-5 text-[16px] leading-[1.85] text-brand-200/85">
+          <p className="mt-6 text-[18px] leading-[1.9] text-parchment">
             <Sentences text="치과를 미루는 이유는 대개 치료가 아니라 망설임입니다. 자주 듣는 이야기와 저희가 하는 일을 정리했습니다." />
           </p>
           </Reveal>

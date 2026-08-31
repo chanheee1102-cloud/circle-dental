@@ -21,14 +21,16 @@ import type { ReactNode } from 'react';
  *    셋 다 경쟁 병원과 같아지는 지점이다.
  */
 
-/** 구간 번호 + 라벨. 눈썹 대신 이것을 쓴다. */
+/**
+ * 구간 번호 + 라벨.
+ * ⚠️ 가운데 가로선을 되살리지 말 것 — 그 형태를 없애려고 알약으로 바꿨다(2026-08-31 오너).
+ */
 export function SectionIndex({ n, label }: { n: string; label: string }) {
   return (
-    <div className="flex items-center gap-3.5">
-      <span className="text-[12.5px] font-black text-clay-600 tabular-nums">{n}</span>
-      <span aria-hidden className="line-in h-px w-8 bg-clay-500/50" />
-      <span className="text-[12.5px] font-black text-ink-soft">{label}</span>
-    </div>
+    <p className="eyebrow-chip text-ink-soft">
+      <span className="eyebrow-n">{n}</span>
+      {label}
+    </p>
   );
 }
 
@@ -55,17 +57,20 @@ export function SectionHead({
   return (
     /* ★ 섹션 머리는 예외 없이 등장 연출을 받는다 — 호출부에서 매번 붙이면 반드시 빠뜨린다. */
     <div id={id} className={`reveal${id ? ' scroll-mt-36' : ''}`}>
-      <div className="flex items-center gap-3.5">
-        <span className={`text-[12.5px] font-black tabular-nums ${dark ? 'text-clay-400' : 'text-clay-600'}`}>
+      {/*
+        ⚠️ '번호 + 가로선 + 라벨' 로 되돌리지 말 것 (2026-08-31 오너: "이고운이랑 똑같아서").
+           그 형태는 흔한 관용구라 레퍼런스와 구별되지 않았다. 재질은 globals.css 의
+           .eyebrow-chip 한 곳에 있고, 사이트의 모든 구획 눈금이 그것 하나를 쓴다.
+        ⚠️ 어두운 면에서 clay-400 은 4.26:1 로 미달이었다(실측). clay-300 이 6.1:1 이다.
+      */}
+      <p className={`eyebrow-chip ${dark ? 'text-brand-200' : 'text-ink-soft'}`}>
+        <span className="eyebrow-n" style={{ color: dark ? 'var(--color-clay-300)' : undefined }}>
           {n}
         </span>
-        <span aria-hidden className={`h-px w-8 ${dark ? 'bg-clay-400/50' : 'bg-clay-500/50'}`} />
-        <span className={`text-[12.5px] font-black ${dark ? 'text-brand-200' : 'text-ink-soft'}`}>
-          {label}
-        </span>
-      </div>
+        {label}
+      </p>
       <h2
-        className={`display-sm mt-6 max-w-[20ch] text-[clamp(26px,3.4vw,42px)] leading-[1.24] tracking-[-0.03em] ${
+        className={`display-sm mt-6 max-w-[26em] text-[clamp(26px,3.4vw,42px)] leading-[1.24] tracking-[-0.03em] ${
           dark ? 'text-white' : 'text-ink'
         }`}
       >
@@ -73,7 +78,7 @@ export function SectionHead({
       </h2>
       {desc ? (
         <p
-          className={`mt-5 max-w-[56ch] text-[16px] leading-[1.9] ${dark ? 'text-brand-200' : 'text-ink-soft'}`}
+          className={`mt-5 max-w-[56ch] text-[17px] leading-[1.9] ${dark ? 'text-brand-200' : 'text-ink-soft'}`}
         >
           {desc}
         </p>
@@ -100,7 +105,7 @@ export function Card({
 }) {
   return (
     <Tag
-      className={`rounded-[22px] border border-brand-200/80 bg-white ring-1 ring-white/70 ring-inset ${
+      className={`rounded-[22px] border border-brand-200/80 bg-parchment ring-1 ring-white/70 ring-inset ${
         lift ? 'shadow-[var(--shadow-lift)]' : 'shadow-[var(--shadow-soft)]'
       } ${className}`}
     >
@@ -153,7 +158,7 @@ export function DarkPanel({ children, className = '' }: { children: ReactNode; c
 export function NumChip({ n, tone = 'light' }: { n: number | string; tone?: 'light' | 'dark' }) {
   return (
     <span
-      className={`inline-flex h-7 min-w-7 items-center justify-center rounded-lg px-2 text-[12.5px] font-black tabular-nums ${
+      className={`inline-flex h-7 min-w-7 items-center justify-center rounded-lg px-2 text-[13.5px] font-black tabular-nums ${
         tone === 'dark' ? 'bg-white/12 text-clay-300' : 'bg-ink text-white'
       }`}
     >

@@ -72,7 +72,6 @@ export const NAV: NavItem[] = [
       { label: '사랑니 발치', href: '/treatment/wisdom-tooth', desc: '사랑니 주변이 붓고 아플 때' },
       { label: '크라운·보철', href: '/treatment/crown-prosthesis', desc: '깨졌거나 크게 파인 치아' },
       { label: '스케일링·예방', href: '/treatment/scaling-prevention', desc: '1년 넘게 안 받았다면' },
-      { label: '어린이 진료', href: '/treatment/pediatric', desc: '첫 치과 방문을 앞둔 아이' },
     ],
   },
   {

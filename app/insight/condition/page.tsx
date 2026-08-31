@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import { CONDITIONS } from '@/lib/conditions';
-import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/seo';
 
@@ -43,17 +43,15 @@ export default function ConditionIndexPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="room"
+        eyebrow="질환 사전"
+        title="진료실에서 들은 그 병명, 무엇인지부터"
+        desc="같은 병명이라도 진행 단계와 남은 조직에 따라 치료가 갈립니다. 병명을 이미 들으셨다면 여기서 시작하세요."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="질환 사전"
-          title="진료실에서 들은 그 병명, 무엇인지부터"
-          desc="증상으로 찾기가 병명을 모를 때의 입구라면, 여기는 이미 병명을 들은 분을 위한 자리입니다. 한 문장 정의부터 진행 단계와 치료 방향까지 정리했습니다."
-        />
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -65,14 +63,14 @@ export default function ConditionIndexPage() {
             <Link
               key={c.slug}
               href={`/insight/condition/${c.slug}`}
-              className="group flex h-full flex-col rounded-xl border border-brand-200/70 bg-white p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+              className="group flex h-full flex-col rounded-xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
             >
               <div className="flex flex-wrap items-baseline gap-2">
                 <h2 className="display-sm text-[19px] text-ink group-hover:text-brand-700">{c.name}</h2>
-                <span className="text-[13px] font-semibold text-ink-muted">{c.aka.join(' · ')}</span>
+                <span className="text-[14px] font-semibold text-ink-muted">{c.aka.join(' · ')}</span>
               </div>
-              <p className="mt-3 flex-1 text-[14.5px] leading-[1.8] text-ink-soft">{c.definition}</p>
-              <span className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-black text-brand-700">
+              <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">{c.definition}</p>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-black text-brand-700">
                 자세히 보기
                 <span aria-hidden className="transition-transform group-hover:translate-x-1">
                   →

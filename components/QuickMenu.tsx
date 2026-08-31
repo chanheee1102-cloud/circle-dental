@@ -14,23 +14,13 @@ import { CLINIC } from '@/lib/clinic';
  * ★ TOP 버튼은 스크롤이 내려갔을 때만 나타난다. 맨 위에서 '맨 위로' 는 의미가 없다.
  */
 export function QuickMenu() {
-  const [showTop, setShowTop] = useState(false);
-  /**
-   * 열림 상태가 둘이다.
-   *   hovering — 마우스나 포커스가 올라와 있는 동안만.
-   *   pinned   — 눌러서 고정한 것. 마우스가 떠나도 유지된다.
-   * ★ 둘을 합치는 이유: 마우스로 열어 두고 다른 곳을 보다가 돌아오는 사람과,
-   *   눌러서 붙박아 두려는 사람이 서로를 방해하지 않는다.
+  /*
+   * ★ 여닫는 상태를 없앴다 (2026-08-27 오너) — 버튼 넷이 늘 떠 있으므로 열 이유가 없다.
+   *   hovering / pinned / canHover / Esc 닫기가 전부 이 때문에 사라졌다.
+   * ⚠️ 되살릴 거면 상자(배경 판)도 함께 되살려야 한다. 상자 없이 접으면 버튼이
+   *    그냥 사라지는 것처럼 보인다.
    */
-  const [hovering, setHovering] = useState(false);
-  const [pinned, setPinned] = useState(false);
-  const open = hovering || pinned;
-  /** 진짜 hover 가 되는 기기인가. 터치에서 hover 로 열면 곧바로 click 이 와서 닫힌다. */
-  const canHover = useRef(false);
-
-  useEffect(() => {
-    canHover.current = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  }, []);
+  const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
@@ -38,14 +28,6 @@ export function QuickMenu() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  /* 열어 둔 채로 다른 데를 볼 일은 없다 — Esc 로 닫는다. */
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key !== 'Escape') return; setPinned(false); setHovering(false); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
 
   return (
     <>
@@ -81,85 +63,53 @@ export function QuickMenu() {
           그래서 `hidden` 이 아니라 투명도로만 감춘다.
         ⚠️ 접힘은 `visibility` 로 한다 — `opacity-0` 만 쓰면 안 보이는 링크에 Tab 이 들어간다.
       */}
-      <aside
-        className="fixed right-5 bottom-7 z-40 hidden flex-col items-center gap-3 lg:flex"
+      {/*
+        ★★ 원본 홈페이지 형태로 (2026-08-27 오너: "그냥 이런식으로 하되 투명하게만 하자") ★★
+          이름 글자와 구분선이 있는 세로 패널이다. 배경만 헤더·히어로 칩과 같은 투명 유리다.
+        ★ 이름을 글자로 되살렸다 — 직전에는 동그란 아이콘만 있어서 눌러 봐야 아는 버튼이었다.
+          링크 글자가 돌아오면서 앵커 텍스트도 함께 돌아온다.
+        ⚠️⚠️ 자리를 화면 **세로 가운데**로 옮기지 말 것 ⚠️⚠️
+          원본은 가운데에 세워 두는데, 2026-08-14 에 그것 때문에 되돌린 적이 있다 —
+          본문 폭이 1,320px 라 화면이 1,530px 보다 좁으면 **본문 오른쪽을 그대로 덮는다**
+          (실측: 1,280px 에서 81px). 오른쪽 아래 모서리는 본문이 거의 없는 자리다.
+        ⚠️ 'QUICK MENU' 머리글은 넣지 않았다 — 한국어 화면의 영문 라벨은 장식일 뿐이고,
+           세로 공간만 먹는다(components/home.tsx 의 눈썹 규칙과 같은 이유).
+        ⚠️ backdrop-brightness 를 빼지 말 것 — 밝은 사진 위에서 흰 글자가 사라진다.
+        ⚠️ 이 패널 **안쪽** 요소에 backdrop-filter 를 또 걸지 말 것. 겹치면 안쪽 것이 죽는다
+           (메가메뉴에서 겪었다).
+      */}
+      {/* ⚠️ 재질은 .pane-dark 하나에 모여 있다(globals.css). 진료 카드와 같은 값을 쓴다. */}
+      <nav
+        className="pane-dark fixed right-5 bottom-7 z-40 hidden w-[86px] flex-col overflow-hidden rounded-[22px] lg:flex"
         aria-label="빠른 연락"
-        /*
-          ★★ 마우스를 얹기만 해도 열린다 (2026-08-18 운영자) ★★
-            누르는 동작 하나를 없앤다. 손잡이(QUICK)에 다가가는 것만으로 목적이 드러난다.
-          ★ 핸들러를 **aside 에** 건다. 버튼과 레일 사이에 12px 틈이 있어서 버튼에만 걸면
-            그 틈을 지나는 순간 닫힌다. aside 는 둘을 함께 감싸므로 이동 중에도 안 닫힌다.
-          ⚠️ 터치 기기에서는 걸지 않는다. 화면을 누르면 mouseenter 가 먼저 오고 곧바로
-             click 이 와서 **열자마자 닫힌다.** hover 가 진짜 있는 기기인지 먼저 묻는다.
-          ★ 키보드도 같이 연다 — focus 가 들어오면 열리고 나가면 닫힌다. 안 그러면
-            Tab 으로는 레일 안 링크에 닿을 방법이 없다.
-        */
-        onMouseEnter={() => canHover.current && setHovering(true)}
-        onMouseLeave={() => canHover.current && setHovering(false)}
-        onFocus={() => setHovering(true)}
-        onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHovering(false);
-        }}
       >
-        {/*
-          ★ 접힐 때 **자리를 차지하지 않게** max-height 를 0 으로 접는다.
-            visibility 만으로 감추면 상자는 그대로 남아, 아무것도 없는 74×280px 영역이
-            본문 위에 떠서 지나가기만 해도 메뉴가 열린다.
-          ★ 펼칠 때 높이가 자라는 것 자체가 '좌르륵 나오는' 움직임이다. aside 가 아래에
-            고정돼 있어 레일은 **위로** 자란다 — QUICK 버튼은 제자리에 있다.
-          ⚠️ 접힘은 visibility 도 함께 쓴다. max-height:0 만으로는 안 보이는 링크에
-             Tab 이 들어간다.
-        */}
-        <div
-          id="quick-rail"
-          className={`flex w-[74px] flex-col items-center overflow-hidden rounded-full bg-gradient-to-b from-brand-600 to-brand-800 text-white shadow-[var(--shadow-lift)] transition-[max-height,opacity,visibility] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            open ? 'visible max-h-[420px] py-3 opacity-100' : 'invisible max-h-0 py-0 opacity-0'
-          }`}
-        >
-          {/*
-            항목이 아래(버튼 쪽)에서 위로 차례로 들어온다 — 그래서 지연을 **거꾸로** 준다.
-            버튼에서 손이 올라오는 방향과 같아야 '쏟아져 나온다' 로 읽힌다.
-          */}
-          {RAIL.map((r, i) => (
-            <RailItem key={r.label} {...r} open={open} delay={(RAIL.length - 1 - i) * 55} />
-          ))}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setPinned((v) => !v)}
-          aria-expanded={open}
-          aria-controls="quick-rail"
-          className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-900 text-[12.5px] font-black tracking-[0.06em] text-white shadow-[var(--shadow-lift)] transition-transform hover:-translate-y-0.5"
-        >
-          {open ? '닫기' : 'QUICK'}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          aria-label="맨 위로"
-          aria-hidden={!showTop}
-          tabIndex={showTop ? 0 : -1}
-          className={`group flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-b from-brand-500 to-brand-700 text-white shadow-[var(--shadow-lift)] transition-all hover:-translate-y-0.5 ${
-            showTop ? 'visible opacity-100' : 'invisible opacity-0'
-          }`}
-        >
-          <span
-            aria-hidden
-            className="text-[15px] leading-none transition-transform group-hover:-translate-y-0.5"
+        {RAIL.map((r, i) => (
+          <RailItem key={r.label} {...r} first={i === 0} />
+        ))}
+        {/* 맨 위로 — 스크롤이 어느 정도 내려가야 나타난다. */}
+        {showTop && (
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            aria-label="맨 위로"
+            className="group flex w-full flex-col items-center gap-1.5 border-t border-white/15 px-1 py-3.5 text-[13.5px] font-semibold text-white/85 transition-colors hover:text-white"
           >
-            ↑
-          </span>
-        </button>
-      </aside>
+            <span
+              aria-hidden
+              className="flex h-6 w-6 items-center justify-center text-[18px] leading-none transition-transform group-hover:-translate-y-0.5"
+            >
+              ↑
+            </span>
+            맨 위로
+          </button>
+        )}
+      </nav>
 
-      {/* 모바일 — 하단 고정 바. 엄지가 닿는 위치라 전환의 대부분이 여기서 난다. */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-200 bg-white/95 backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-wine-line bg-wine-bg/95 backdrop-blur lg:hidden">
         <div className="grid grid-cols-4">
           <Link
             href="/visit"
-            className="flex flex-col items-center gap-1.5 py-3 text-[12.5px] font-bold text-ink-soft"
+            className="flex flex-col items-center gap-1.5 py-3 text-[13.5px] font-bold text-twilight"
           >
             <PinIcon />
             오시는 길
@@ -168,7 +118,7 @@ export function QuickMenu() {
             href={CLINIC.booking.kakao}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-1.5 border-x border-brand-100 py-3 text-[12.5px] font-bold text-ink-soft"
+            className="flex flex-col items-center gap-1.5 border-x border-wine-line py-3 text-[13.5px] font-bold text-twilight"
           >
             <KakaoIcon />
             카톡 상담
@@ -177,14 +127,14 @@ export function QuickMenu() {
             href={CLINIC.booking.naver}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-1.5 border-r border-brand-100 py-3 text-[12.5px] font-bold text-ink-soft"
+            className="flex flex-col items-center gap-1.5 border-r border-wine-line py-3 text-[13.5px] font-bold text-twilight"
           >
             <NaverIcon />
             네이버 예약
           </a>
           <a
             href={CLINIC.phoneHref}
-            className="flex flex-col items-center gap-1.5 bg-gradient-to-b from-brand-500 to-brand-600 py-3 text-[12.5px] font-black text-white"
+            className="flex flex-col items-center gap-1.5 bg-dusk py-3 text-[13.5px] font-semibold text-white"
           >
             <PhoneIcon />
             전화
@@ -203,9 +153,19 @@ export function QuickMenu() {
  * ⚠️ 순서가 곧 화면 순서다. 전화가 맨 위인 것은 급한 사람이 가장 많이 누르기 때문이다.
  */
 const RAIL = [
+  /*
+   * ⚠️ 네이버·카카오는 **브랜드 아이콘**을 쓴다(모바일 하단 바와 같은 것). 예전에는
+   *    일반 달력/말풍선 아이콘이라 어디로 가는 버튼인지 색으로 알 수 없었다.
+   * ⚠️ chip 은 그 서비스의 색이다. 전화·오시는 길은 브랜드가 없으므로 우리 색을 쓴다.
+   */
+  /*
+   * ⚠️ 아이콘은 전부 currentColor(흰색)다. 브랜드 색 글리프를 쓰지 말 것 —
+   *    유리 버튼 위에서 색만 튀고 재질이 어긋난다.
+   * ⚠️ 이름 글자를 화면에 안 그리므로 label 이 유일한 이름이다(aria-label·title).
+   */
   { href: CLINIC.phoneHref, label: '전화상담', icon: <PhoneIcon /> },
-  { href: CLINIC.booking.naver, label: '네이버예약', external: true, icon: <CalendarIcon /> },
-  { href: CLINIC.booking.kakao, label: '카카오상담', external: true, icon: <ChatIcon /> },
+  { href: CLINIC.booking.naver, label: '네이버예약', external: true, icon: <NaverIcon /> },
+  { href: CLINIC.booking.kakao, label: '카톡상담', external: true, icon: <KakaoIcon /> },
   { href: '/visit', label: '오시는 길', internal: true, icon: <PinIcon /> },
 ];
 
@@ -234,9 +194,9 @@ function PhoneIcon() {
     </svg>
   );
 }
-function KakaoIcon() {
+function KakaoIcon({ size = 22 }: { size?: number }) {
   return (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden>
       <rect x="2.5" y="2.5" width="15" height="15" rx="3.4" fill="#FEE500" />
       <path
         d="M10 5.6c-2.9 0-5.2 1.8-5.2 4.1 0 1.5 1 2.8 2.5 3.5l-.6 2.2c-.05.2.16.35.33.24l2.6-1.7c.12.01.24.02.37.02 2.9 0 5.2-1.8 5.2-4.2S12.9 5.6 10 5.6Z"
@@ -245,9 +205,9 @@ function KakaoIcon() {
     </svg>
   );
 }
-function NaverIcon() {
+function NaverIcon({ size = 22 }: { size?: number }) {
   return (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden>
       <rect x="2.5" y="2.5" width="15" height="15" rx="3.4" fill="#03C75A" />
       <path d="M7.4 13.4V6.6h1.9l2.2 3.4V6.6h1.9v6.8h-1.9L9.3 10v3.4H7.4Z" fill="#fff" />
     </svg>
@@ -264,36 +224,32 @@ function NaverIcon() {
  *   위에 얹으면 스티커를 붙인 것처럼 보인다. 색이 든 원본 아이콘은 흰 바탕인
  *   모바일 하단 바에 그대로 남아 있다.
  */
+/**
+ * 퀵메뉴 항목 하나 — 아이콘 위, 이름 아래.
+ *
+ * ★ 이름을 **항상 글자로 보여 준다.** 아이콘만 있는 버튼은 눌러 봐야 아는 버튼이다.
+ *   글자가 있으면 링크의 앵커 텍스트로도 남는다.
+ * ⚠️ 네이버·카카오는 브랜드 아이콘이라 색을 그대로 둔다 — 색이 곧 '어디로 가는가' 다.
+ * ⚠️ 첫 항목에는 위 구분선을 그리지 않는다. 패널 맨 위에 선이 하나 더 생긴다.
+ */
 function RailItem({
   href,
   label,
   icon,
   external,
   internal,
-  open,
-  delay,
+  first,
 }: {
   href: string;
   label: string;
   icon: React.ReactNode;
   external?: boolean;
   internal?: boolean;
-  /** 레일이 펼쳐졌는가. 항목마다 조금씩 늦게 들어오게 하려고 개별로 받는다. */
-  open?: boolean;
-  /** 들어오는 순서(ms). 버튼과 가까운 항목부터 먼저다. */
-  delay?: number;
+  first?: boolean;
 }) {
-  /*
-   * ★ 항목이 하나씩 차례로 들어온다 (2026-08-18 운영자: "좌르륵 나오게").
-   *   레일 전체가 통째로 나타나면 '켜졌다' 로 읽히고, 하나씩 밀려 들어오면
-   *   '쏟아져 나왔다' 로 읽힌다. 같은 정보인데 인상이 다르다.
-   * ⚠️ 닫힐 때는 지연을 주지 않는다 — 손이 떠났는데도 잔상이 남으면 굼떠 보인다.
-   *   그래서 delay 는 열릴 때만 건다.
-   */
-  const cls =
-    'flex w-full flex-col items-center gap-1.5 px-1 py-3 text-[12.5px] font-bold text-white/80 transition-[color,opacity,transform] duration-300 hover:text-white' +
-    (open ? ' translate-y-0 opacity-100' : ' translate-y-2 opacity-0');
-  const style = { transitionDelay: open ? `${delay ?? 0}ms` : '0ms' };
+  const cls = `flex w-full flex-col items-center gap-1.5 px-1 py-3.5 text-[13.5px] font-semibold text-white/85 transition-colors hover:text-white ${
+    first ? '' : 'border-t border-white/15'
+  }`;
   const body = (
     <>
       <span aria-hidden className="flex h-6 w-6 items-center justify-center">
@@ -302,10 +258,43 @@ function RailItem({
       {label}
     </>
   );
-
   if (internal) {
     return (
-      <Link href={href} className={cls} style={style}>
+      <Link href={href} className={cls}>
+        {body}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className={cls}>
+      {body}
+    </a>
+  );
+}
+function RailButton({
+  href,
+  label,
+  icon,
+  external,
+  internal,
+}: {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  external?: boolean;
+  internal?: boolean;
+}) {
+  /*
+   * ⚠️ 브랜드 색으로 채웠다가 **색 없는 유리로 바꿨다** (2026-08-27 오너: "배경색은 투명으로
+   *    하고, 그냥 색갈 없이 가자"). 헤더 알약·히어로 칩과 같은 재질이라 화면에 재질이 하나다.
+   * ⚠️ backdrop-brightness 를 빼지 말 것 — 밝은 사진 위에서 흰 아이콘이 사라진다.
+   */
+  const cls =
+    'flex h-14 w-14 items-center justify-center rounded-full border border-white/25 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_14px_34px_-16px_rgba(0,0,0,0.6)] backdrop-blur-[8px] backdrop-brightness-[0.55] backdrop-saturate-150 transition-colors hover:bg-white/10';
+  const body = <span aria-hidden>{icon}</span>;
+  if (internal) {
+    return (
+      <Link href={href} aria-label={label} title={label} className={cls}>
         {body}
       </Link>
     );
@@ -313,15 +302,15 @@ function RailItem({
   return (
     <a
       href={href}
+      aria-label={label}
+      title={label}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       className={cls}
-      style={style}
     >
       {body}
     </a>
   );
 }
-
 function CalendarIcon() {
   return (
     <svg width="21" height="21" viewBox="0 0 20 20" fill="none" aria-hidden>

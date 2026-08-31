@@ -8,7 +8,6 @@ import {
   PUBLICATION,
 } from '@/lib/clinic';
 import { IMG } from '@/lib/assets';
-import { heroFacts } from '@/lib/heroFacts';
 import { HeroMedia } from '@/components/HeroMedia';
 import { HeroMarquee } from '@/components/HeroMarquee';
 import { CredentialFan } from '@/components/CredentialFan';
@@ -16,17 +15,16 @@ import { DoctorStage } from '@/components/DoctorStage';
 import { Reveal } from '@/components/Reveal';
 import { InteriorSlider } from '@/components/InteriorSlider';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
-import { TREATMENTS } from '@/lib/treatments';
 import { Container, SectionHead, ContactCta, Sentences, SeqLetters } from '@/components/ui';
+import { HomeHead, FillBtn, LineBtn, QuietLink } from '@/components/home';
+import { PILLAR_ICONS } from '@/components/PillarIcons';
 import { CopyButton } from '@/components/CopyButton';
 import { ClinicMap } from '@/components/ClinicMap';
 import { HoursStrip } from '@/components/HoursStrip';
 import { WhyUsSection } from '@/components/WhyUsSection';
-import { HomeFaqSection } from '@/components/HomeFaqSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
 import { JsonLd } from '@/components/JsonLd';
-import { medicalWebPageSchema, faqSchema, imageObjectSchema } from '@/lib/seo';
-import { CLINIC_QA, HOME_FAQ_COUNT } from '@/lib/faq';
+import { medicalWebPageSchema, imageObjectSchema } from '@/lib/seo';
 import { imageMeta } from '@/lib/imageSize';
 
 export const metadata: Metadata = {
@@ -49,7 +47,6 @@ export default function HomePage() {
    *      화면은 6개인데 마크업에 12개를 넣는 순간 구조화 데이터 정책 위반이고
    *      수동 조치 대상이 된다.
    */
-  const homeFaq = CLINIC_QA.slice(0, HOME_FAQ_COUNT);
   /** 대표 이미지 — 크기는 파일에서 직접 읽는다. 손으로 적으면 사진 교체 순간 거짓값이 된다. */
   const heroImage = imageMeta(IMG.interior[0].src, IMG.interior[0].alt);
 
@@ -64,7 +61,6 @@ export default function HomePage() {
             image: heroImage,
           }),
           heroImage ? imageObjectSchema({ path: '/', ...heroImage }) : null,
-          faqSchema(homeFaq, '/'),
           /*
             ⚠️⚠️ 여기에 HowTo 를 다시 넣지 말 것 (2026-08-14) ⚠️⚠️
               절차 다섯 단계를 홈에서 /about/process 로 옮기면서 이 마크업도 함께 뺐다.
@@ -129,10 +125,30 @@ export default function HomePage() {
         ⚠️ FAQ 는 남긴다. 홈의 FAQPage 스키마가 그 화면을 근거로 나가므로,
            섹션을 빼면 스키마도 함께 빼야 한다(app/page.tsx 위 JsonLd 주석 참고).
       */}
-      <Hero />
+      {/*
+        ★★ 히어로 → 진료과목 (2026-08-28 오너: "히어로 밑에 바로 의료진인데 진료과목부터") ★★
+          처음 온 사람이 첫 화면 다음에 알고 싶은 것은 '누가' 보다 '무엇을' 이다.
+          의료진은 그다음이다.
+        ★★ 덮으며 올라오는 모션 ★★
+          히어로가 제자리에 고정되고 진료과목 면이 그 위를 덮는다. 두 요소를 한 상자에
+          담아야 그 상자를 지날 때 고정이 풀린다.
+        ⚠️ 이 상자를 없애면 히어로가 페이지 끝까지 고정된 채 남는다.
+        ⚠️ 덮는 쪽 배경(bg-wine-bg)을 투명하게 두지 말 것 — 히어로가 비쳐 글이 겹친다.
+      */}
+      <div className="relative">
+        <Hero />
+        <div className="hero-cover relative z-10 bg-wine-bg text-twilight">
+          <PillarSection />
+        </div>
+      </div>
+
+      {/*
+        ⚠️ home-flow — 이어지는 구획 사이에 실선을 하나씩 긋는다(globals.css .home-flow).
+           밝은 면이 계속되면 어디서 화제가 바뀌는지 안 보인다.
+      */}
+      <div className="home-flow relative z-10 bg-wine-bg text-twilight">
       <DoctorSection />
       <ConcernsSection />
-      <PillarSection />
       {/*
         ★★ 신뢰 지표를 /about/trust 로 옮겼다 (2026-08-14 운영자) ★★
           숫자 여섯 + 인증표 다섯 줄 + 논문 + 방송 + 진료시간을 홈 한 화면에 몰아넣으니
@@ -159,9 +175,20 @@ export default function HomePage() {
            그리고 헤더 메가메뉴의 진료 목록이 그 길이다.
       */}
       <InteriorSection />
-      <HomeFaqSection />
+      {/*
+        ⚠️ 자주 묻는 질문 구획을 홈에 되살리지 말 것 (2026-08-31 오너) — 같은 Q&A 가
+           /faq 에 전부 있고, 구조화 데이터도 그쪽이 갖고 있다. 홈에 다시 넣으려면
+           faqSchema 도 함께 되살려야 한다. 하나만 되살리면 '보이는 것' 과 '알리는 것' 이
+           어긋난다.
+      */}
       <HoursSection />
-      <ContactCta />
+      {/*
+        ⚠️ 홈 마무리 CTA 를 뺐다 (2026-08-28 오너). 되살리지 말 것 —
+           바로 위 '오시는 길' 구획에 예약·전화 버튼이 이미 있어 같은 자리에서 같은 말을
+           두 번 하고 있었다. 검색 쪽 손해도 없다(전화번호·예약 링크는 푸터·퀵메뉴·히어로에
+           그대로 있고, 그 구획의 h2 는 질문형이 아니라 광고 문장이라 인용 가치가 낮았다).
+      */}
+      </div>
     </>
   );
 }
@@ -169,412 +196,323 @@ export default function HomePage() {
 /**
  * 히어로.
  *
- * ★ 배경은 기존 홈페이지가 쓰던 Vimeo 영상을 그대로 임베드한다(lib/assets.ts 주석 참조).
- *   영상은 `pointer-events-none` 으로 클릭을 막고, 위에 어두운 그라데이션을 덮어
- *   흰 글씨의 대비를 확보한다. 영상 위 텍스트는 대비가 무너지기 쉬워서
- *   `.on-photo` 로 아주 옅은 그림자까지 함께 깐다.
- * ★ 카피는 기존 홈페이지 1번 슬라이드 원문 그대로다.
- * ★ 영상이 뜨지 않는 환경(느린 네트워크·차단)에서도 배경이 비지 않게
- *   아래에 브랜드 그라데이션을 깔아 둔다.
+ * ★★ 유리 카드를 걷어냈다 (2026-08-27 오너: "가운데에 투명 카드는 없애는 게 나아보이네?") ★★
+ *   배경 영상에 붉은 구강 화면이 지나가는 구간이 있는데, 그 위에 반투명 판이 겹치면
+ *   판이 탁한 회색 덩어리로 보였다. 원본 홈페이지도 글을 사진 위에 바로 올린다.
+ *   ⚠️ 판이 지던 대비 책임을 **덮개가 통째로 진다.** 그래서 덮개가 전보다 세다.
+ *      값을 낮추면 밝은 프레임에서 글자가 무너진다 — 만지면 반드시 실측할 것.
+ *   ⚠️ 글자마다 .on-photo(두 겹 그림자)를 함께 건다. 사진 위 흰 글씨는 덮개만으로는
+ *      가장자리가 뭉갠다(globals.css .on-photo 주석).
+ *
+ * ★★ 카피는 circle-dental.co.kr 1번 슬라이드 원문 그대로다 ★★
+ *   ⚠️ '10년 이상 경력의 대학 병원 출신 의료진' 은 병원 자기 문구다. 우리 데이터
+ *      (lib/doctors.ts)로 확인되는 것은 '통합치의학과 전문의 3인 / 경희대 외래교수' 까지다.
+ *
+ * ⚠️ 음수 위쪽 여백(68/94)은 SiteHeader 의 **전체 높이**와 같아야 한다.
  */
 function Hero() {
-  const facts = heroFacts();
-
   return (
     /*
-     * ★ 히어로 전체가 한 화면에 들어가게 세로 배치로 짠다.
-     *   사실 띠를 뒤에 그냥 붙이면 화면 높이 뒤에 더해져 **스크롤해야 보인다.**
-     *   첫 화면에서 사실을 보여 주는 것이 이 띠의 존재 이유라 그러면 의미가 없다.
+     * ⚠️ sticky top-0 — 다음 구획이 이 위를 덮으며 올라온다(위 감싸는 상자 주석 참고).
+     * ⚠️ 높이를 화면과 정확히 같게 둔다. min-h 로 두면 내용이 늘어날 때 고정이 어긋난다.
+     * ⚠️ 음수 위쪽 여백(68/94)은 SiteHeader 의 전체 높이와 같아야 한다.
      */
-    /*
-     * ★★ 헤더 아래로 파고든다 (2026-08-25 운영자: "아예 똑같이 해줘. 헤더랑 전부") ★★
-     *   두 번째 버전처럼 사진이 화면 맨 위까지 이어지고 헤더가 그 위에 투명하게 얹힌다.
-     *   헤더는 sticky 라 흐름에서 자리를 차지하므로, 음수 위쪽 여백으로 그만큼 끌어올린다.
-     *   ⚠️ 값(60/86)은 SiteHeader 의 안 내린 상태 높이와 **같아야 한다**. 헤더 높이를
-     *      바꾸면 여기도 같이 바꿀 것 — 안 그러면 위에 크림색 띠가 남는다.
-     *   ⚠️ 헤더 쪽 짝은 SiteHeader 의 overHero 다. 한쪽만 되돌리면 흰 글씨가 크림색
-     *      배경 위에 놓여 통째로 사라지거나, 사진이 헤더에 잘린다.
-     *
-     * ★ 높이 — 이제 화면 맨 위에서 시작하므로 한 화면 전체를 쓴다.
-     *   ⚠️ 모바일은 하단 고정 바(66px)를 빼야 사실 띠가 그 바에 가리지 않는다.
-     *   ⚠️ vh 가 아니라 svh/dvh — 주소창이 접히며 vh 가 변해 화면이 한 번 출렁인다.
-     */
-    <section className="relative -mt-[60px] flex min-h-[calc(100dvh-66px)] flex-col overflow-hidden sm:-mt-[86px] lg:min-h-screen">
+    <section className="hero-pin sticky top-0 z-0 -mt-[68px] flex h-[100dvh] flex-col overflow-hidden sm:-mt-[94px]">
       {/* 폴백 배경 — 사진마저 늦게 뜨는 회선에서도 화면이 비지 않는다. */}
       <div aria-hidden className="absolute inset-0 bg-[#0d1113]" />
 
-      {/* 사진을 깔고 그 위로 영상이 서서히 겹친다 — components/HeroMedia.tsx 주석 참조. */}
       <HeroMedia />
 
       {/*
-        가독성 오버레이 — 배경 위 흰 글씨의 대비를 확보한다.
-        ★★ 두 번째 버전의 값을 그대로 쓴다 (2026-08-25) ★★
-           위(헤더)와 아래(문구·띠)를 누르고 가운데는 40% 만 눌러 사진을 살린다.
-           예전에는 가운데가 가장 어두운 타원을 한 겹 더 깔았는데, 글이 아래로 내려온
-           지금은 그 타원이 글도 없는 화면 한가운데만 거무스름하게 만든다.
-        ⚠️ 색이 brand-900 이 아니라 중성 먹색(8,12,14)이다 — v2 와 같은
-           인상을 내려면 스크림 색부터 같아야 한다. 갈색 스크림은 사진을 누렇게 만든다.
+        덮개 두 겹 —
+          ① 가운데를 타원으로 진하게: 글이 놓이는 자리만 집중해서 누른다.
+          ② 위아래로 한 겹 더: 헤더와 사실 띠의 글자를 받쳐 준다.
+        ★ 화면 전체를 고르게 어둡게 하는 대신 이렇게 나누면 **모서리 쪽 사진이 살아 있다.**
+        ⚠️ 색이 중성 먹색이다. 갈색 덮개를 쓰면 사진이 누렇게 뜬다.
+        ⚠️ 값을 낮추려면 실측부터 — 배경 영상에는 흰 복도처럼 아주 밝은 프레임이 있다.
       */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
-          background:
-            'linear-gradient(180deg,rgba(8,12,14,.62) 0%,rgba(8,12,14,.40) 40%,rgba(8,12,14,.88) 100%)',
+          background: [
+            'radial-gradient(ellipse 78% 62% at 50% 46%,rgba(20,20,22,.74) 0%,rgba(20,20,22,.62) 52%,rgba(20,20,22,.34) 100%)',
+            'linear-gradient(180deg,rgba(20,20,22,.46) 0%,rgba(20,20,22,0) 26%,rgba(20,20,22,0) 68%,rgba(20,20,22,.62) 100%)',
+          ].join(','),
         }}
       />
 
       {/*
-        ★ 로드 시퀀스 — 눈썹 → 제목 → 설명 → 버튼 → 사실 띠 순으로 한 번 떠오른다.
-          한 번에 다 나타나는 것보다 '읽는 순서' 를 몸으로 알려 준다. 60~80ms 씩만 어긋내
-          알아채기 전에 끝난다 — 기다림으로 느껴지는 순간부터는 방해다.
+        ★★ 아래 붙이기(mt-auto) → 화면 세로 가운데 (2026-08-27 오너: "너무 밑에 치우쳐져 있고") ★★
+          flex-1 이 남는 자리를 통째로 먹고 그 안에서 가운데 정렬한다. 아래 사실 띠는
+          제 높이만 차지하므로, 글은 **띠를 뺀 나머지의 가운데**에 온다.
+        ⚠️ mt-auto 로 되돌리지 말 것 — 그러면 글이 띠 바로 위에 붙어 아래로 쏠린다.
+        ⚠️ 위쪽 여백(pt)은 헤더가 겹치는 만큼이다. 헤더 높이를 바꾸면 여기도 볼 것.
       */}
-      {/*
-        ★★ 첫 화면 대형 마퀴("Save your own tooth") 제거 (2026-08-25 운영자:
-           "여기 초록색 글씨 움직이는건 없애줘") ★★
-           화면 폭을 가로지르는 268px 짜리 민트 글자가 배경 영상 위에서 너무 크게
-           떠들었다. 지금은 영상과 아래 문구만 남아 첫 화면이 조용해진다.
-        ⚠️ HeroMarquee 컴포넌트는 지우지 않는다 — 인증패 섹션이 배경 워터마크로
-           같은 컴포넌트를 쓴다(DoctorSection 안).
-        ⚠️ 마퀴가 flex 열의 첫 칸이었다. 빠져도 아래 덩어리는 mt-auto 로 여전히
-           화면 아래에 붙으므로 배치는 그대로다 — 위쪽이 비었을 뿐이다.
-      */}
-
-      {/*
-        ★★ 가운데 정렬 → 왼쪽 아래 (2026-08-25 운영자: "히어로는 두번째버전 디자인이
-           좋은것 같아") ★★ 두 번째 버전처럼 문구·버튼·사실 띠를 한 덩어리로 묶어
-           화면 아래에 붙인다. mt-auto 가 남는 자리를 위에 몰아준다 — 자리가 모자라면
-           히어로가 조금 길어질 뿐 마퀴와 겹치지 않는다.
-        ⚠️ 글은 왼쪽 정렬이지만 **컨테이너는 본문과 같은 Container** 를 쓴다. 다른
-           섹션들과 왼쪽 기준선이 어긋나면 첫 화면만 따로 노는 것처럼 보인다.
-           (두 번째 버전은 자기만의 여백 식(7.24vw)을 쓰는데, 그걸 그대로 옮기면
-            이 사이트에서는 히어로만 오른쪽으로 밀려 아래 섹션들과 어긋난다.)
-      */}
-      <Container className="relative mt-auto pb-7 pt-10 sm:pb-9 sm:pt-16">
-        {/*
-          지역 한 줄 — 첫 화면에서 "어디 병원인지" 를 못박는다.
-          ⚠️ 예전 이 자리의 "10년 이상 경력의 대학 병원 출신 의료진…" 문장은 아래
-             사실 띠가 더 구체적으로 말한다(전문의 3인 / 대표원장 외래교수).
-             같은 말을 두 번 하지 않으려고 뺐고, 대신 히어로에 없던 지역을 넣었다.
-        */}
-        <p
-          className="enter on-photo text-[13px] font-bold tracking-[-0.01em] text-white/75"
-          style={{ animationDelay: '140ms' }}
-        >
-          고양시 덕양구 화정동
+      <div className="hero-inner relative flex w-full flex-1 flex-col justify-center px-5 pt-[94px] pb-6 text-center sm:px-8">
+        {/* 원문 1번 슬라이드의 윗줄. */}
+        <p className="enter on-photo text-[16.5px] leading-[1.7] font-medium text-white/90 sm:text-[18px]">
+          10년 이상 경력의 대학 병원 출신 의료진, 디지털 의료장비 활용
         </p>
 
         {/*
-          ⚠️ 여기만 이 사이트의 .display(900, 자간 -0.042em)를 쓰지 않는다.
-             두 번째 버전과 같은 인상을 내려면 크기·굵기·자간이 같아야 한다
-             (extrabold 800 / -0.03em / clamp 18~44px). .display 를 다시 씌우면
-             글자가 두 단계 굵어지고 커져서 배치가 통째로 달라진다.
-          ⚠️ clamp 로 화면 폭을 따라가므로 어느 폭에서도 한 줄이다 — 줄바꿈을 억지로
-             넣지 말 것.
+          ⚠️⚠️ 이 문구를 바꾸면 scripts/subset-gowun.py 를 다시 돌릴 것 ⚠️⚠️
+             잘라낸 글꼴에 없는 글자는 그 글자만 Pretendard 로 떨어져 글꼴이 두 벌 보인다.
+          ⚠️ 굵기를 올리지 말 것 — 400 으로 크게 쓰는 것이 이 시스템의 전부다.
+        */}
+        {/*
+          ⚠️ 강제 줄바꿈(<br />)을 넣지 말 것 — 원본 홈페이지가 한 줄이다 (2026-08-27 오너).
+             좁은 화면에서는 알아서 두 줄로 접힌다. clamp 가 폭을 따라가므로 억지로
+             끊지 않아도 어느 화면에서든 넘치지 않는다.
         */}
         <h1
-          className="enter on-photo mt-3 text-[clamp(18px,7vw,44px)] leading-[1.34] font-extrabold tracking-[-0.03em] text-white"
-          style={{ animationDelay: '220ms' }}
+          className="enter on-photo display-ko mt-7 text-[clamp(32px,5.4vw,62px)] leading-[1.24] text-white"
+          style={{ animationDelay: '90ms' }}
         >
           환자 중심 진료, 소통하는 치과
         </h1>
 
-        {/*
-          무엇을 보는지 — 항목만. 문장으로 늘리지 않는다.
-          ⚠️ 이름을 여기 직접 적지 않는다. TREATMENT_PILLARS 가 진료 카드 섹션과
-             같은 원본이라, 한쪽만 바뀌면 첫 화면과 본문이 어긋난다.
-        */}
+        {/* 원문 1번 슬라이드의 아랫줄. */}
         <p
-          className="enter on-photo mt-4 text-[15px] font-medium tracking-[-0.01em] text-white/70"
-          style={{ animationDelay: '280ms' }}
+          className="enter on-photo mx-auto mt-8 max-w-[36em] text-[18px] leading-[1.85] text-white/90"
+          style={{ animationDelay: '170ms' }}
         >
-          {TREATMENT_PILLARS.map((p) => p.name).join(' · ')}
+          환자들의 치과에 대한 두려움을 깊이 공감하며, 최대한 아프지 않고 과잉 진료없이 편안하게
+          치료를 받고 가실 수 있도록 노력합니다.
         </p>
 
         {/*
-          ★★ 버튼 규격을 두 번째 버전에 맞췄다 (2026-08-25 운영자: "아예 똑같이") ★★
-             전에는 흰 알약 두 개가 h-64px / w-236px 로 크게 못 박혀 있었다. v2 는
-             더 작고(px-8 py-3.5, 15px) **주 버튼이 흰색이 아니라 브랜드색으로 채워진다.**
-             글자 크기·굵기·여백을 v2 값 그대로 가져오고, 폭은 못 박지 않는다(내용만큼).
-          ⚠️ 폭을 안 박으므로 두 버튼의 폭이 글자 수만큼 달라진다 — v2 도 그렇다.
-             예전의 '둘을 정확히 같은 크기로' 규칙은 이 배치에는 적용하지 않는다.
+          ⚠️ 헤더에서 예약·전화 버튼을 뺐으므로(2026-08-27) 첫 화면에서 그 두 행동으로 가는
+             길은 여기 둘뿐이다. 지우지 말 것.
         */}
         <div
-          className="enter mt-7 flex flex-wrap items-center gap-3"
-          style={{ animationDelay: '340ms' }}
+          className="enter mt-9 flex flex-wrap items-center justify-center gap-3"
+          style={{ animationDelay: '250ms' }}
         >
-          {/*
-            ★★ 첫 버튼을 전화번호 → '예약하기' 로 (2026-08-14 운영자) ★★
-              첫 화면의 주 버튼은 **가장 많은 사람이 하려는 행동** 하나여야 한다.
-              전화번호를 적어 두면 '지금 전화할 수 있는 사람' 에게만 버튼이고,
-              근무 중이거나 밤에 보는 사람에게는 누를 수 없는 버튼이다.
-              예약은 시간과 무관하게 누를 수 있다.
-            ★ 전화가 사라지는 것은 아니다 — 헤더(데스크톱)·햄버거 메뉴(모바일)·
-              오른쪽 아래 버튼·푸터·하단 고정 바에 그대로 있다.
-            ★ 외부 도메인이라 새 창 + rel="noopener" — 없으면 열린 창이 window.opener 로
-              이 페이지를 조작할 수 있다.
-          */}
-          {/*
-            ★★ 두 버튼의 규격을 맞춘다 (2026-08-14 운영자) ★★
-              전에는 글자 크기(18/17)·좌우 여백(px-9/px-8)·모서리가 서로 달랐고,
-              첫 버튼에만 동그란 화살표가 붙어 있었다. 나란히 선 버튼 둘의 규격이 어긋나면
-              **디자인이 아니라 실수처럼 보인다**.
-              → 높이와 폭을 **못 박는다**(h/w). 모서리는 완전한 알약형(rounded-full) —
-                병원 이름이 '동그라미'라 원형 모티프가 버튼에서도 이어진다.
-            ★ 둘의 차이는 규격이 아니라 **무게**로 만든다. 주 버튼은 흰 면으로 채우고,
-              보조 버튼은 테두리만 둔다. 사진 위라 흰 면이 가장 강하게 읽힌다.
-            ⚠️ 여백(px/py)으로 크기를 맞추려 하지 말 것. 실제로 그렇게 해 봤더니
-               ① '예약하기'(4자)와 '증상으로 찾아보기'(9자)의 폭이 190 vs 205 로 어긋났고
-               ② 보조 버튼에만 있는 1.5px 테두리 때문에 높이가 56 vs 58 로 달라졌다.
-               모바일에서 둘이 위아래로 쌓이면 그 15px 차이가 그대로 보인다.
-               높이·폭을 직접 지정해야 어느 화면에서도 정확히 같은 크기로 선다.
-          */}
-          <a
+          <FillBtn
             href={CLINIC.booking.naver}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-            className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-mint-500 px-8 py-3.5 text-[15px] font-bold text-white transition-transform hover:-translate-y-0.5"
+            external
+            tone="dark"
+            label="예약하기 — 네이버 예약 새 창으로 열기"
           >
             예약하기
-            <span aria-hidden className="transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </a>
-          <Link
-            href="/insight/symptom"
-            className="group inline-flex items-center justify-center gap-2.5 rounded-full border border-white/35 px-7 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
-          >
-            증상으로 찾아보기
-            <span aria-hidden className="transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
+          </FillBtn>
+          <LineBtn href={CLINIC.phoneHref} tone="dark" className="tabular-nums">
+            {CLINIC.phone}
+          </LineBtn>
         </div>
-      </Container>
+      </div>
 
       {/*
-        ★★ 사실 띠 ★★
-          확인된 사실만 올라온다(lib/heroFacts.ts 주석 참조).
-          ⚠️ 여기를 홍보 문구로 메우지 말 것 — 그 순간 이 자리는 광고가 된다.
-          ⚠️ 한 칸짜리 띠는 그리지 않는다. 넓은 띠에 값 하나면 뭔가 빠진 것처럼 보인다.
+        ★★ 사실 칩 여섯 → 지역 한 줄 (2026-08-27 오너) ★★
+          전문의·대표원장·야간·토요일·주차는 페이지 안에 더 풍부하게 있고 구조화 데이터에도
+          들어간다 — 기계용으로 중복이라 여기서 빼도 검색 손해가 사실상 없다.
+        ⚠️⚠️ 지역만은 다르다 ⚠️⚠️
+          첫 화면 문구를 원본 3줄로 되돌리면서 지역명이 히어로에서 통째로 빠졌었다.
+          지역명은 h1 주변 본문에 있을 때 가장 세게 먹히고, "고양 화정동 치과" 같은
+          질의에 AI 가 답할 때 근거로 삼는 자리가 거기다.
+          이 줄을 빼려면 지역명을 첫 화면 다른 자리에 대신 넣을 것.
       */}
-      {facts.length >= 2 && (
-        <div
-          className="enter relative border-t border-white/15"
-          style={{ animationDelay: '420ms' }}
-        >
-          <Container>
-            {/*
-              ★★ 가운데 정렬 · 세로 칸막이 → 왼쪽 정렬 (2026-08-25, 두 번째 버전 이식) ★★
-                 위 문구가 왼쪽으로 내려오면서 가운데 정렬한 띠만 따로 놀았다. 칸막이도
-                 뺐다 — 위에 이미 가로 경계선이 있어 두 겹이 되고, 값의 길이가 제각각이라
-                 칸막이가 글자와 붙는 자리가 생긴다.
-              ⚠️ 배경 판(bg-brand-900/45 + backdrop-blur)도 뺐다. 아래로 갈수록 짙어지는
-                 오버레이가 이미 이 자리를 충분히 눌러 준다. 판을 겹치면 띠만 도드라져
-                 첫 화면이 두 덩어리로 갈린다.
-              ⚠️ 열 수를 항목 수에 맞춘다 — 5열에 5칸. 넉 줄짜리 --cols 를 지우면
-                 lg 에서 마지막 칸이 다음 줄로 떨어진다.
-              ⚠️ 좁은 화면은 2열이고 다섯 번째(주차)는 한 줄을 통째로 쓴다. 예전에는
-                 다섯 번째를 lg 미만에서 아예 감췄는데, 주차 여부는 **모바일에서 가장
-                 많이 확인하는 값**이라 감출 것이 아니었다.
-            */}
-            <dl
-              className="fact-strip grid grid-cols-2 gap-y-1 sm:grid-cols-3"
-              style={{ ['--cols' as string]: facts.length }}
-            >
-              {facts.map((f, i) => (
-                <div
-                  key={f.label}
-                  className={`py-4 pr-6 sm:py-5 ${i === 4 ? 'col-span-2 sm:col-span-1' : ''}`}
-                >
-                  {/* 라벨·값 규격도 두 번째 버전 값 그대로 (11.5px / 0.14em, 15px bold). */}
-                  <dt className="text-[12.5px] font-bold tracking-[0.14em] text-white/60 uppercase">
-                    {f.label}
-                  </dt>
-                  <dd className="mt-1.5 text-[14px] font-bold leading-snug tabular-nums text-white sm:text-[15px]">
-                    {f.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </Container>
-        </div>
-      )}
+      <div
+        className="hero-inner enter relative mx-auto w-full max-w-[1320px] px-5 pb-10 text-center sm:pb-14 lg:px-8"
+        style={{ animationDelay: '340ms' }}
+      >
+        <p className="on-photo text-[15.5px] font-medium text-white/80 sm:text-[16.5px]">
+          {CLINIC.address.locality} {CLINIC.address.dong} · {CLINIC.nearestStation} 인근
+        </p>
+      </div>
     </section>
   );
 }
 
 /**
- * 진료 4대 축 — 왼쪽 글은 붙어 있고, 오른쪽 카드가 하나씩 내려온다.
+ * 진료 4대 축 — **사진 없이 어두운 유리 카드 넷**, 한 줄에.
  *
- * ★★ 4열 격자 → 붙는 글 + 세로 카드 (2026-08-25 운영자: "하나씩 스크롤하면
- *    오른쪽에서 내려가게 하고 다 내려가면 저 전체 진료과목 보기 넣고,
- *    왼쪽 글씨는 저 버전2 애니메이션 모션처럼 글자도 스크롤하면 그 효과 나오게") ★★
- *    넷을 한 줄에 늘어놓으면 한 번에 다 보여서 **읽는 순서가 없다.** 세로로 세우면
- *    스크롤이 곧 순서가 되고, 왼쪽 제목이 그동안 붙어 있어 무엇을 보고 있는지가
- *    계속 남는다. 두 번째 버전의 '둘러보기' 구성과 같은 짜임이다.
- *
- * ★ 왼쪽 글은 .seq — 눈금줄과 제목이 **한 글자씩** 올라오고 설명이 뒤따른다
- *   (components/ui.tsx SeqLetters, globals.css .seq-letter).
- *   ⚠️ 글자를 쪼개도 inline 이라 문서의 텍스트는 그대로다. inline-block 으로 바꾸면
- *      innerText 가 "어 떤  진 료 를" 로 깨진다 — 그 이유는 SeqLetters 주석에 있다.
- *
- * ★ 오른쪽 카드는 지연을 주지 않는다. 세로로 쌓여 있어 **스크롤 위치 자체가 순서**다.
- *   지연까지 주면 이미 화면에 들어온 카드가 이유 없이 늦게 뜬다.
- *
- * ⚠️ 붙는 것은 lg 이상에서만이다. 좁은 화면은 한 칸이라 붙일 옆자리가 없다 —
- *    글이 화면 한 칸을 차지한 채 멈춰 있고 그 아래 내용이 그만큼 밀린다.
- * ⚠️ 카피·이미지는 기존 홈페이지 원문 그대로다(lib/clinic.ts TREATMENT_PILLARS).
+ * ★★ 왜 사진을 뺐나 (2026-08-28 오너) ★★
+ *   사진이 카드마다 색이 달라(검정·파랑·회색·청록) 넷이 한 줄에 서니 색이 네 벌로 보였다.
+ *   글만 남기면 **읽는 순서가 이름 → 설명 하나로 정리되고**, 카드 넷이 한 덩어리로 읽힌다.
+ * ★ 재질은 오른쪽 퀵메뉴와 같은 .pane-dark 다. 화면에 어두운 판이 두 종류가 되지 않는다.
+ * ⚠️ 이 면 위 글자는 거의 흰색이어야 한다 — 회색조는 3.5:1 대로 떨어진다(globals.css 주석).
+ * ⚠️ 회전목마로 되돌리지 말 것 — 자동 이동 / 스크롤 연동 / 단계 이동 세 판을 다 해 봤다.
+ *    git history 에 남아 있다.
+ * ⚠️ 카피는 기존 홈페이지 원문 그대로다(lib/clinic.ts TREATMENT_PILLARS).
  */
 function PillarSection() {
-  const img = [
-    IMG.treatment.natural,
-    IMG.treatment.implant,
-    IMG.treatment.aesthetic,
-    IMG.treatment.wisdom,
-  ];
-
   return (
-    <section className="py-24 lg:py-28">
+    /* ⚠️ 아래 여백을 위보다 짧게 둔다 — 카드 그림자가 아래로 퍼져 실제보다 더 비어 보인다. */
+    <section className="relative isolate pt-16 pb-12 lg:pt-24 lg:pb-16">
+      {/*
+        배경 진료실 사진 — 유리 카드가 흐릴 대상을 만들어 준다(위 주석 참고).
+        ⚠️ 덮개(다음 div)를 옅게 만들지 말 것. 사진이 선명해지는 만큼 제목이 안 읽힌다.
+      */}
+      <Image
+        src={IMG.interior[8].src}
+        alt=""
+        aria-hidden
+        fill
+        sizes="100vw"
+        className="-z-10 object-cover"
+      />
+      {/*
+        ⚠️ 균일한 덮개로 되돌리지 말 것 — 옅게 하면 왼쪽 위 제목이 같이 흐려진다.
+           글자는 왼쪽 위에만 있으므로 그쪽만 진하게 덮고 오른쪽 아래는 연다.
+        ⚠️ 왼쪽 위 0.97 을 낮추지 말 것. 제목이 사진 밝은 부분에 바로 걸린다.
+      */}
+      <div
+        aria-hidden
+        className="-z-10 absolute inset-0 backdrop-blur-[1.5px]"
+        style={{
+          backgroundImage:
+            'linear-gradient(108deg,' +
+            ' color-mix(in srgb, var(--color-wine-bg) 97%, transparent) 0%,' +
+            ' color-mix(in srgb, var(--color-wine-bg) 92%, transparent) 30%,' +
+            ' color-mix(in srgb, var(--color-wine-bg) 66%, transparent) 68%,' +
+            ' color-mix(in srgb, var(--color-wine-bg) 48%, transparent) 100%)',
+        }}
+      />
       <Container>
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-16">
-          {/* ── 왼쪽: 붙어 있는 글 ── */}
-          <div className="seq lg:sticky lg:top-28 lg:self-start">
-            <p className="t-eyebrow text-brand-500">
-              <SeqLetters text="TREATMENT" step={32} />
-            </p>
-            {/*
-              ★ 제목을 질문형으로 둔다.
-                AI 검색은 문서에서 "질문과 같은 제목 + 바로 뒤에 오는 짧은 답" 을 찾아 인용한다.
-                '동그라미 치과 진료정보' 같은 명사구는 환자가 실제로 치는 문장과 매칭이 약하다.
-                단, 질문만 던지고 끝내면 안 된다 — 바로 아래 한 문장으로 답한 뒤 카드로 펼친다.
-            */}
-            <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
-              <SeqLetters text="어떤 진료를" step={22} start={340} />{' '}
-              <br />
-              <SeqLetters text="받을 수 있나요?" step={22} start={560} />
-            </h2>
-            <p
-              className="seq-fade mt-6 max-w-[46ch] text-[16px] leading-[1.85] text-ink-soft"
-              style={{ ['--d' as string]: '900ms' }}
-            >
-              <Sentences text="자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다. 충치·신경·잇몸 치료와 스케일링 같은 기본 진료도 함께 보고 있습니다." />
-            </p>
-          </div>
+        {/*
+          제목과 '전체 보기' 를 한 줄에 둔다 — 제목 아래 따로 두면 그만큼 구획이 길어진다.
+          ★ 제목을 질문형으로 둔다. AI 검색은 "질문과 같은 제목 + 바로 뒤 짧은 답" 을 찾아
+            인용한다. 명사구는 환자가 실제로 치는 문장과 매칭이 약하다.
+        */}
+        <div>
+          <HomeHead
+            /* ⚠️ 되살리지 말 것 (2026-08-28 오너) — 카드가 먼저 서 있고 제목이 뒤늦게
+               올라와 읽는 순서가 뒤집혔다. 이 구획은 통째로 처음부터 서 있는다. */
+            reveal={false}
+            className="max-w-[42em]"
+            label="진료"
+            title="어떤 진료를 받을 수 있나요?"
+            desc={
+              <Sentences text="자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다." />
+            }
+          />
+        </div>
 
-          {/* ── 오른쪽: 카드가 하나씩 내려온다 ── */}
-          <div className="flex flex-col gap-6">
-            {TREATMENT_PILLARS.map((p, i) => (
-              <Reveal key={p.key}>
+        <ul className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          {/*
+            ⚠️ 여기에는 스크롤 등장(.reveal)을 걸지 않는다 (2026-08-28 오너: "굳이 스크롤
+               이벤트 넣지말고"). 넷이 한눈에 들어오는 것이 이 구획의 목적인데, 하나씩
+               차례로 뜨면 그 목적과 정면으로 어긋난다.
+          */}
+          {TREATMENT_PILLARS.map((p, i) => {
+            const Icon = PILLAR_ICONS[i];
+            /* ⚠️ .pillar-cycle 은 li 에 있어야 한다 — 카드에 걸면 hover 3D 가 죽는다(globals.css). */
+            return (
+              <li key={p.key} className="pillar-cycle">
                 <Link
                   href={p.href}
-                  className="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl shadow-[var(--shadow-soft)] transition-all hover:-translate-y-2 hover:shadow-[var(--shadow-lift)] sm:min-h-[340px]"
+                  className="pane-dark pane-card group flex h-full min-h-[300px] flex-col overflow-hidden rounded-[18px] p-7"
                 >
                   {/*
-                    alt 를 비워 두었었다. 카드에 제목이 글자로 있으니 스크린리더에는 중복이라는
-                    판단이었고 접근성 기준상 틀린 선택은 아니다. 다만 **AI 는 사진의 내용을
-                    alt 로만 안다** — 비워 두면 이 사진이 무엇인지 아는 경로가 없다.
-                    그래서 제목을 되풀이하지 않고 사진에 찍힌 것을 설명하는 문장을 넣는다.
-                    두 목적이 충돌하지 않는 유일한 지점이다.
+                    ⚠️ 순번(01~04)을 되살리지 말 것 (2026-08-28 오너) — 진료 넷은 순서가
+                       있는 것이 아니라 **나란한 것**이다. 번호를 붙이면 1번이 더 중요한
+                       진료처럼 읽힌다.
                   */}
-                  <Image
-                    src={img[i].src}
-                    alt={img[i].alt}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 55vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  {/* 사진 위 글씨의 대비를 확보한다. 없으면 밝은 사진에서 흰 글씨가 사라진다. */}
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 bg-gradient-to-t from-brand-900/92 via-brand-900/45 to-transparent"
-                  />
-                  <div className="relative p-7 sm:p-9">
-                    <span aria-hidden className="block h-px w-9 bg-white/70" />
-                    <h3 className="display-sm mt-4 text-[22px] text-white sm:text-[24px]">{p.name}</h3>
-                    <p className="mt-3 max-w-[46ch] text-[14.5px] leading-[1.75] text-white/85">
-                      {p.copy}
-                    </p>
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-[12.5px] font-black tracking-[0.14em] text-white/90 uppercase">
-                      More View
-                      <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                  <h3 className="display-sm text-[22px] text-parchment sm:text-[24px]">
+                    {p.name}
+                  </h3>
+                  <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.75] text-parchment/85">
+                    {p.copy}
+                  </p>
+                  {/*
+                    ★★ 아이콘은 맨 아래 오른쪽이다 (2026-08-28 오너) ★★
+                      위에 뒀을 때는 쉬는 동안 아이콘이 안 보이니 **제목 위가 빈 칸**으로
+                      남아 글 배치가 어긋나 보였다. 아래 오른쪽으로 내리면 그 빈 자리가
+                      '자세히 보기' 반대편의 여백이 되어 어긋나 보이지 않는다.
+                    ⚠️ 위로 되돌리지 말 것 — 되돌리면 빈 칸 문제가 그대로 돌아온다.
+                    ⚠️ 아이콘은 쉬는 동안 보이지 않는다. 손을 올리면 그려진다(globals.css).
+                       뜻을 지고 있지 않으므로(진료 이름이 이미 글자로 있다) 안 보이는
+                       동안 잃는 정보가 없다 — aria-hidden 인 이유다.
+                  */}
+                  <span className="mt-6 flex items-center justify-between gap-4 text-parchment">
+                    <span className="inline-flex items-center gap-1.5 text-[15px] font-medium">
+                      자세히 보기
+                      <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
                         →
                       </span>
                     </span>
-                  </div>
+                    <Icon />
+                  </span>
                 </Link>
-              </Reveal>
-            ))}
+              </li>
+            );
+          })}
+        </ul>
 
-            {/*
-              ★ 홈에서 열 줄 목록을 뺀 대신 여기로 길을 낸다 (2026-08-14).
-                카드 넷은 '무엇을 잘하는가' 를 보여 주지만 나머지 여섯(신경·잇몸·충치·보철·
-                스케일링·어린이)으로 가는 길이 이 섹션 안에 없었다. 링크가 없으면 그 여섯은
-                홈에서 존재하지 않는 것과 같다.
-              ⚠️ 자리를 카드 줄 **맨 끝**에 둔다 (2026-08-25 운영자: "다 내려가면 저 전체
-                 진료과목 보기 넣고"). 카드를 다 본 사람에게 다음 걸음을 주는 자리다 —
-                 가운데나 위로 옮기면 아직 안 본 사람에게 먼저 보인다.
-            */}
-            <Reveal>
-              <Link
-                href="/treatment"
-                className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-brand-300 bg-white px-7 py-4 text-[15px] font-black text-brand-700 transition-colors hover:border-brand-400 hover:bg-brand-50"
-              >
-                전체 진료과목 {TREATMENTS.length}가지 보기
-                <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </Link>
-            </Reveal>
-          </div>
+        {/*
+          ⚠️ 이 버튼을 제목 옆으로 되돌리지 말 것 (2026-08-28 오너) — 거기 있으면 제목의
+             일부처럼 보이는데, 하는 일은 **넷을 다 본 다음**이다. 자리가 곧 순서다.
+          ⚠️ 문구에 숫자를 박지 말 것 (오너: "9가지로 확정짓지마"). 진료 수가 바뀌면
+             문구가 거짓이 되고, 애초에 숫자를 약속할 이유가 없다.
+        */}
+        {/* ⚠️ 여기에 진행 표시줄(막대 넷)을 다시 넣지 말 것 (2026-08-31 오너) —
+            '로딩 중' 으로 읽혔다. 카드가 커지는 것만으로 지금 몇 번째인지는 이미 보인다. */}
+        <div className="mt-10 flex justify-center">
+          <LineBtn href="/treatment">전체 진료과목 보기</LineBtn>
         </div>
       </Container>
     </section>
   );
 }
 
-/*
- * (2026-08-14) StrengthSection 제거 — WhyUsSection 이 대신한다.
- *
- * '특별함 5가지' 와 'WHY US 12가지' 는 같은 사실을 두 번 말하는 것이라 둘 다 두면
- * 어느 쪽도 끝까지 안 읽힌다. 특별함 원문(SpecialGrid)은 /about 과 /about/special 에
- * 그대로 살아 있으므로 내용이 사라지는 것은 아니다.
- */
-
-/**
- * 의료진 — 홈에서 히어로 다음으로 오는 섹션.
- *
- * ★★ 왜 사진을 크게 쓰는가 (2026-08-14 재설계) ★★
- *   예전에는 단체 사진 한 장 옆에 **56px 짜리 썸네일 세 개**를 붙여 뒀다.
- *   그런데 우리에겐 세 원장의 625×670 인물 사진이 이미 있다. 병원을 고르는 사람이
- *   가장 오래 보는 것이 사람 얼굴인데, 그 자산을 손톱만 하게 쓰고 있었던 셈이다.
- *   → 세 장을 같은 크기로 나란히 세우고 이름·자격·경력을 아래에 붙인다.
- *
- * ★ 카드마다 개별 페이지로 간다. 사람 이름은 그 자체로 검색 질의라("변석호 원장")
- *   각자의 페이지가 있어야 그 질의에 답할 수 있다.
- *
- * ★ 인증·논문은 얼굴 아래로 내렸다. 먼저 읽힐 것은 아니지만 지울 것도 아니다 —
- *   교수 출신·학회 정회원·발표 논문은 이 병원의 가장 단단한 근거다.
- *
- * ⚠️ 경력 문구는 lib/doctors.ts 에서만 온다. 여기서 만들지 않는다 —
- *    의료인 경력 허위 표시는 의료법 제56조 위반이다.
- */
 function DoctorSection() {
   return (
-    <section className="relative overflow-hidden py-24 lg:py-28">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-40 top-20 h-[520px] w-[520px] rounded-full bg-brand-100/40 blur-3xl"
-      />
+    /*
+     * ⚠️ 한 칸 내려앉은 면이다 — 앞뒤(진료과목·고민)와 톤이 달라야 구획이 바뀐 것이 보인다.
+     *    실선만 두고 이 배경을 지우지 말 것 (2026-08-28 오너: "세션 바뀌는게 저 선 하나야?").
+     * ⚠️ 여기 있던 흐릿한 원(blur-3xl)은 뺐다 — 면 전체가 그 색이 되면서 할 일이 없어졌고,
+     *    남겨 두면 얼룩으로 읽힌다(오너가 전에 지적한 '배경이 그라데이션' 건과 같은 것).
+     */
+    /*
+     * ★★ 어두운 구역으로 바꿨다 (2026-08-31 운영자) ★★
+     *   "너무 황금색이랑 안 어울린다. 차라리 배경을 사랑니 발치 페이지처럼 어둡게"
+     *   밝은 바탕에서는 강조색(골드)이 라벨·학회 판에 두 번 찍혀 겉돌았다.
+     *   어두운 면 위에서는 **흰 사진과 흰 글자만으로** 위계가 서고, 강조색이 필요 없다.
+     * ★ 색은 사랑니 치료 페이지와 같은 값을 쓴다(bg-walnut / text-oat) — 사이트 안에서
+     *   어두운 면은 한 벌이어야 한다. 여기만 다른 검정을 쓰면 두 종류가 생긴다.
+     * ⚠️ 어두운 면 위에서는 본문 색을 반드시 함께 지정할 것. 안 하면 잉크색 글자가
+     *    검은 바탕에 얹혀 안 보인다(HomeHead 는 자기 색을 갖고 있다).
+     */
+    <section className="relative overflow-hidden bg-walnut py-24 text-oat lg:py-32">
       <Container className="relative">
-        <div className="max-w-3xl">
-          <p className="t-eyebrow text-brand-500">DOCTORS</p>
-          <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">누가 진료하나요?</h2>
-          <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
-            <Sentences text="세 분 원장 모두 보건복지부 인정 통합치의학과 전문의입니다. 대표원장은 경희대학교 치의학전문대학원 외래교수이자 치의학박사입니다." />
-          </p>
-        </div>
+        <HomeHead
+          className="max-w-3xl [&_*]:text-oat"
+          label="의료진"
+          title="누가 진료하나요?"
+          desc={
+            /*
+              ★★ 선언형으로 바꿨다 (2026-08-31 운영자) ★★
+                "보건복지부인증 치과전문의들로만 구성된 동그라미 의료진 / 이런느낌으로 전문적으로"
+                앞 문장은 "세 분 원장 모두 ~ 전문의입니다" 로, 사실이지만 설명조였다.
+                '~로만 구성된' 이 세 분 전원이라는 것을 한 번에 말한다.
+
+              ⚠️⚠️ 표기 두 가지를 지킬 것 ⚠️⚠️
+                ① '인증' 이 아니라 **'인정'** 이다 — 전문의 자격 제도의 공식 용어다
+                   (lib/doctors.ts 도 원문의 '보건복지부인증' 을 같은 이유로 정정했다).
+                ② '치과 전문의' 로 뭉뚱그리지 않고 **'통합치의학과 전문의'** 라고 적는다 —
+                   전문과목은 실제 취득한 과목으로 표시해야 한다(의료법 제56조).
+                   세 분 다 통합치의학과이므로 '~로만 구성' 도 사실이다.
+            */
+            /*
+              ★★ 기존 홈페이지 문구를 가져왔다 (2026-08-31 운영자) ★★
+                원본(circle-dental.co.kr) — "손끝의 숙련도에 따라 결과가 달라지는 치과 치료,
+                10년 이상 경력의 교수출신 대표원장님과 보건복지부 인증 전문의들로만 구성된
+                의료진이 개인 맞춤형 진료를 제공합니다."
+
+              ⚠️⚠️ 세 군데를 원문 그대로 옮기지 않았다 ⚠️⚠️
+                ① "10년 이상 경력" — lib/doctors.ts 어디에도 근거가 없다. 확인되지 않은
+                   연차를 적는 것은 의료법 제56조의 경력 허위 표시가 된다.
+                ② "교수출신" — 대표원장은 경희대 치의학전문대학원 외래교수다(현재).
+                   '출신' 은 그만두었다는 뜻이라 사실과 다르다.
+                ③ '인증' → '인정' — 전문의 자격 제도의 공식 용어다(lib/doctors.ts 도
+                   같은 이유로 원문을 정정했다).
+                ⚠️ 병원이 확인해 주면 ①②를 원문대로 되돌려도 된다. 그 전에는 이대로 둘 것.
+            */
+            <Sentences text="손끝의 숙련도에 따라 결과가 달라지는 치과 치료, 경희대학교 치의학전문대학원 외래교수인 대표원장과 보건복지부 인정 통합치의학과 전문의로만 구성된 의료진이 진료합니다." />
+          }
+        />
 
         {/*
           ★★ 카드 세 장 → 무대 구도 (2026-08-25 운영자: "대표원장 가운데에 딱 뜨고
@@ -618,7 +556,22 @@ function DoctorSection() {
              줄이면 인증패가 의료진 경력 줄에 붙어 한 덩어리로 읽힌다.
         */}
         <div className="mt-20 lg:mt-24">
-          <p className="t-eyebrow text-brand-500">CREDENTIALS</p>
+          {/* ⚠️ 영문 대문자 눈썹을 되살리지 말 것 — 한글에는 대문자가 없다(components/home.tsx 주석). */}
+          {/*
+            ⚠️⚠️ text-ash 로 되돌리지 말 것 (2026-08-31 실측) ⚠️⚠️
+              ash 는 **밝은 페이지용 보조 글자색**(#5e5a52)이다. 여기는 어두운 구획이라
+              바탕(#1f1f29)과 1.7:1 로 사실상 안 보였다(운영자: "문구 어두운건 다 흰색으로").
+              .page-dark 안에서는 ash 가 밝은 값으로 뒤집히지만, 이 구획은 밝은 페이지 안의
+              어두운 섬이라 그 치환이 닿지 않는다.
+          */}
+          <p className="reveal flex items-center gap-2.5 text-[15px] font-medium text-oat">
+            <span
+              aria-hidden
+              className="bar-grow h-px shrink-0 bg-signal"
+              style={{ ['--w' as string]: '28px' }}
+            />
+            인증
+          </p>
 
           {/*
             ★★ 조명 hover → 부채꼴 펼침 + 커서 3D (2026-08-25 운영자: "이렇게 버전2에서
@@ -669,7 +622,15 @@ function DoctorSection() {
                 text="Circle Dental Clinic ·"
                 seconds={46}
                 size="clamp(64px, 9.5vw, 176px)"
-                colorClass="text-brand-900/[0.055]"
+                /*
+                 * ⚠️⚠️ **text-charcoal 로 되돌리지 말 것** (2026-08-31 실측) ⚠️⚠️
+                 *   charcoal 은 밝은 페이지용 글자색(#171717)이다. 이 구획이 어두워지면서
+                 *   **5% 검정이 검정 위에 얹혀 배경이 통째로 사라졌다**(운영자: "인증패 뒤에
+                 *   원래 circle dental 클리닉 지나가는 배경이었는데 사라져서").
+                 *   어두운 면에서는 밝은 색을 아주 옅게 얹어야 한다.
+                 * ⚠️ 0.07 을 넘기지 말 것 — 그 위 인증서 글자와 다투기 시작한다.
+                 */
+                colorClass="text-parchment/[0.055]"
               />
             </div>
             <CredentialFan />
@@ -705,8 +666,9 @@ function DoctorSection() {
             ⚠️ 관찰자는 레이아웃에 하나뿐인 RevealScript 다. 여기서 새로 만들지 말 것 —
                바깥에 .seq 만 두르면 안쪽 .seq-letter / .seq-fade 가 따라온다.
           */}
-          <div className="mt-12 border-t border-brand-200/70 pt-10">
-            <div className="seq relative overflow-hidden rounded-2xl bg-brand-900">
+          <div className="mt-12 border-t border-wine-line pt-10">
+            {/* ⚠️ 모서리 24px — 이 시스템에서 '큰 면' 의 값이다(버튼 8 / 카드 14 / 큰 면 24). */}
+            <div className="seq relative overflow-hidden rounded-[24px] bg-wine-deep">
               {/*
                 사진과 덮개를 한 겹으로 묶어 마지막에 함께 띄운다.
                 ⚠️ 이 상자는 absolute 다 — next/image 의 fill 이 기준으로 삼을
@@ -737,8 +699,8 @@ function DoctorSection() {
                     완전히 비운다. 멈춤 위치를 직접 적는 이유는 to-transparent 만으로는
                     가운데가 70%쯤 덮여 논문이 회색으로 뭉개지기 때문이다.
                 */}
-                <div className="absolute inset-0 bg-brand-900/82 lg:hidden" />
-                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(34,32,29,0.94)_0%,rgba(34,32,29,0.88)_34%,rgba(34,32,29,0.45)_54%,rgba(34,32,29,0)_70%)]" />
+                <div className="absolute inset-0 bg-wine-deep/82 lg:hidden" />
+                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(31,31,41,0.95)_0%,rgba(31,31,41,0.92)_40%,rgba(31,31,41,0.70)_56%,rgba(31,31,41,0)_74%)]" />
               </div>
 
               <div className="relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
@@ -747,31 +709,25 @@ function DoctorSection() {
                      본문 글자가 진다. 아래 제목을 지우면 이 배너에 논문 정보가
                      문서상 사라진다.
                 */}
-                <p className="t-eyebrow on-photo text-gold-400">
-                  <SeqLetters text="PUBLICATION" step={34} />
+                {/* ⚠️ 선 + 라벨로 되돌리지 말 것 — 구획 눈금은 사이트 전체가 알약 하나를 쓴다. */}
+                <p className="eyebrow-chip on-photo text-parchment">
+                  <SeqLetters text="논문" step={90} />
                 </p>
-                <p className="on-photo mt-5 text-[17px] leading-[1.55] font-bold text-white sm:text-[19px]">
+                {/* ⚠️ 논문 제목은 원문 그대로다 — 세리프를 씌우지 않는다. 잘라낸 글꼴에 없는
+                       글자가 섞여 한 줄에 글꼴이 두 벌 보인다. */}
+                <p className="on-photo mt-5 text-[19px] leading-[1.6] font-semibold text-parchment sm:text-[21px]">
                   <SeqLetters text={PUBLICATION_DETAIL.title} step={11} start={420} />
                 </p>
-                <p className="seq-fade on-photo mt-3 text-[13.5px] text-brand-200" style={{ ['--d' as string]: '1400ms' }}>
+                <p className="seq-fade on-photo mt-3 text-[16px] text-parchment" style={{ ['--d' as string]: '1400ms' }}>
                   {PUBLICATION_DETAIL.authors}
                 </p>
                 <div className="seq-fade mt-8 flex flex-wrap gap-2.5" style={{ ['--d' as string]: '1560ms' }}>
-                  <Link
-                    href="/about/trust"
-                    className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-[14.5px] font-black text-brand-800 shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5"
-                  >
+                  <FillBtn href="/about/trust" tone="dark">
                     근거 · 인증 전체 보기
-                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                      →
-                    </span>
-                  </Link>
-                  <Link
-                    href="/about/doctors"
-                    className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-white/45 px-6 py-3 text-[14.5px] font-black text-white transition-colors hover:bg-white/10"
-                  >
+                  </FillBtn>
+                  <LineBtn href="/about/doctors" tone="dark">
                     의료진 소개
-                  </Link>
+                  </LineBtn>
                 </div>
               </div>
             </div>
@@ -795,17 +751,18 @@ function DoctorSection() {
  */
 function InteriorSection() {
   return (
-    <section className="py-24 lg:py-28">
+    <section className="py-24 lg:py-32">
       <Container>
-        <Reveal className="max-w-3xl">
-          <p className="t-eyebrow text-brand-500">INTERIOR</p>
-          <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
-            어떤 공간에서 진료하나요?
-          </h2>
-          <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
-            <Sentences text="상담실과 진료실, 소독실까지 실제 사진입니다. 옆으로 넘겨 보실 수 있습니다." />
-          </p>
-        </Reveal>
+        <HomeHead
+          className="max-w-3xl"
+          label="공간"
+          title="어떤 공간에서 진료하나요?"
+        />
+        {/*
+          ⚠️ "실제 사진입니다 / 옆으로 넘겨 보실 수 있습니다" 를 되살리지 말 것
+             (2026-08-31 오너) — 사진과 슬라이더가 그 자리에서 이미 말하고 있다.
+             글로 다시 적으면 읽는 사람이 얻는 것이 0 이다.
+        */}
       </Container>
 
       {/*
@@ -818,6 +775,9 @@ function InteriorSection() {
            안에 도로 넣지 말 것 — 그 순간 양옆 여백이 돌아온다.
         ⚠️ 가로 스크롤은 <ul> 안에서만 일어난다(overflow-x-auto). 이 div 에
            overflow 를 걸지 말 것 — 페이지 전체가 옆으로 밀린다.
+        ⚠️⚠️ 2026-08-31: 여기를 큰 사진 + 썸네일 갤러리로 바꿨다가 **되돌렸다.**
+           운영자 지시는 그 짜임을 /about/tour(둘러보기 페이지)에 넣으라는 것이었다 —
+           "메인페이지는 아까처럼 자동으로 지나가는 그대로 냅두고". 다시 바꾸지 말 것.
       */}
       <div className="mt-12">
         <InteriorSlider />
@@ -825,15 +785,7 @@ function InteriorSection() {
 
       <Container>
         <div className="mt-10">
-          <Link
-            href="/about/tour"
-            className="group inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
-          >
-            둘러보기 페이지에서 전체 보기{' '}
-            <span aria-hidden className="transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
+          <QuietLink href="/about/tour">둘러보기 페이지에서 전체 보기</QuietLink>
         </div>
       </Container>
     </section>
@@ -858,50 +810,73 @@ function InteriorSection() {
  *    지금(⑤)은 ①의 문제를 다른 방식으로 푼다 — 진료시간은 **가로 7칸**이라 폭을
  *    나눌 필요가 없고, 오시는 길만 좌우로 나눈다.
  *
- * ⚠️ 어두운 판 위이므로 글자·테두리를 전부 흰색 계열로 둔다. 밝은 바탕용 색
- *    (text-ink / border-brand-200)을 여기에 쓰면 통째로 안 보인다.
+ * ⚠️ 어두운 판(dusk) 위이므로 글자·테두리를 전부 parchment / mist 계열로 둔다.
+ *    밝은 바탕용 색(charcoal / twilight / ash)을 여기에 쓰면 통째로 안 보인다.
+ * ⚠️ signal(파랑)은 여기서는 글자로 써도 된다 — dusk 위에서 5.62:1 이다(전화번호가 그 자리).
+ *    밝은 면에서는 2.90:1 이라 테두리 전용이다.
  */
 function HoursSection() {
   return (
-    <section className="bg-brand-900 py-24 text-white lg:py-28">
+    /*
+     * ★★ 화면 폭 어두운 띠 → 안쪽으로 들인 큰 면 (2026-08-27) ★★
+     *   화면을 가로지르는 어두운 띠는 두 참고 사이트가 똑같이 쓰는 장치라, 색만 바꿔서는
+     *   벗어나지지 않는다. 이 시스템은 **밝은 캔버스 위에 면을 얹는** 문법이므로
+     *   같은 내용을 24px 모서리의 큰 면 하나에 담는다. 위아래로 parchment 가 보인다.
+     * ⚠️ 안쪽에서 Container 를 다시 열지 말 것 — 이미 Container 안이라 여백이 두 겹이 된다.
+     * ⚠️ 여기 있던 '질문형 제목' 판단은 그대로다 — AI 검색이 문서에서 찾는 것은
+     *    "질문과 같은 제목 + 바로 뒤 짧은 답" 이다. 명사구로 바꾸지 말 것.
+     */
+    /*
+     * ★ 화면 폭 어두운 띠 (2026-08-31 오너: "양옆에 간격 냅두지 말고").
+     *   2026-08-27 에 '안쪽으로 들인 큰 면' 으로 바꿨던 것을 되돌린 것이다. 그때는 참고
+     *   사이트와 달라 보이려는 판단이었는데, 지금은 페이지 아래쪽이 통째로 어두운 결이라
+     *   양옆에 밝은 띠가 남는 쪽이 어색해졌다 — 전제가 바뀌었다.
+     * ⚠️ 안쪽 Container 를 지우지 말 것. 면만 화면 폭이고 글은 본문 폭을 지킨다.
+     */
+    <section className="bg-wine-deep py-16 text-parchment lg:py-24">
       <Container>
-        {/* ── 진료시간 ─────────────────────────────────────────── */}
-        <Reveal className="max-w-3xl">
-          <p className="t-eyebrow text-white/55">HOURS</p>
-          {/* 질문형 제목 + 즉답. '치과 진료시간' 은 지역 검색에서 가장 흔한 질의 중 하나다. */}
-          <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px]">
-            {/* ⚠️ 줄바꿈 앞 {' '} — 없으면 문서 제목이 "진료시간이어떻게" 로 붙는다. */}
-            진료시간이{' '}
-            <br />
-            어떻게 되나요?
-          </h2>
-        </Reveal>
+        <div>
+        <HomeHead
+          className="max-w-3xl"
+          tone="dark"
+          label="진료시간"
+          title={
+            <>
+              진료시간이
+              <br />
+              어떻게 되나요?
+            </>
+          }
+        />
 
-        <Reveal delay={120}>
+        <Reveal delay={70}>
           <HoursStrip />
         </Reveal>
 
         {/* ── 오시는 길 ─────────────────────────────────────────── */}
         <div className="mt-24 lg:mt-28">
-          <Reveal className="max-w-3xl">
-            <p className="t-eyebrow text-white/55">VISIT</p>
-            {/* '어디에 있나요 / 주차 되나요' 는 내원 직전에 가장 많이 검색되는 두 문장이다. */}
-            <h2 className="display-sm mt-4 text-[30px] text-white sm:text-[38px]">
-              어디에 있고{' '}
-              <br />
-              주차는 되나요?
-            </h2>
-          </Reveal>
+          <HomeHead
+            className="max-w-3xl"
+            tone="dark"
+            label="오시는 길"
+            title={
+              <>
+                어디에 있고
+                <br />
+                주차는 되나요?
+              </>
+            }
+          />
 
           <div className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
             <div>
-              <Reveal delay={120}>
-                <dl className="divide-y divide-white/10 border-y border-white/10">
+              <Reveal delay={70}>
+                <dl className="divide-y divide-white/12 border-y border-white/12">
                   <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
-                    <dt className="text-[13px] tracking-[0.1em] text-white/50">주소</dt>
-                    <dd className="text-[16px] leading-[1.8] text-white/90">
+                    <dt className="text-[15.5px] text-mist/70">주소</dt>
+                    <dd className="text-[17.5px] leading-[1.8] text-parchment/90">
                       <span className="block">{CLINIC.address.full}</span>
-                      <span className="mt-1.5 block text-[14px] text-white/55">
+                      <span className="mt-1.5 block text-[16px] text-mist/70">
                         {CLINIC.address.building} · {CLINIC.nearestStation} 인근
                       </span>
                       {/*
@@ -918,24 +893,25 @@ function HoursSection() {
                   </div>
 
                   <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
-                    <dt className="text-[13px] tracking-[0.1em] text-white/50">주차</dt>
-                    <dd className="text-[16px] leading-[1.8] text-white/90">
+                    <dt className="text-[14px] text-mist/70">주차</dt>
+                    <dd className="text-[17px] leading-[1.8] text-parchment/90">
                       {CLINIC.parking.type} ·{' '}
-                      <strong className="font-bold text-mint-400">{CLINIC.parking.fee}</strong>
+                      {/* ⚠️ signal(파랑)은 어두운 면에서만 글자로 쓴다 — 밝은 면에선 2.90:1 이라 못 읽는다. */}
+                      <strong className="font-semibold text-signal">{CLINIC.parking.fee}</strong>
                       {/* ⚠️ 기계식 주차장 주의사항을 빼지 말 것 — 큰 차량이 헛걸음하는 것을 막는다. */}
-                      <span className="mt-1.5 block text-[14px] leading-[1.8] text-white/55">
+                      <span className="mt-1.5 block text-[16px] leading-[1.8] text-mist/70">
                         {CLINIC.parking.note}
                       </span>
                     </dd>
                   </div>
 
                   <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
-                    <dt className="text-[13px] tracking-[0.1em] text-white/50">전화</dt>
+                    <dt className="text-[14px] text-mist/70">전화</dt>
                     <dd>
                       {/* 내원 결정의 마지막 한 걸음은 여전히 전화다 — 이 구획에서 가장 큰 글자. */}
                       <a
                         href={CLINIC.phoneHref}
-                        className="tabular text-[30px] font-black whitespace-nowrap text-mint-400 transition-opacity hover:opacity-80"
+                        className="tabular text-[34px] font-medium whitespace-nowrap text-signal transition-opacity hover:opacity-80"
                       >
                         {CLINIC.phone}
                       </a>
@@ -943,9 +919,9 @@ function HoursSection() {
                   </div>
 
                   <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
-                    <dt className="text-[13px] tracking-[0.1em] text-white/50">이메일</dt>
-                    <dd className="min-w-0 text-[15px] break-all text-white/80">
-                      <a href={`mailto:${CLINIC.email}`} className="hover:text-mint-400 hover:underline">
+                    <dt className="text-[14px] text-mist/70">이메일</dt>
+                    <dd className="min-w-0 text-[17.5px] break-all text-parchment/80">
+                      <a href={`mailto:${CLINIC.email}`} className="hover:text-signal hover:underline">
                         {CLINIC.email}
                       </a>
                     </dd>
@@ -953,27 +929,20 @@ function HoursSection() {
                 </dl>
               </Reveal>
 
-              <Reveal delay={200}>
+              <Reveal delay={110}>
                 <div className="mt-9 flex flex-wrap gap-3">
-                  <a
+                  <FillBtn
                     href={CLINIC.booking.naver}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-                    className="group inline-flex items-center gap-2 rounded-full bg-mint-500 px-7 py-3.5 text-[15px] font-bold text-white transition-transform hover:-translate-y-0.5"
+                    external
+                    tone="dark"
+                    label="예약하기 — 네이버 예약 새 창으로 열기"
                   >
                     예약하기
-                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                      →
-                    </span>
-                  </a>
+                  </FillBtn>
                   {/* ⚠️ 지도 전체와 길찾기 앱 버튼은 /visit 이 맡는다 — 여기 지도는 보기용이다. */}
-                  <Link
-                    href="/visit"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/35 px-7 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
-                  >
+                  <LineBtn href="/visit" tone="dark">
                     지도 · 길찾기 보기
-                  </Link>
+                  </LineBtn>
                 </div>
               </Reveal>
             </div>
@@ -985,12 +954,15 @@ function HoursSection() {
               ⚠️ 여기서는 좁은 화면에서도 보여 준다. 왼쪽 칸 아래로 쌓이는 자리라
                  '빈 자리를 채우는' 용도가 아니라 이 구획의 한 축이다.
             */}
-            <Reveal delay={160}>
+            <Reveal delay={90}>
               <ClinicMap height={420} variant="compact" />
             </Reveal>
           </div>
+        </div>
+        {/* ⚠️ 이 한 줄이 위에서 연 바깥 상자를 닫는다. 지우면 페이지가 깨진다. */}
         </div>
       </Container>
     </section>
   );
 }
+

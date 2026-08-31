@@ -342,6 +342,6 @@ export const GLOSSARY: Term[] = [
   { term: '매복치', def: '잇몸이나 뼈 속에 묻혀 제대로 나오지 못한 치아입니다. 사랑니에서 가장 흔합니다.', related: 'wisdom-tooth' },
   { term: '드라이소켓', def: '발치 후 상처를 덮어야 할 혈병이 빠져 뼈가 드러난 상태입니다. 발치 2~4일 뒤 통증이 오히려 심해집니다.', related: 'wisdom-tooth' },
   { term: '교합', reading: '맞물림', def: '위아래 치아가 닿는 상태입니다. 한 곳만 높으면 그 치아에 힘이 몰려 시리거나 아플 수 있습니다.', related: 'crown-prosthesis' },
-  { term: '실란트', reading: '치아 홈메우기', def: '어금니 씹는 면의 깊은 홈을 미리 메워 충치를 예방하는 처치입니다. 만 18세 이하 영구 어금니는 보험이 적용됩니다.', related: 'pediatric' },
+  { term: '실란트', reading: '치아 홈메우기', def: '어금니 씹는 면의 깊은 홈을 미리 메워 충치를 예방하는 처치입니다. 만 18세 이하 영구 어금니는 보험이 적용됩니다.', related: 'scaling-prevention' },
   { term: '치경부 마모', def: '잇몸 경계 부위가 파여 상아질이 드러난 상태입니다. 세게 옆으로 문지르는 칫솔질이 흔한 원인입니다.', related: 'cavity' },
 ];

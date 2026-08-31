@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import { CLINIC } from '@/lib/clinic';
-import { Container, Breadcrumb, NeedsInfo } from '@/components/ui';
+import { Container, NeedsInfo, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, medicalWebPageSchema } from '@/lib/seo';
 
@@ -55,20 +55,16 @@ export default function PrivacyPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        eyebrow="법적 고지"
+        title="개인정보처리방침"
+        desc={`${CLINIC.name}은 「개인정보 보호법」과 「의료법」에 따라 환자의 개인정보를 보호하고 관련 고충을 신속하게 처리하기 위해 다음과 같이 처리방침을 두고 있습니다. 이 방침은 홈페이지 이용과 내원 진료 모두에 적용됩니다.`}
+      />
 
       <Container className="py-12 lg:py-16">
-        <h1 className="reveal display text-[30px] text-ink sm:text-[38px]">개인정보처리방침</h1>
-        <p className="mt-5 max-w-[70ch] text-[16px] leading-[1.85] text-ink-soft">
-          {CLINIC.name}은 「개인정보 보호법」과 「의료법」에 따라 환자의 개인정보를 보호하고 관련 고충을
-          신속하게 처리하기 위해 다음과 같이 처리방침을 두고 있습니다. 이 방침은 {CLINIC.name} 홈페이지
-          이용과 내원 진료 모두에 적용됩니다.
-        </p>
-
         {/* 개인정보처리방침은 '언제 기준인지' 가 특히 중요하다 — 개정 이력이 곧 신뢰다. */}
-        <div className="mt-8 max-w-[70ch]">
+        <div className="max-w-[70ch]">
           <ArticleMeta path="/privacy" />
         </div>
 
@@ -222,7 +218,7 @@ export default function PrivacyPage() {
           </Article>
         </div>
 
-        <div className="mt-16 rounded-2xl bg-brand-50 p-7 text-[14px] leading-relaxed text-ink-soft">
+        <div className="mt-16 rounded-2xl bg-brand-50 p-7 text-[15px] leading-relaxed text-ink-soft">
           <p className="font-bold text-brand-700">사업자 정보</p>
           <p className="mt-2.5">
             {CLINIC.name} · 대표자 {CLINIC.director} · 사업자등록번호 {CLINIC.bizNo}
@@ -257,12 +253,12 @@ function Article({
 }) {
   return (
     <section className="reveal">
-      <p className="text-[12.5px] font-black tracking-[0.18em] text-brand-500">제 {n} 조</p>
+      <p className="text-[13.5px] font-black tracking-[0.18em] text-brand-500">제 {n} 조</p>
       <h2 className="display-sm mt-2.5 text-[20px] leading-snug text-ink sm:text-[23px]">{title}</h2>
-      <p className="mt-3.5 max-w-[70ch] text-[15.5px] font-semibold leading-[1.8] text-brand-700">
+      <p className="mt-3.5 max-w-[70ch] text-[16.5px] font-semibold leading-[1.8] text-brand-700">
         {lead}
       </p>
-      <div className="mt-4 max-w-[70ch] space-y-4 text-[15.5px] leading-[1.9] text-ink-soft">
+      <div className="mt-4 max-w-[70ch] space-y-4 text-[16.5px] leading-[1.9] text-ink-soft">
         {children}
       </div>
     </section>

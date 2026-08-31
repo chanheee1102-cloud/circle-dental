@@ -113,11 +113,11 @@ export function InteriorSlider() {
       */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-cream to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-wine-bg to-transparent"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-cream to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-wine-bg to-transparent"
       />
 
       {/*
@@ -133,7 +133,9 @@ export function InteriorSlider() {
             aria-hidden={i >= shots.length}
             className="w-[72%] shrink-0 sm:w-[40%] lg:w-[26%]"
           >
-            <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-brand-100 shadow-[var(--shadow-soft)]">
+            {/* ⚠️ 위 양끝 덮개 색은 이 슬라이더가 놓인 면(parchment)과 **같아야 한다** —
+                   다르면 양끝에 다른 색 띠가 보인다. 홈 전용이라 바꿔도 다른 페이지엔 영향 없다. */}
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[12px] bg-wine-soft">
               <Image
                 src={shot.src}
                 /*

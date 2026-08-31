@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { IMG } from '@/lib/assets';
 import { CLINIC, MEDICAL_DISCLAIMER } from '@/lib/clinic';
 import { headingId } from '@/components/article';
 
@@ -22,7 +24,7 @@ export function Container({
 
 /** 좁은 본문 폭 — 읽기 위한 글은 한 줄이 길면 눈이 다음 줄을 놓친다. */
 export function Prose({ children }: { children: React.ReactNode }) {
-  return <div className="reveal prose-body max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{children}</div>;
+  return <div className="reveal prose-body max-w-[68ch] text-[17.5px] leading-[1.85] text-ink-soft">{children}</div>;
 }
 
 /**
@@ -51,14 +53,57 @@ export function Prose({ children }: { children: React.ReactNode }) {
  *    마침표가 숫자·약어 안에 있는 경우를 자르면 문장이 깨진다.
  * ⚠️ 문장이 하나뿐이면 아무것도 하지 않는다(불필요한 span 을 만들지 않는다).
  */
-export function Sentences({ text }: { text: string }) {
+/**
+ * 문자열에서 강조 표시를 떼어 낸다.
+ * ⚠️ 메타 설명·JSON-LD 에 넣기 전에 **반드시** 통과시킬 것 — 안 그러면 검색 결과에
+ *    별표가 그대로 나간다.
+ */
+export function plain(text: string) {
+  return text.split('**').join('');
+}
+
+/**
+ * `**핵심 구절**` 을 강조색으로 바꾼다.
+ * ★ 문장을 JSX 로 다시 쓰지 않는 이유 — 그러면 화면용과 메타용으로 **같은 문장이
+ *   두 벌**이 되고, 두 벌은 반드시 어긋난다. 문자열 하나에 표시만 남긴다.
+ * ⚠️ 한 문단에 두 곳 넘게 강조하지 말 것. 다 강조하면 아무것도 강조가 아니다.
+ * ⚠️ 밝은 면에서는 clay-600, 어두운 면에서는 ember 다 — 금색은 밝은 면에서 2.08:1 이라
+ *    글자로 못 읽는다(실측). tone 을 반드시 맞춰 줄 것.
+ */
+function Marked({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
+  const bits = text.split('**');
+  /*
+   * ⚠️ 짝이 안 맞으면(표시 개수가 홀수) 강조를 **포기한다**.
+   *   문장 단위로 쪼갠 뒤 강조를 입히는 구조라, 마침표가 표시 안에 있으면 닫는 표시가
+   *   다음 문장으로 넘어가 그 문장이 통째로 물든다. 조용히 번지는 대신 조용히 넘긴다 —
+   *   글이 잘못 강조되는 것보다 강조가 없는 편이 낫다.
+   */
+  if (bits.length % 2 === 0) return <>{plain(text)}</>;
+  return (
+    <>
+      {bits.map((b, i) =>
+        i % 2 === 1 ? (
+          <strong
+            key={`${i}-${b.slice(0, 6)}`}
+            className={`font-semibold ${tone === 'dark' ? 'text-ember' : 'text-clay-600'}`}
+          >
+            {b}
+          </strong>
+        ) : (
+          <span key={`${i}-${b.slice(0, 6)}`}>{b}</span>
+        ),
+      )}
+    </>
+  );
+}
+export function Sentences({ text, tone = 'light' }: { text: string; tone?: 'light' | 'dark' }) {
   const parts = text.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g)?.map((s) => s.trim()).filter(Boolean);
-  if (!parts || parts.length < 2) return <>{text}</>;
+  if (!parts || parts.length < 2) return <Marked text={text} tone={tone} />;
   return (
     <>
       {parts.map((s, i) => (
         <span key={`${i}-${s.slice(0, 8)}`} className="block">
-          {s}
+          <Marked text={s} tone={tone} />
         </span>
       ))}
     </>
@@ -106,7 +151,7 @@ export function SectionHead({
            영문이고 하위 페이지는 한글 그대로다 — 뜻은 바로 아래 제목이 지므로
            어느 쪽이든 읽는 사람이 잃는 정보는 없다.
       */}
-      {eyebrow && <p className="t-eyebrow text-brand-500">{eyebrow}</p>}
+      {eyebrow && <p className="eyebrow-chip text-brand-500">{eyebrow}</p>}
       {/*
         페이지 제목은 한 단계 크게 — 문서의 머리라는 것이 눈으로도 보여야 한다.
         ★★ 제목이 문자열이면 앵커 id 를 자동으로 붙인다 (2026-08-14) ★★
@@ -151,7 +196,7 @@ export function SectionHead({
         어절 단위로 접힌다(Sentences 주석 참고).
       */}
       {desc && (
-        <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
+        <p className="mt-5 text-[17px] leading-[1.85] text-ink-soft">
           <Sentences text={desc} />
         </p>
       )}
@@ -160,21 +205,161 @@ export function SectionHead({
 }
 
 /**
+ * 하위 페이지의 첫 화면 — **홈 히어로와 같은 문법**이다.
+ *
+ * ★★ 왜 부품 하나로 모았나 (2026-08-28 오너: "모든 페이지가 텍스트 형식이라 바꿀 거야") ★★
+ *   31개 페이지가 각자 Breadcrumb + SectionHead 를 늘어놓고 있었다. 페이지마다 손으로
+ *   머리를 그리면 반드시 몇 장이 빠지고, 그때부터 '고쳤는데 안 고쳐진' 화면이 생긴다.
+ *   여기 한 곳만 고치면 전 페이지가 같이 움직인다.
+ *
+ * ★ 구조 — ① 어두운 면(또는 사진) ② 두 겹 스크림 ③ 가운데로 모은 제목 한 덩어리
+ * ⚠️ 스크림을 한 겹으로 줄이지 말 것 — 사진이 밝은 쪽으로 치우치면 글자가 바로 묻힌다.
+ *    방사형(가운데를 살림) + 선형(아래를 눌러 줌) 두 겹이라야 어느 사진이든 견딘다.
+ * ⚠️ 높이를 한 화면(100dvh)으로 키우지 말 것 — 하위 페이지에서는 본문이 접힌 아래로
+ *    밀려난다. 검색·답변 엔진이 먼저 읽는 것이 본문이라 그대로 손해다.
+ * ⚠️ 헤더는 sticky 라 자리를 차지한다. 띠가 헤더 뒤까지 올라가려면 음수 margin 으로
+ *    끌어올리고 **같은 값만큼 padding 으로 돌려줘야** 한다(홈 히어로와 같은 수치).
+ * ⚠️ h1 은 페이지에 하나다. 이 부품이 h1 을 내므로, 쓰는 페이지에서 SectionHead as="h1"
+ *    을 함께 두지 말 것.
+ */
+/**
+ * 히어로 띠에 쓰는 병원 사진 이름표.
+ * ⚠️ 어두운 스크림을 두 겹 덮으므로 **밝고 형태가 단순한 사진**이 맞다.
+ *    어두운 사진은 덮고 나면 그냥 검은 면이 되어 사진을 쓴 값이 없다.
+ */
+const HERO_PHOTOS = {
+  corridor: IMG.interior[2], // 진료실로 이어지는 복도 — 시선이 가운데로 모인다
+  booth: IMG.interior[0], // 유리 파티션 상담 부스
+  consult: IMG.interior[3], // 엑스레이 화면을 놓고 설명하는 장면
+  room: IMG.interior[8], // 창가 진료실
+  sterile: IMG.interior[5], // 멸균 기구를 꺼내는 장면
+} as const;
+
+export function PageHero({
+  trail,
+  eyebrow,
+  title,
+  desc,
+  photo,
+  children,
+}: {
+  trail: Array<{ name: string; path: string }>;
+  eyebrow: string;
+  /**
+   * ⚠️ 되도록 문자열로 줄 것 — 문자열일 때만 앵커 id 가 자동으로 붙는다.
+   *    id 가 있어야 답변 엔진이 문서 전체가 아니라 이 제목을 지목해 인용한다.
+   *    JSX 로 주면(줄바꿈 등) id 가 빠진다. SectionHead 와 같은 규칙이다.
+   */
+  title: React.ReactNode;
+  desc?: string;
+  /**
+   * 띠에 깔 병원 사진. 없으면 어두운 돌 면 그대로다.
+   * ★ 페이지가 파일 경로를 알 필요가 없게 **이름표로 고른다** — 사진을 바꾸면
+   *   여기 한 곳만 고치면 되고, 페이지마다 IMG import 가 늘지 않는다.
+   * ⚠️ 장식이라 alt 는 빈 문자열이다(aria-hidden). 사진이 지는 뜻이 없다 —
+   *    뜻은 바로 위 제목이 전부 진다.
+   */
+  photo?: keyof typeof HERO_PHOTOS;
+  /** 제목 아래 덧붙일 것(발행일·칩 등). */
+  children?: React.ReactNode;
+}) {
+  return (
+    <section className="relative isolate -mt-[68px] overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
+      {photo ? (
+        <Image
+          src={HERO_PHOTOS[photo].src}
+          alt=""
+          aria-hidden
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+      ) : null}
+      {/*
+        두 겹 스크림. ⚠️ 한 겹으로 줄이지 말 것 — 위 주석 참고.
+        ⚠️⚠️ 이 값을 옅게 되돌리지 말 것 (2026-08-28 실측) ⚠️⚠️
+          처음에 옅게(0.35/0.2) 뒀더니 사진 밝은 부분에서 금색 눈금 글자가
+          **2.26:1** 까지 떨어졌다(기준 4.5). 큰 흰 제목은 통과하는데 작은 글자가
+          먼저 무너진다 — 사진 위 글자는 늘 작은 글자가 먼저 깨진다.
+          지금 값은 가운데가 약 76% 덮여 사진이 질감으로만 남는 선이다.
+        사진이 없을 때도 그대로 둔다: 어두운 면에 깊이를 준다.
+      */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(78%_62%_at_50%_38%,rgba(36,34,30,0.68)_0%,rgba(36,34,30,0.86)_62%,rgba(36,34,30,0.95)_100%)]"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(36,34,30,0.62)_0%,rgba(36,34,30,0.52)_38%,rgba(36,34,30,0.82)_100%)]"
+      />
+
+      <Container className="relative flex min-h-[42vh] flex-col justify-between py-10 lg:min-h-[48vh] lg:py-12">
+        <Breadcrumb trail={trail} tone="dark" />
+
+        {/* ⚠️ 가운데 정렬은 홈 히어로와 맞춘 것이다. 왼쪽 정렬로 되돌리면 하위 페이지만 결이 갈린다. */}
+        <div className="mx-auto max-w-3xl py-10 text-center lg:py-14">
+          <p className="eyebrow-chip text-clay-300">{eyebrow}</p>
+          <h1
+            id={typeof title === 'string' ? headingId(title) : undefined}
+            className="display-sm mt-4 scroll-mt-28 text-[30px] text-parchment sm:text-[40px] lg:text-[46px]"
+          >
+            {title}
+          </h1>
+          {desc ? (
+            <p className="mx-auto mt-6 max-w-[46em] text-[17px] leading-[1.9] text-parchment/85 sm:text-[18px]">
+              <Sentences text={desc} />
+            </p>
+          ) : null}
+          {children ? <div className="mt-8">{children}</div> : null}
+        </div>
+
+        {/* 아래쪽 균형을 잡는 빈 칸 — 제목 덩어리가 띠 한가운데 오게 한다. */}
+        <div aria-hidden className="h-0" />
+      </Container>
+    </section>
+  );
+}
+
+/**
  * 빵부스러기.
  * ★ 시각적 장식이 아니라 크롤러에게 계층을 알려주는 신호다. 깊은 페이지일수록 중요하다.
  */
-export function Breadcrumb({ trail }: { trail: Array<{ name: string; path: string }> }) {
+export function Breadcrumb({
+  trail,
+  tone = 'light',
+}: {
+  trail: Array<{ name: string; path: string }>;
+  /** 어두운 히어로 띠 위에 놓일 때 — 글자를 밝은 쪽으로 뒤집는다. */
+  tone?: 'light' | 'dark';
+}) {
+  const dark = tone === 'dark';
   return (
-    <nav aria-label="현재 위치" className="flex flex-wrap items-center gap-1.5 text-[13px] text-ink-muted">
+    /*
+     * ⚠️ ink-muted(#756e67)는 크림 바탕에서 3.97:1 이라 본문 기준(4.5:1)에 못 미친다(실측).
+     *    13px 짜리 작은 글자라 더 그렇다. ink-soft(#625b55)로 내리면 5.9:1 이다.
+     */
+    <nav
+      aria-label="현재 위치"
+      className={`flex flex-wrap items-center gap-1.5 text-[14px] ${
+        dark ? 'text-parchment/75' : 'text-ink-soft'
+      }`}
+    >
       {trail.map((t, i) => (
         <span key={t.path} className="flex items-center gap-1.5">
           {i > 0 && <span aria-hidden>›</span>}
           {i === trail.length - 1 ? (
-            <span className="font-semibold text-ink-soft" aria-current="page">
+            <span
+              className={`font-semibold ${dark ? 'text-parchment' : 'text-ink-soft'}`}
+              aria-current="page"
+            >
               {t.name}
             </span>
           ) : (
-            <Link href={t.path} className="transition-colors hover:text-brand-700">
+            <Link
+              href={t.path}
+              className={`transition-colors ${dark ? 'hover:text-parchment' : 'hover:text-brand-700'}`}
+            >
               {t.name}
             </Link>
           )}
@@ -205,16 +390,19 @@ export function Breadcrumb({ trail }: { trail: Array<{ name: string; path: strin
  */
 export function QABlock({ items }: { items: Array<{ q: string; a: string }> }) {
   return (
-    <div className="reveal-stack divide-y divide-brand-100">
+    <div className="reveal-stack mx-auto grid max-w-4xl gap-4">
       {items.map((it) => (
-        <article key={it.q} className="py-7 first:pt-0 last:pb-0">
+        <article
+          key={it.q}
+          className="card-glass rounded-[18px] border border-mist p-7 sm:p-8"
+        >
           <h2
             id={headingId(it.q)}
             className="scroll-mt-28 text-[19px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[21px]"
           >
             {it.q}
           </h2>
-          <p className="mt-3 max-w-[70ch] text-[16px] leading-[1.85] text-ink-soft">{it.a}</p>
+          <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft">{it.a}</p>
         </article>
       ))}
     </div>
@@ -232,27 +420,51 @@ export function QABlock({ items }: { items: Array<{ q: string; a: string }> }) {
 export function NeedsInfo({ label, note }: { label: string; note: string }) {
   return (
     <div className="rounded-2xl border border-dashed border-gold-400/70 bg-gold-400/8 p-5">
-      <p className="flex items-center gap-2 text-[13px] font-black text-gold-600">
+      <p className="flex items-center gap-2 text-[14px] font-black text-gold-600">
         <span
           aria-hidden
-          className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gold-500 text-[12.5px] text-white"
+          className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gold-500 text-[13.5px] text-white"
         >
           !
         </span>
         {label} — 확인 필요
       </p>
-      <p className="mt-2 text-[14px] leading-relaxed text-ink-soft">{note}</p>
+      <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{note}</p>
     </div>
   );
 }
 
 /** 의료 정보 페이지 하단 고지. 시술·증상 설명이 있는 모든 페이지에 붙인다. 빼지 말 것. */
-export function MedicalNotice({ extra }: { extra?: string }) {
+/** @param tone 어두운 배경에 놓을 때는 'dark'. 면과 글자가 한 벌로 바뀐다. */
+/**
+ * ⚠️⚠️ **화면에서 걷어냈다 — 되살리려면 운영자 GO 가 필요하다** (2026-08-31) ⚠️⚠️
+ *   운영자: "페이지마다 이런내용 꼭 넣어야돼? 없애고싶어."
+ *
+ *   ★ 법적으로 필요한 것이 아니었다. 의료광고 심의가 부작용 고지를 요구하는 것은
+ *     **치료 전후 사진·환자 경험담**을 쓸 때이고, 이 사이트는 그런 것을 쓰지 않는다.
+ *   ★ 부르는 곳은 그대로 두고 여기서 null 을 돌려준다 — 되살릴 때 이 파일 한 곳만 고치면 된다.
+ *   ⚠️ '설명용 이미지' 고지는 **성격이 다르다.** 그건 우리가 실제로 AI 로 만든 그림을
+ *      쓰기 때문에 붙는 것이라 그림을 쓰는 동안은 남는다(components/TreatmentLanding.tsx).
+ */
+export function MedicalNotice(_: { extra?: string; tone?: 'light' | 'dark' }) {
+  return null;
+}
+
+function MedicalNoticeHidden({ extra, tone = 'light' }: { extra?: string; tone?: 'light' | 'dark' }) {
+  const dark = tone === 'dark';
   return (
-    <aside className="reveal mt-12 rounded-2xl bg-brand-50 p-6 text-[13px] leading-relaxed text-ink-soft">
-      <p className="font-bold text-brand-700">안내</p>
-      <p className="mt-2">{MEDICAL_DISCLAIMER}</p>
-      {extra && <p className="mt-2">{extra}</p>}
+    <aside
+      className={`reveal mt-12 rounded-2xl p-6 text-[14px] leading-relaxed ${
+        dark ? 'card-glass/[0.04] text-white/70' : 'bg-brand-50 text-ink-soft'
+      }`}
+    >
+      <p className={`font-bold ${dark ? 'text-white' : 'text-brand-700'}`}>안내</p>
+      {/*
+        ⚠️ max-w 를 지우지 말 것 — 없으면 넓은 화면에서 한 줄이 86자까지 늘어난다(실측).
+           한글에서 편한 한 줄은 35~45자다. em 으로 잡는 이유는 1em ≈ 한글 한 글자이기 때문이다.
+      */}
+      <p className="mt-2 max-w-[44em]">{MEDICAL_DISCLAIMER}</p>
+      {extra && <p className="mt-2 max-w-[44em]">{extra}</p>}
     </aside>
   );
 }
@@ -276,11 +488,11 @@ export function ContactCta({
         </div>
         <div className="relative max-w-xl">
           <h2 className="display-sm text-[26px] sm:text-[33px]">{title}</h2>
-          <p className="mt-5 text-[16px] leading-[1.85] text-brand-100/90">{desc}</p>
+          <p className="mt-5 text-[17px] leading-[1.85] text-brand-100/90">{desc}</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a
               href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-[17px] font-black text-brand-700 shadow-lg transition-transform hover:-translate-y-1"
+              className="inline-flex items-center gap-2 rounded-full bg-parchment px-8 py-4 text-[18px] font-black text-brand-700 shadow-lg transition-transform hover:-translate-y-1"
             >
               {CLINIC.phone}
             </a>
@@ -295,7 +507,7 @@ export function ContactCta({
               href={CLINIC.booking.naver}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-white/45 px-8 py-4 text-[16.5px] font-bold text-white transition-all hover:-translate-y-1 hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-white/45 px-8 py-4 text-[17.5px] font-bold text-white transition-all hover:-translate-y-1 hover:bg-white/10"
             >
               예약하기
             </a>
@@ -332,7 +544,7 @@ export function CardLink({
   return (
     <Link
       href={href}
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-brand-200/70 bg-white p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
     >
       {/* 호버 시 번지는 원 — 카드에 깊이를 준다. 장식이므로 스크린리더에서 숨긴다. */}
       <div
@@ -340,19 +552,19 @@ export function CardLink({
         className="absolute -right-14 -top-14 h-32 w-32 rounded-full bg-brand-50 transition-transform duration-500 group-hover:scale-[1.8]"
       />
       {tag && (
-        <span className="relative mb-3.5 inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[12.5px] font-black text-brand-700">
+        <span className="relative mb-3.5 inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[13.5px] font-black text-brand-700">
           {tag}
         </span>
       )}
       <Heading className="display-sm relative text-[18px] text-ink group-hover:text-brand-700">
         {title}
       </Heading>
-      <p className="relative mt-3 flex-1 text-[14.5px] leading-[1.8] text-ink-soft">{desc}</p>
-      <span className="relative mt-5 inline-flex items-center gap-2 text-[13.5px] font-black text-brand-700">
+      <p className="relative mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">{desc}</p>
+      <span className="relative mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-brand-700">
         자세히 보기
         <span
           aria-hidden
-          className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[12.5px] transition-all group-hover:bg-brand-500 group-hover:text-white"
+          className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[13.5px] transition-all group-hover:bg-brand-500 group-hover:text-white"
         >
           →
         </span>

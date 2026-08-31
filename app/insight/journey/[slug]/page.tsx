@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { JOURNEYS, journeyBySlug } from '@/lib/insight';
 import { treatmentBySlug } from '@/lib/treatments';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
-import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
@@ -106,30 +106,28 @@ export default async function JourneyDetailPage({
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={trail} />
-      </Container>
-
       <article>
-        <Container className="py-10 lg:py-14">
-          <p className="text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
-            치료 여정
-          </p>
-          <h1 className="display mt-4 max-w-3xl text-[30px] text-ink sm:text-[42px]">{j.question}</h1>
+        {/*
+          ⚠️ 머리를 다시 손으로 그리지 말 것 — PageHero 하나가 전담한다(2026-08-28).
+          ⚠️ 바로 아래 '즉답 블록' 을 히어로 설명글로 옮기지 말 것. 같은 문장이 두 번 나오면
+             인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
+        */}
+        <PageHero trail={trail} photo="corridor" eyebrow="치료 여정" title={j.question} />
+        <Container className="py-12 lg:py-16">
 
-          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
-            <p className="text-[17px] leading-[1.85] text-ink"><Sentences text={j.answer} /></p>
+          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 card-glass p-6 shadow-[var(--shadow-soft)]">
+            <p className="text-[18px] leading-[1.85] text-ink"><Sentences text={j.answer} /></p>
           </div>
 
           <dl className="mt-9 grid max-w-2xl gap-px overflow-hidden rounded-xl border border-brand-200/70 bg-brand-200/70 sm:grid-cols-2">
-            <div className="bg-white px-6 py-5">
-              <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
+            <div className="bg-parchment px-6 py-5">
+              <dt className="text-[13.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
                 내원 횟수
               </dt>
               <dd className="mt-2 text-[19px] font-black text-ink">{j.visits}</dd>
             </div>
-            <div className="bg-white px-6 py-5">
-              <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
+            <div className="bg-parchment px-6 py-5">
+              <dt className="text-[13.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
                 전체 기간
               </dt>
               <dd className="mt-2 text-[19px] font-black text-ink">{j.duration}</dd>
@@ -153,7 +151,7 @@ export default async function JourneyDetailPage({
           </div>
         </Container>
 
-        <section className="border-y border-brand-200/60 bg-white py-14">
+        <section className="border-y border-brand-200/60 bg-parchment py-14">
           <Container>
             <h2
               id={headingId('회차별로 하는 일')}
@@ -166,12 +164,12 @@ export default async function JourneyDetailPage({
                 <li key={st.label} className="relative pb-8 last:pb-0">
                   <span
                     aria-hidden
-                    className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-white text-[12.5px] font-black text-brand-600"
+                    className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-parchment text-[13.5px] font-black text-brand-600"
                   >
                     {i + 1}
                   </span>
-                  <h3 className="text-[17px] font-black text-ink">{st.label}</h3>
-                  <p className="mt-2 max-w-[64ch] text-[15px] leading-relaxed text-ink-soft">
+                  <h3 className="text-[18px] font-black text-ink">{st.label}</h3>
+                  <p className="mt-2 max-w-[64ch] text-[16px] leading-relaxed text-ink-soft">
                     {st.what}
                   </p>
                 </li>
@@ -187,14 +185,14 @@ export default async function JourneyDetailPage({
           >
             이럴 때 더 걸립니다
           </h2>
-          <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
+          <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
             위 회차는 일반적인 경우입니다. 아래에 해당하면 단계가 추가되거나 기다리는 기간이 늘어납니다.
           </p>
           <ul className="mt-7 grid gap-3 sm:grid-cols-2">
             {j.variables.map((v) => (
               <li
                 key={v}
-                className="flex gap-3 rounded-xl border border-brand-100 bg-white px-5 py-4 text-[14.5px] leading-relaxed text-ink-soft"
+                className="flex gap-3 rounded-xl border border-brand-100 card-glass px-5 py-4 text-[15.5px] leading-relaxed text-ink-soft"
               >
                 <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500" />
                 {v}
@@ -205,7 +203,7 @@ export default async function JourneyDetailPage({
           {treatment && (
             <Link
               href={`/treatment/${treatment.slug}`}
-              className="mt-9 inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
+              className="mt-9 inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[16.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
             >
               {treatment.name} 진료 안내 <span aria-hidden>→</span>
             </Link>

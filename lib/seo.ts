@@ -40,8 +40,13 @@ export const abs = (path: string) => (path === '/' ? BASE : `${BASE}${path}`);
 export const ID = {
   clinic: `${BASE}/#clinic`,
   website: `${BASE}/#website`,
-  /** 대표원장 — 모든 의료 문서의 검토자. 원장 개별 페이지의 Physician 노드와 같은 URI 다. */
-  director: `${BASE}/about/doctors/${DOCTORS[0].slug}#physician`,
+  /**
+   * 대표원장 — 모든 의료 문서의 검토자.
+   * ⚠️ 원장 **개별 페이지는 없다**(2026-08-31 제거). 의료진 소개 페이지 안의 닻을 가리킨다.
+   *    이 URI 는 physicianSchema 의 @id 와 **글자 하나까지 같아야** 한다 — 다르면
+   *    같은 사람이 두 노드로 쪼개져 저자 동일성이 깨진다.
+   */
+  director: `${BASE}/about/doctors#${DOCTORS[0].slug}`,
   page: (path: string) => `${abs(path)}#webpage`,
   article: (path: string) => `${abs(path)}#article`,
   breadcrumb: (path: string) => `${abs(path)}#breadcrumb`,
@@ -318,7 +323,7 @@ export function directorPersonSchema() {
     name: d.name,
     jobTitle: `치과의사 · ${d.role}`,
     medicalSpecialty: 'Dentistry',
-    url: abs(`/about/doctors/${d.slug}`),
+    url: `${abs('/about/doctors')}#${d.slug}`,
     image: abs(d.photo),
     worksFor: { '@id': ID.clinic },
     knowsAbout: d.focus,
@@ -346,7 +351,7 @@ export function directorPersonSchema() {
     ],
     /** 저자 동일성 — 이 사람의 프로필 페이지와 병원 계정을 잇는다. */
     sameAs: [
-      abs(`/about/doctors/${d.slug}`),
+      `${abs('/about/doctors')}#${d.slug}`,
       CLINIC.social.instagram,
       CLINIC.social.naverBlog,
     ],

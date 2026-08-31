@@ -51,8 +51,8 @@
    * ⚠️ mint-* 는 첫 화면·버튼·오늘 표시가 쓰는 이름인데, 웜 팔레트에는 민트가 없다.
    *    이름을 지우면 그 자리들을 전부 손봐야 하므로 **값만 웜 쪽으로 돌린다**.
    */
-  --color-ink: #2a2724;
-  --color-ink-soft: #625b55;
+  --color-ink: #171717;
+  --color-ink-soft: #5c5850;
   /*
    * ⚠️⚠️ #948c85 로 되돌리지 말 것 — 밝은 바탕에서 3.12:1 이라 기준(4.5)에 미달했다.
    *    "장식용이니 작은 본문에 쓰지 말 것" 이라고 적어 뒀지만 실제로는 빵부스러기·
@@ -61,19 +61,113 @@
    *    지금 값: 크림 바탕 4.74:1 · 흰 면 5.02:1.
    * ⚠️ 어두운 면에서는 쓰지 않는다(실측 0곳). 어두운 쪽은 brand-200/300 이 맡는다.
    */
-  --color-ink-muted: #756e67;
+  --color-ink-muted: #5f6058;
 
   /* 웜 뉴트럴 — 따뜻한 회갈색 축 */
-  --color-brand-50: #f8f6f4;
-  --color-brand-100: #eeeae6;
-  --color-brand-200: #dcd5cf;
-  --color-brand-300: #bcb2aa;
-  --color-brand-400: #948a81;
-  --color-brand-500: #6f665f;
-  --color-brand-600: #565049;
-  --color-brand-700: #443c37; /* ← 기준색. 헤더·버튼·푸터가 쓴다 */
-  --color-brand-800: #332e2a;
-  --color-brand-900: #22201d;
+  --color-brand-50: #faf8f3;
+  --color-brand-100: #f2efe7;
+  --color-brand-200: #e7e2d7;
+  --color-brand-300: #ccc7bb;
+  --color-brand-400: #a4a094;
+  --color-brand-500: #646158;
+  --color-brand-600: #5c5950;
+  --color-brand-700: #47443c; /* ← 기준색. 헤더·버튼·푸터가 쓴다 */
+  --color-brand-800: #302c26;
+  --color-brand-900: #24201a;
+
+  /*
+   * 어두운 화면용 두 단계 (2026-08-27).
+   * ★ brand-900(#22201d) 은 카드·띠에 쓰기엔 맞지만 **화면 전체 바탕**으로는 밝다.
+   *   제품 사이트처럼 어두운 면을 깔려면 한 단계 더 내려간 값이 필요하다.
+   * ⚠️ 순검정(#000)을 쓰지 않는다 — 이 사이트는 웜 뉴트럴 축이라 순검정을 깔면 색이 튄다.
+   *   night 는 brand 축과 같은 색상각에서 명도만 더 내린 값이다.
+   */
+  --color-night: #24221e;   /* 화면 바탕 */
+  --color-night-2: #34312b; /* 한 단 올린 띠 */
+
+  /*
+   * ★★ MindMarket 축 — 심미보철 페이지 전용 (2026-08-27, 오너가 스타일 레퍼런스로 지목) ★★
+   *   크림 종이 바탕 + 아주 큰 타이포 + 50px 라운드 + 초록 강조 하나.
+   *   그림자를 쓰지 않고 **크림→흰색 면 차이**로만 층을 만드는 것이 이 시스템의 핵심이다.
+   *
+   * ⚠️ 이 토큰은 심미보철 한 페이지에서만 쓴다. 사이트 전역에 퍼뜨리지 말 것 —
+   *    나머지 페이지는 웜 뉴트럴(brand) 축과 clay 강조를 쓴다.
+   * ⚠️ grass 는 **구조 강조 전용**이다(테두리·획·아이콘). 본문 글자색이나 큰 면에 쓰지 말 것.
+   * ⚠️ coral 은 서비스 단위 행동 버튼에만. 전역 CTA 색으로 승격하지 말 것.
+   */
+  --color-paper: #efebe4;      /* 페이지 바탕 — 흰색이 아니다 */
+  --color-paper-2: #e5e0d5;    /* 한 단 들어간 면 */
+  --color-inkw: #302c26;       /* 본문·테두리·아이콘 (순검정 금지) */
+  /*
+   * ⚠️ #80827f → #565853 으로 내렸다 (2026-08-27, 실측).
+   *   paper-2(#e0dbce) 위에서 2.80:1 이라 본문 크기 글까지 흐릿했다(31곳이 걸렸다).
+   *   지금 값은 paper-2 위 5.05:1, paper 위 5.7:1 이다.
+   * ⚠️ '눌러 둔 글' 이라는 역할은 그대로다 — 본문(inkw)보다 여전히 옅다.
+   */
+  --color-stone: #5b5f5b;      /* 눌러 둔 글 */
+  --color-hairline: #dee2de;   /* 아주 옅은 구분선 */
+  --color-grass: #d9a441;      /* 구조 강조 */
+  --color-coral: #6f746f;      /* 서비스 행동 버튼 */
+  --color-sky: #e7bd72;
+  --color-sun: #c3c7c3;
+
+  /*
+   * ★★ 실험실 축 — 치아미백 페이지 전용 (2026-08-27, 오너가 스타일 레퍼런스로 지목) ★★
+   *   거의 검정에 초록 기운이 도는 바탕 + 단일 굵기 타이포 + 라임 강조 하나.
+   *   그림자를 절대 쓰지 않고 **1px 헤어라인**으로만 구획한다.
+   *
+   * ⚠️ abyss 는 순검정이 아니다. 초록 기운을 품은 어두운 색이라 라임 강조와 같은 계열로 읽힌다.
+   *    순검정(void)은 **푸터에만** 쓴다 — 본문 어두운 면에 쓰면 강조색이 겉돈다.
+   * ⚠️ lime 은 40x40 화살표 버튼과 6px 점에만 쓴다. 큰 면·본문 뒤·그라디언트에 쓰지 말 것.
+   *    이 시스템의 힘은 나머지가 전부 무채색이라 초록이 나타나면 눈이 그리로 가는 데 있다.
+   * ⚠️ lichen·tissue 는 밝은 면 전용이다. 어두운 면에 쓰면 묻혀서 면 위계가 깨진다.
+   * ⚠️ 이 토큰은 치아미백 한 페이지에서만 쓴다. 사이트 전역에 퍼뜨리지 말 것.
+   */
+  --color-abyss: #24221e;   /* 어두운 면 · 본문 글자(밝은 면) */
+  --color-bone: #efebe4;    /* 밝은 면 바탕 */
+  --color-graphite: #635f56;/* 보조 글 · 어두운 면 헤어라인 */
+  --color-lichen: #e7e2d7;  /* 밝은 면 헤어라인 */
+  --color-tissue: #edefec;  /* 밝은 면 보조 카드 */
+  --color-lime: #e7bd72;    /* 강조 — 미세 면에만 */
+  --color-void: #171717;    /* 푸터 전용 */
+
+  /*
+   * ★★ 다크룸 축 — 사랑니 페이지 전용 (2026-08-27, 오너가 스타일 레퍼런스로 지목) ★★
+   *   따뜻한 어둠 위에 크림색 글자만 띄우는 제품 사진 문법.
+   * ⚠️ 순백(#fff)과 순검정(#000)을 쓰지 말 것 — 이 시스템은 **따뜻하게 틀어진** 흑백이
+   *    정체성이다. 순수한 값을 쓰면 그 순간 다른 사이트가 된다.
+   * ⚠️ ember(주황)는 크레딧·링크 같은 편집 요소에만. **버튼에 쓰지 말 것.**
+   * ⚠️ 그림자 금지. 깊이는 walnut→bark 두 단계 면 차이로만 만든다.
+   * ⚠️ 이 토큰은 사랑니 한 페이지에서만 쓴다.
+   */
+  --color-walnut: #1f1f29;  /* 캔버스 — 따뜻한 near-black */
+  --color-bark: #302c26;    /* 유일한 채워진 버튼 면 */
+  --color-cork: #47443c;    /* 헤어라인 · 점선 구분선 */
+  /*
+   * ⚠️ #6c5f51 → #a6957f 로 올렸다 (2026-08-27, 실측).
+   *   walnut(#100904) 위에서 3.19:1 이라 12px 라벨이 사실상 안 읽혔다.
+   *   지금 값은 walnut 위 6.15:1, bark 위 5.11:1 이다. 두 면 모두에서 쓰이므로
+   *   더 어둡게 되돌리려면 **두 면 다** 다시 재 볼 것.
+   */
+  --color-driftwood: #a4a094;
+  /*
+   * ⚠️ 이름이 cream 이었다가 oat 로 바꿨다 (2026-08-27).
+   *   사이트 바탕색도 --color-cream(#faf8f6) 이라 **같은 이름이 두 번** 정의됐고,
+   *   뒤에 온 사이트 값이 이겨서 이 페이지 글자 27곳이 전부 #faf8f6 으로 그려지고 있었다.
+   *   반대로 순서가 바뀌면 사이트 전체 배경이 주황빛이 된다. 이름을 갈라야만 풀린다.
+   */
+  --color-oat: #fffdf8;     /* 글자 — 순백 금지 */
+  --color-ember: #d9a441;   /* 편집 강조 전용 */
+
+  /*
+   * 기술 라벨용 고정폭 — 치아미백 페이지의 구간 번호·태그·버튼 글자.
+   * ⚠️ 레퍼런스는 Roboto Mono 를 지정하지만 **웹폰트를 새로 받지 않는다.**
+   *    이 저장소는 폰트 로딩 비용을 깐깐하게 관리한다(layout.tsx 주석 참고). 라벨 몇 줄을
+   *    위해 폰트 파일을 받는 것은 값이 안 맞아 시스템 고정폭 스택을 쓴다.
+   *    고정폭이 주는 계측기 느낌은 그대로 남는다.
+   */
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
   /*
    * 첫 화면·오늘 표시가 쓰는 이름. 초록 시절의 잔재라 이름은 'mint' 지만 값은 웜이다.
@@ -81,8 +175,8 @@
    * ⚠️ mint-500 은 brand-700 과 같은 값이다. 히어로 버튼과 헤더 버튼이 같은 색이어야
    *    한 화면에 같은 글자의 버튼이 두 색으로 보이지 않는다(2026-08-25에 겪은 일).
    */
-  --color-mint-400: #c08a72;
-  --color-mint-500: #443c37;
+  --color-mint-400: #9aa09a;
+  --color-mint-500: #1f1f29;
 
   /*
    * 강조색 — 클레이 (2026-08-26).
@@ -106,24 +200,105 @@
    * ⚠️ clay-300/400 을 밝은 바탕의 작은 글자로 쓰지 말 것(3.5:1 미만). 밝은 쪽은 clay-600.
    * ⚠️ gold 를 지우지 말 것 — 기존 20개 파일이 쓰고 있다. clay 는 gold 를 대체하지 않고 옆에 선다.
    */
-  --color-clay-300: #d9906c; /* 어두운 면 본문 */
-  --color-clay-400: #c9744e; /* 어두운 면 숫자·아이콘·테두리 */
-  --color-clay-500: #ad5a38; /* 버튼 바탕 */
-  --color-clay-600: #96492b; /* 밝은 바탕의 강조 글자 */
-  --color-clay-700: #7d3b22;
-  --color-clay-tint: #f6e8e0; /* 아주 옅은 면 */
+  --color-clay-300: #e7bd72; /* 어두운 면 본문 */
+  --color-clay-400: #d9a441; /* 어두운 면 숫자·아이콘·테두리 */
+  --color-clay-500: #b8862f; /* 버튼 바탕 */
+  --color-clay-600: #8a5a1f; /* 밝은 바탕의 강조 글자 */
+  --color-clay-700: #6e4718;
+  --color-clay-tint: #e7e2d8; /* 아주 옅은 면 */
 
   /* 강조 — 원본의 로즈/테라코타. 면적을 크게 쓰지 말 것. */
-  --color-gold-400: #c08a72;
-  --color-gold-500: #a8735c;
-  --color-gold-600: #8a5c47;
+  --color-gold-400: #9aa09a;
+  --color-gold-500: #6f746f;
+  --color-gold-600: #5b5f5b;
 
-  --color-cream: #faf8f6;
-  --color-cream-deep: #f1ece7;
+  /*
+   * ⚠️ 페이지 바탕이다(body). 2026-08-28 에 버건디로 맞췄다 — 투명한 카드는 바탕에
+   *   색이 있어야 보이고, 그 색이 페이지마다 다르면 카드가 어떤 데서는 사라진다.
+   *   --color-wine-bg 와 **같은 값**이어야 한다. 한쪽만 바꾸지 말 것.
+   */
+  --color-cream: #efebe4;
+  --color-cream-deep: #e7e2d8;
+
+  /*
+   * ★★ 홈 전용 축 — GIC(General Intelligence Company) 문법 (2026-08-27, 오너 지목) ★★
+   *
+   *   왜 바꾸나 — 홈이 "이고운치과 + 예전 동그라미" 에서 벗어나지 못한다는 지적.
+   *   두 참고 사이트의 공통점은 **크고 굵은 글씨로 크게 말하는 것**이다(900 굵기,
+   *   자간 -0.042em, 영문 대문자 눈썹). GIC 는 정반대로 간다 — 세리프 400 굵기로
+   *   조용히 말하고, 색을 거의 안 쓰고, 흰 카드를 아주 옅은 실선으로만 가른다.
+   *   같은 내용을 그대로 두고 **말하는 크기만 낮추는 것**이 이 시스템의 전부다.
+   *
+   * ⚠️ signal(#41a1cf)로 **글자를 쓰지 말 것.** parchment 위에서 2.90:1 이라 본문
+   *    기준(4.5:1)에 한참 못 미친다(실측). 밝은 면에서는 **테두리 전용**이다.
+   *    어두운 dusk 위에서는 5.62:1 이라 글자로 써도 된다 — 전화번호가 그 자리다.
+   * ⚠️ 채워진 버튼은 dusk 하나뿐이다. signal 을 배경으로 채우는 순간 흔한 SaaS 가 된다.
+   * ⚠️ 순검정(#000)을 쓰지 말 것 — 글자는 charcoal/twilight 까지만 내려간다.
+   * ⚠️ 이 토큰들은 홈에서만 쓴다. 다른 페이지로 번지면 사이트가 두 벌로 갈린다.
+   */
+  /*
+   * ★★ 스톤 축 — 홈 바탕 한 벌 ★★
+   *   2026-08-28 오너: "버건디 신경쓰지말고, 지금 카드 보고 배경 어떻게 들어가면
+   *   전문적으로 잘 어울릴지" → 붉은 기를 빼고 **따뜻한 석재(그레이지)** 로 옮겼다.
+   *
+   * ★★★ 카드 색은 이 값을 따라온다 ★★★
+   *   진료 카드는 rgba(23,23,26,0.1~0.32) 반투명이다. 즉 **바탕이 비쳐서 만들어진 색**이다
+   *   (실측: 바탕 #f5edf0 일 때 카드 #686366 — 붉은 기가 카드까지 올라와 있었다).
+   *   그래서 바탕만 바꾸면 카드도 같이 옮겨 앉는다. 카드 색을 따로 손대지 말 것.
+   *
+   * ★ 왜 그레이지인가 — 강조색이 금색(--color-signal #d9a441)이다. 붉은 바탕에서는
+   *   금색이 같은 붉은 계열에 묻히고, 푸른 바탕에서는 금색이 튄다. 따뜻한 회색이
+   *   금색을 **받쳐 주는** 유일한 자리다.
+   * ⚠️ 채도를 올리지 말 것 — 색으로 읽히면 과한 것이다. 지금은 흰색과 구별은 되지만
+   *    '무슨 색' 이라고 말하기 어려운 선이고, 그것이 의도다.
+   * ⚠️ 토큰 이름은 wine-* 그대로 둔다. 725곳이 이 이름을 쓰고 있어 이름을 바꾸면
+   *    전 페이지를 다시 손대야 한다. **이름이 아니라 값이 디자인이다.**
+   */
+  /*
+   * ⚠️ 캔버스를 흰색 쪽으로 올리지 말 것.
+   *   전에 거의 흰색(#faf5f6)이었을 때 **유리 카드가 흰 카드와 구별되지 않았다** —
+   *   투명함은 뒤가 비쳐 보일 때만 보이는데, 뒤가 카드와 같은 색이었다.
+   *   지금은 카드가 바탕보다 한 단 위에 떠서 유리로 읽힌다. .card-glass 와 한 쌍이다.
+   */
+  --color-wine-bg: #efebe4;      /* 캔버스 */
+  --color-wine-soft: #e5e0d5;    /* 한 단 들어간 면 */
+  --color-wine-line: #d9d3c6;    /* 실선 */
+  --color-wine-deep: #24221e;    /* 어두운 큰 면 (parchment 글자 15.9:1) */
+  --color-wine-deep-2: #34312b;  /* 그 위 한 단 */
+
+  --color-parchment: #fffdf8; /* 캔버스 — 크림(#faf8f6)보다 차고 밝다 */
+  --color-mist: #e7e2d7;      /* 카드 실선 */
+  --color-mist-soft: #f2efe7; /* 더 옅은 구분선 */
+  --color-charcoal: #171717;  /* 제목 (17.86:1) */
+  --color-twilight: #302c26;  /* 본문 (13.91:1) */
+  --color-ash: #5e5a52; /* ⚠️ 한 칸 내려앉은 면(wine-soft) 위 카드에서 4.42:1 로 미달해 한 단 내렸다 (2026-08-28) */       /* 보조 글자 (6.47:1) */
+  --color-dusk: #262320;      /* 유일한 채워진 버튼 · 어두운 큰 면 */
+  --color-signal: #d9a441;    /* 강조 — 어두운 면 글자 7.42:1 / 밝은 면은 테두리 전용(2.08:1) */
 
   --font-sans:
     'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Malgun Gothic',
     sans-serif;
+
+  /*
+   * 한글 세리프 — GIC 의 정체성은 **세리프를 400 굵기로 크게 쓰는 것** 하나다.
+   *
+   * ★ Marcellus 는 라틴 전용이라 한글 제목에 못 쓴다. 고운바탕(1.8MB)을 **홈 제목에
+   *   실제로 쓰는 글자만 남겨 31KB 로 잘라** 쓴다(scripts/subset-gowun.py).
+   * ⚠️⚠️ 제목 문구를 바꾸면 그 글자가 이 파일에 없어 **그 글자만 Pretendard 로 떨어진다**
+   *    — 한 문장 안에서 글꼴이 두 벌로 보인다. 문구를 바꿀 때는 반드시
+   *    scripts/subset-gowun.py 의 TEXT 에 새 문구를 넣고 다시 돌릴 것.
+   * ⚠️ 본문에 쓰지 말 것. 27px 이상 제목과 인용에만 쓴다 — 작은 글씨의 세리프는
+   *    한글에서 획이 뭉개져 오히려 읽기 어렵다.
+   */
+  /*
+   * ⚠️⚠️ 2026-08-28 현재 **안 쓴다** ⚠️⚠️
+   *   제목을 Pretendard 한 벌로 통일하면서 .display / .display-sm / .display-ko 가
+   *   모두 이 변수를 참조하지 않게 됐다. 안 쓰는 글꼴은 브라우저가 요청하지 않으므로
+   *   남겨 둬도 비용이 0 이고, 되살릴 때 서브셋을 다시 만들 필요가 없다.
+   * ⚠️ 되살릴 거면 scripts/subset-gowun.py 를 먼저 돌릴 것 — 잘라낸 글꼴에 없는 글자는
+   *    그 글자만 Pretendard 로 떨어져 한 줄에 글꼴이 두 벌 보인다.
+   */
+  --font-display-ko: 'Gowun Batang', 'Marcellus', var(--font-sans);
 
   /**
    * 영문 전용 세리프 (2026-08-18).
@@ -174,6 +349,37 @@
     U+2000-206F, U+2122, U+2212, U+FEFF, U+FFFD;
 }
 
+/*
+ * 한글 세리프 — 홈 제목에 쓰는 글자만 남긴 31KB 한 벌.
+ * ★ unicode-range 를 두지 않는다. Marcellus 와 달리 이건 **한글이 들어 있는** 글꼴이라
+ *   범위로 거를 수가 없다 — 잘라낸 자체가 곧 범위다.
+ * ★ font-display:swap — 늦어도 글자는 Pretendard 로 즉시 보인다.
+ */
+@font-face {
+  font-family: 'Gowun Batang';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/gowun/gowun-subset.woff2') format('woff2');
+}
+
+/**
+ * 한글 표제 — 홈의 큰 제목 전용.
+ * ⚠️ 27px 미만에 쓰지 말 것(위 --font-display-ko 주석 참고).
+ * ⚠️ 굵기를 올리지 말 것 — 400 으로 크게 쓰는 것이 이 글꼴을 쓰는 이유 전부다.
+ *    700 으로 만들면 브라우저가 억지로 굵게 그려(합성 볼드) 획이 뭉개진다.
+ */
+/*
+ * ⚠️ 이름은 남기지만 이제 **세리프가 아니다** (2026-08-28 오너: "폰트 스탠다드로 통일").
+ *    사이트의 모든 제목이 Pretendard 한 벌이다. 여기만 다른 글꼴을 넣지 말 것.
+ */
+.display-ko {
+  font-weight: 700;
+  letter-spacing: -0.032em;
+  line-height: 1.26;
+  font-variant-numeric: tabular-nums;
+}
+
 /**
  * 영문 표제 — 병원 영문명과 순번처럼 **라틴 문자만 있는 짧은 자리**에만 쓴다.
  * ⚠️ 한글 문장에 쓰지 말 것(@theme 의 --font-display-en 주석 참고).
@@ -212,17 +418,39 @@ body {
  * ★ 큰 제목은 900(Black)까지 쓴다 — 800 과의 차이가 큰 화면에서 분명히 드러난다.
  * ★ word-break: keep-all — 한글은 단어 중간에서 끊기면 읽는 속도가 눈에 띄게 떨어진다.
  */
+/*
+ * ★★ 900 굵기 산세리프 → 세리프 400 (2026-08-28, 전 페이지 통일) ★★
+ *   홈만 세리프로 조용히 말하고 나머지 페이지는 900 굵기로 크게 말하고 있었다.
+ *   같은 사이트로 안 읽히던 가장 큰 이유가 이것이다.
+ *
+ * ⚠️⚠️ 이 글꼴은 **필요한 글자만 잘라낸 것**이다(scripts/subset-gowun.py) ⚠️⚠️
+ *    제목 문구를 바꾸면 그 글자가 글꼴에 없어 그 글자만 Pretendard 로 떨어진다 —
+ *    한 줄 안에서 글꼴이 두 벌 보인다. 문구를 고쳤으면
+ *      npm run build  →  python scripts/subset-gowun.py  →  npm run build
+ *    순서로 다시 돌릴 것. 그 스크립트는 빌드된 HTML 에서 쓰는 글자를 직접 긁는다.
+ * ⚠️ 굵기를 올리지 말 것 — 400 으로 크게 쓰는 것이 이 시스템의 전부다.
+ *    합성 볼드가 걸리면 한글 획이 뭉개진다.
+ */
 .display {
-  font-weight: 900;
-  letter-spacing: -0.042em;
-  line-height: 1.14;
+  /*
+   * ★ 접힐 때 줄 길이를 고르게 나눈다 — 마지막 줄에 한 낱말만 남는 모양을 막는다.
+   * ⚠️ 이것이 '한 줄로 만드는' 기능은 아니다. 한 줄로 두려면 max-w 를 넉넉히 줘야 한다.
+   *    그리고 그 max-w 는 **em 단위**여야 한다 — ch 는 한글에서 절반으로 계산된다.
+   */
+  text-wrap: balance;
+  font-weight: 700;
+  letter-spacing: -0.032em;
+  line-height: 1.22;
   word-break: keep-all;
 }
 
+/** 작은 제목 — .display 와 같은 글꼴, 자간·행간만 조금 넉넉하다. */
 .display-sm {
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.26;
+  /* ⚠️ 위 .display 주석 참고 — 고르게 접히게 한다. */
+  text-wrap: balance;
+  font-weight: 700;
+  letter-spacing: -0.024em;
+  line-height: 1.34;
   word-break: keep-all;
 }
 
@@ -270,7 +498,7 @@ time,
  */
 .enter {
   opacity: 0;
-  animation: enter 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: enter 0.5s cubic-bezier(0, 0, 0.2, 1) forwards;
 }
 
 @keyframes enter {
@@ -301,12 +529,20 @@ time,
  *   (이 판단은 2026-08-14 에 한 번 확인했다.)
  * ★ 성능 비용은 0 이다. 같은 속성(opacity·transform)을 같은 횟수로 합성한다.
  */
+/*
+ * ★★ Mercury 값으로 맞췄다 (2026-08-28) ★★
+ *   전: 26px 를 1.2초. 후: **10px 를 0.5초** (mercury 의 slideUpMoreAndFade + ease-out).
+ *   거의 안 움직이는 것이 그 사이트가 조용해 보이는 이유였다.
+ * ⚠️ 거리를 20px 넘게 키우지 말 것 — '떠오른다' 가 아니라 '튄다' 가 된다.
+ * ⚠️ 시간을 1초 넘게 늘리지 말 것 — 스크롤이 빠른 사람에게 글이 늦게 도착한다.
+ * ⚠️ scale 은 뺐다. Mercury 의 진입에는 확대·축소가 없다 — 위치와 투명도만 움직인다.
+ */
 .reveal {
   opacity: 0;
-  transform: translateY(26px) scale(0.985);
+  transform: translateY(10px);
   transition:
-    opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0, 0, 0.2, 1);
   will-change: opacity, transform;
 }
 
@@ -352,14 +588,17 @@ time,
   animation: mega-in 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/*
+ * ⚠️ transform 을 넣지 말 것 — 이 판은 backdrop-filter 로 뒤를 눌러 글자 대비를 만든다.
+ *    transform 이 걸리면 그 요소가 backdrop root 가 되어 필터가 통째로 무력화된다
+ *    (2026-08-27 에 실제로 겪었다. 감싸개의 -translate-x-1/2 가 범인이었다).
+ */
 @keyframes mega-in {
   from {
     opacity: 0;
-    transform: translateY(-8px);
   }
   to {
     opacity: 1;
-    transform: none;
   }
 }
 
@@ -389,8 +628,8 @@ time,
 }
 .word-mask > span {
   display: inline-block;
-  transform: translateY(115%);
-  transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(105%);
+  transition: transform 0.5s cubic-bezier(0, 0, 0.2, 1);
 }
 .is-shown .word-mask > span {
   transform: none;
@@ -414,12 +653,13 @@ time,
  * ⚠️ 12번째까지만 계단을 준다. 그보다 긴 목록에서 계속 늦추면 마지막 항목이
  *    한참 뒤에 나타나 '고장 난 화면' 으로 보인다. 13번째부터는 12번째와 같이 뜬다.
  */
+/* ⚠️ .reveal 과 같은 값으로 맞춘다 — 둘이 다르면 한 화면에서 속도가 두 벌로 보인다. */
 .reveal-stack > * {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translateY(10px);
   transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0, 0, 0.2, 1);
 }
 .reveal-stack.is-shown > * {
   opacity: 1;
@@ -452,7 +692,7 @@ time,
 .img-in > img,
 .img-in img {
   transform: scale(1.08);
-  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 1s cubic-bezier(0, 0, 0.2, 1);
   will-change: transform;
 }
 .img-in.is-shown > img,
@@ -465,7 +705,7 @@ time,
 .line-in {
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.6s cubic-bezier(0, 0, 0.2, 1);
 }
 .line-in.is-shown { transform: none }
 
@@ -476,12 +716,510 @@ time,
  */
 .count-in { font-variant-numeric: tabular-nums }
 
+/*
+ * ★ 제목이 아래에서 밀려 올라오며 드러난다 (2026-08-27).
+ *   흔한 페이드업과 다른 점 — 글자가 **잘린 창 뒤에서** 올라온다. 줄마다 시차를 줘서
+ *   문장이 한 줄씩 세워지는 것처럼 읽힌다.
+ * 쓰는 법: <h1 class="line-rise"><span><span>첫 줄</span></span><span><span>둘째 줄</span></span></h1>
+ * ⚠️ 바깥 span 이 창(overflow hidden), 안쪽 span 이 움직이는 글자다. 한 겹만 쓰면 안 잘린다.
+ */
+.line-rise > span { display: block; overflow: hidden; padding-bottom: 0.06em }
+.line-rise > span > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 0.55s cubic-bezier(0, 0, 0.2, 1);
+}
+.line-rise.is-shown > span > span { transform: none }
+.line-rise.is-shown > span:nth-child(2) > span { transition-delay: 90ms }
+.line-rise.is-shown > span:nth-child(3) > span { transition-delay: 180ms }
+.line-rise.is-shown > span:nth-child(4) > span { transition-delay: 270ms }
+
+/*
+ * ★★ 카드 면 — 유리 (2026-08-28 오너: "카드는 전부 투명배경 느낌으로") ★★
+ *   흰 면을 꽉 채우는 대신 반쯤 비우고 뒤를 흐린다. 헤더 알약·히어로 판·퀵메뉴와 같은
+ *   재질이라 화면 전체에 재질이 하나가 된다.
+ *
+ * ⚠️ 흰색 55% 아래로 내리지 말 것 — 카드와 바탕의 구분이 사라져 '카드가 없는' 화면이 된다.
+ *    지금 값은 wine-bg(#faf5f6) 위에서 카드가 한 단 밝게 떠 보이는 선이다.
+ * ⚠️ backdrop-filter 를 쓰는 요소 **안쪽**에 또 backdrop-filter 를 걸지 말 것 —
+ *    안쪽 것이 통째로 죽는다(메가메뉴에서 겪었다).
+ * ⚠️ 카드 안 사진은 불투명하다. 유리는 사진 바깥 여백에서만 보인다 — 그게 맞다.
+ */
+.card-glass {
+  /*
+   * ★★ 헤더 알약과 **같은 재질** (2026-08-28 오너: "내가 말한 투명 배경은 우리 헤더같은 느낌") ★★
+   *   유리로 읽히게 하는 것은 '얼마나 투명한가' 가 아니라 네 겹의 조합이다 —
+   *     ① 흰빛을 대각선으로 옅게 흘린 면   ② 아주 센 흐림(40px)
+   *     ③ 위 모서리 안쪽의 밝은 실선(빛을 받는 윗면)  ④ 아래로 깔리는 부드러운 그림자
+   *   이 넷이 있으면 평평한 바탕 위에서도 '유리판' 으로 보인다.
+   *
+   * ⚠️ 채움을 20% 언저리로 낮추지 말 것 — 카드가 바탕에 묻혀 사라진다(그렇게 해 봤다).
+   * ⚠️ 흐림을 줄이지 말 것 — 값이 작으면 그냥 반투명 종이가 된다.
+   * ⚠️ 이 재질을 헤더(components/SiteHeader.tsx)와 따로 놀게 두지 말 것.
+   *    한쪽만 바꾸면 화면에 유리가 두 종류로 보인다.
+   * ⚠️ 이 요소 **안쪽**에 backdrop-filter 를 또 걸지 말 것 — 안쪽 것이 죽는다.
+   */
+  background-image: linear-gradient(
+    135deg,
+    rgba(254, 255, 252, 0.8),
+    rgba(254, 255, 252, 0.62)
+  );
+  backdrop-filter: blur(40px) saturate(1.6);
+  -webkit-backdrop-filter: blur(40px) saturate(1.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 20px -12px rgba(40, 26, 31, 0.14),
+    0 24px 50px -26px rgba(40, 26, 31, 0.26);
+}
+
+/*
+ * ★★ 어두운 유리 — 퀵메뉴와 진료 카드가 **함께** 쓴다 (2026-08-28) ★★
+ *   밝은 바탕 위에 놓이는 어두운 판이다. 실제로 찍히는 색은 중간 그라파이트
+ *   (#605b5e ~ #6d676a, 픽셀 실측).
+ *
+ * ⚠️ 두 곳이 이 클래스를 **같이** 쓴다. 한쪽에만 값을 적어 두면 곧 어긋난다
+ *    (유리 재질에서 이미 겪었다).
+ * ⚠️ 이 면 위 본문 글자는 **거의 흰색이어야 한다** — parchment/90 이 5.22:1,
+ *    mist/80 은 3.53:1 로 미달이다. 회색조 글자를 쓰지 말 것.
+ * ⚠️ backdrop-brightness 를 빼지 말 것 — 밝은 바탕 위에서 판이 회백색으로 떠 버린다.
+ * ⚠️ 이 요소 **안쪽**에 backdrop-filter 를 또 걸지 말 것 — 안쪽 것이 죽는다.
+ */
+/*
+ * ★★ 밝은 바탕의 버튼 재질 — 헤더 알약과 같은 결 (2026-08-28) ★★
+ *   진료 카드가 '떠 있는 어두운 판' 이라면, 이쪽은 '떠 있는 밝은 판' 이다.
+ *   흰 면 + 아주 얇은 테두리 + 두 겹 그림자. 헤더가 이미 이 결을 쓰고 있어
+ *   화면에 재질이 두 벌로 갈리지 않는다.
+ *
+ * ⚠️ 테두리를 진하게 하지 말 것 — 진해지는 순간 '떠 있는 판' 이 아니라
+ *    '테두리를 두른 빈 알약' 으로 되돌아간다. 두께가 아니라 **그림자**가 이 재질의 핵심이다.
+ * ⚠️ 어두운 바탕에는 쓰지 말 것 — 어두운 면 위의 밝은 판은 카드와 싸운다.
+ * ⚠️ 글자는 charcoal 로 둔다. 흰 면 위 17.9:1 이다.
+ */
+.btn-pane {
+  border-color: rgba(23, 23, 23, 0.1);
+  background-color: color-mix(in srgb, var(--color-parchment) 88%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(23, 23, 23, 0.06),
+    0 14px 28px -16px rgba(23, 23, 23, 0.4);
+  transition:
+    background-color 0.3s cubic-bezier(0, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0, 0, 0.2, 1);
+}
+.btn-pane:hover {
+  border-color: rgba(23, 23, 23, 0.16);
+  background-color: var(--color-parchment);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 4px rgba(23, 23, 23, 0.08),
+    0 20px 40px -18px rgba(23, 23, 23, 0.45);
+}
+
+/*
+ * ★★ 어두운 면 위의 유리 카드 (2026-08-31) ★★
+ *   .pane-dark 는 뒤를 **눌러서** 유리를 만든다. 이미 어두운 면에서는 누를 것이 없어
+ *   그냥 검은 네모가 된다. 여기서는 반대로 **흰빛을 아주 옅게 얹어** 판을 띄운다.
+ * ★ 3D 들림과 빛 스침은 .pane-card 가 맡는다(색과 무관). 둘을 함께 쓴다.
+ * ⚠️ 흰빛을 0.12 넘게 올리지 말 것 — 카드가 회색 판으로 떠 버린다.
+ * ⚠️ 이 요소 안쪽에 backdrop-filter 를 또 걸지 말 것 — 안쪽 것이 죽는다.
+ */
+.pane-frost {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-image:
+    radial-gradient(120% 90% at 88% -10%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 56%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    0 22px 44px -22px rgba(0, 0, 0, 0.7);
+}
+
+.pane-dark {
+  /*
+   * ⚠️⚠️ 여기에 position 을 두지 말 것 ⚠️⚠️
+   *   퀵메뉴(fixed)와 진료 카드가 이 클래스를 **함께** 쓴다. 전에 position: relative 를
+   *   여기 뒀다가 퀵메뉴의 fixed 가 덮여 **푸터 아래로 떨어졌다**(2026-08-28).
+   *   이 클래스는 재질만 맡는다. 자리는 쓰는 쪽이 정한다.
+   */
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  /*
+   * 두 겹 —
+   *   ① 왼쪽 위에서 들어오는 넓은 반사. 유리가 빛을 받는 방향을 정한다.
+   *   ② 대각선 어둠. 판 자체의 색.
+   * ⚠️ 순서를 바꾸지 말 것. 반사가 뒤에 오면 어둠에 덮여 안 보인다.
+   */
+  background-image:
+    radial-gradient(120% 90% at 88% -8%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(135deg, rgba(23, 23, 26, 0.32), rgba(23, 23, 26, 0.1));
+  backdrop-filter: blur(10px) brightness(0.5) saturate(1.6);
+  -webkit-backdrop-filter: blur(10px) brightness(0.5) saturate(1.6);
+  /*
+   * ⚠️ 윗변의 밝은 실선과 아랫변의 그늘 — 이 둘이 **유리의 두께**다. 지우면 그냥 어두운 네모가 된다.
+   * ★ 그림자는 세 겹이다(가까운 것 / 중간 / 먼 것). 한 겹이면 스티커처럼 붙어 보인다.
+   */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 1px 0 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 2px 6px rgba(23, 23, 26, 0.16),
+    0 18px 36px -18px rgba(23, 23, 26, 0.45),
+    0 46px 92px -42px rgba(23, 23, 26, 0.55);
+}
+
+/*
+ * ★★ 사진 위에 얹는 유리판 (2026-08-28) ★★
+ *   헤더 알약과 같은 재질인데, 이건 **사진 위**에 놓인다 — 그래서 유리가 실제로 뒤를 비춘다.
+ *   평평한 바탕 위의 .card-glass 와 값이 다른 이유가 그것이다(뒤가 어두우니 더 밝게 채운다).
+ * ⚠️ 흐림을 줄이지 말 것 — 사진의 결이 그대로 비쳐 글자가 읽히지 않는다.
+ * ⚠️ 채움을 낮추지 말 것 — 어두운 사진 위에서 charcoal 글자가 무너진다(실측 기준 4.5:1).
+ */
+.pane-glass {
+  background-image: linear-gradient(
+    135deg,
+    rgba(254, 255, 252, 0.9),
+    rgba(254, 255, 252, 0.78)
+  );
+  backdrop-filter: blur(28px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 10px 24px -14px rgba(40, 26, 31, 0.45);
+}
+
+/*
+ * ★ 카드가 떠오르는 느낌 — 마우스를 올리면 살짝 앞으로 나온다.
+ * ⚠️ rotateX 를 크게 주지 말 것. 3도를 넘기면 글자가 기울어 읽기 불편해진다.
+ */
+/*
+ * ★★ 아이콘 선이 그려진다 (2026-08-28) ★★
+ *   화면에 처음 들어올 때 한 번, 그리고 손을 올릴 때마다 다시 그려진다.
+ *   벡터라서 가능한 연출이다 — 래스터 이미지로는 못 한다.
+ *
+ * ⚠️⚠️ 모든 path 에 pathLength={1} 이 있어야 한다 ⚠️⚠️
+ *   그래야 선 길이가 얼마든 dashoffset 1→0 이 '처음부터 끝까지' 가 된다.
+ *   처음엔 dasharray 를 240 고정으로 뒀는데 실제 선은 60 언저리라
+ *   **애니메이션의 3/4 가 빈 시간**이었다(오너: "티가 안 나").
+ * ⚠️ 아이콘에 fill 을 넣지 말 것 — 채우면 그려지는 것이 안 보인다.
+ * ⚠️ 늘 반복하지 말 것 — 가만히 있는 화면에서 계속 움직이는 선은 방해가 된다.
+ */
+/*
+ * ★★ 진료 카드 — **손을 올린 것만 반응한다** (2026-08-31 운영자) ★★
+ *   "그냥 자동으로 되는거 말고 마우스만 갖다대면 되는거로 하자. 잘 안되네 자동은."
+ *
+ * ⚠️⚠️ **자동 순환을 되살리지 말 것** ⚠️⚠️
+ *   왼쪽부터 한 장씩 커지며 아이콘이 그려지는 순환이 있었다. 보기에는 좋았지만
+ *   손을 올리는 동작과 계속 부딪혔다 — 손을 올린 카드와 순번이 온 카드가 **동시에**
+ *   그려지고, 손을 뗀 뒤에는 위상이 어긋나 두 장이 같이 켜졌다. 멈춤(paused)·
+ *   !important·transition 까지 동원해 겹침 0 까지 맞췄지만, 운영자 판단은 폐기였다.
+ *   ★ 지금 구조에는 시간축이 없다. 상태는 '손이 올라갔나' 하나뿐이라 어긋날 것이 없다.
+ *
+ * ⚠️ 커지는 것은 바깥 li(.pillar-cycle) 가 맡는다. 카드(a)에 걸면 카드 자신의
+ *    3D 변형과 부딪힌다.
+ */
+/*
+ * ★ 들리는 것은 li 이고, 카드(a) 는 자기 hover 로 살짝 앞으로 나온다 — 둘이 겹쳐
+ *   '떠오른다' 가 된다.
+ * ⚠️ scale 로 되돌리지 말 것. 전에 scale(1.16) 을 썼는데 카드 폭 343px 에 사이 간격이
+ *    15px 뿐이라 55px 이 자라 옆 카드를 40px 침범했다(배율이 1.044 이하여야 한다).
+ *    위로 드는 것은 이웃을 원리적으로 침범하지 않는다.
+ * ⚠️ 카드가 커지는 폭은 지금도 16px 이다(가운데 기준 좌우 8px). 사이 간격 24px 안이라
+ *    안 부딪힌다 — 카드 폭이나 간격을 줄이면 여기부터 다시 재 볼 것.
+ */
+.pillar-cycle {
+  position: relative;
+  transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.24, 1);
+}
+
+/*
+ * ⚠️⚠️ 쉬는 동안은 아이콘 자체를 감춘다 ⚠️⚠️
+ *   butt 캡으로 점은 없앴지만 **점선 경계의 안티에일리어싱**이 실오라기처럼 남았다
+ *   (오너: "자국 있는데"). 눈에 보이는 자국을 확실히 없애는 길은 하나다 — 안 그린다.
+ *   손을 올리는 순간 보이기 시작하고, 그때부터 선이 그려진다.
+ * ⚠️ 여기에 transition 을 넣지 말 것 — 서서히 켜지면 '그려진다' 가 '떠오른다' 로 바뀐다.
+ * ⚠️ 자리는 그대로 차지한다(display 를 건드리지 않는다). 그래야 손을 올려도 글이 안 밀린다.
+ */
+.icon-draw {
+  opacity: 0;
+}
+.group:hover .icon-draw {
+  opacity: 1;
+}
+
+.icon-draw path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  /*
+   * ★ 그리기는 여기 한 줄이 전부다 — :hover 에서 dashoffset 을 0 으로 바꾸면 그어지고,
+   *   손을 떼면 같은 길로 되감긴다. 별도 애니메이션이 필요 없다.
+   * ⚠️ 되감을 때 지연이 걸리지 않도록 transition-delay 는 :hover 규칙에만 둔다.
+   */
+  transition: stroke-dashoffset 0.85s cubic-bezier(0.22, 0.61, 0.24, 1);
+  /*
+   * ⚠️⚠️ 쉬는 동안 끝을 각지게 둔다 ⚠️⚠️
+   *   둥근 끝(round)은 **하나도 안 그려진 상태에서도 점으로 찍힌다** — 길이 0 인
+   *   선분에도 캡은 그려지기 때문이다. 오너가 본 '자국' 이 그것이었다.
+   *   각진 끝은 길이 0 이면 아무것도 안 그린다. 지우지 말 것.
+   */
+  stroke-linecap: butt;
+}
+/*
+ * ★★ 손을 올리면 — 카드가 떠오르고 아이콘이 그려진다 ★★
+ *
+ * ⚠️⚠️ 들리는 것은 **transform 이지 scale 이 아니다** ⚠️⚠️
+ *   전에 scale(1.16) 을 썼는데 카드 폭 343px 에 사이 간격이 15px 뿐이라 55px 이 자라
+ *   옆 카드를 40px 침범했다. 어떤 배율을 넣어도(≤1.044 여야 한다) 여백이 모자란다.
+ *   위로 드는 것은 이웃을 원리적으로 침범하지 않는다. scale 로 되돌리지 말 것.
+ *
+ * ★ 그리기는 **transition** 이다(animation 이 아니다). 손을 떼면 왔던 길로 되감겨
+ *   다음에 다시 처음부터 그어진다 — 애니메이션으로는 그 되감기를 공짜로 못 얻는다.
+ * ⚠️ 되감을 때는 획 지연을 주지 않는다(지연은 :hover 규칙에만 있다). 하나씩 그어지고
+ *    **한꺼번에 걷힌다** — 걷히는 것까지 순서대로면 손을 떼는 게 굼떠 보인다.
+ */
+.pillar-cycle:hover {
+  transform: translateY(-14px);
+  z-index: 6;
+}
+.pillar-cycle:hover .icon-draw {
+  opacity: 1;
+}
+.pillar-cycle:hover .icon-draw path {
+  stroke-linecap: round;
+  stroke-dashoffset: 0;
+}
+/*
+ * 획마다 늦게 시작한다 — 한 번에 다 그려지면 '그려진다' 가 아니라 '나타난다' 가 된다.
+ * ★ 오너 요청은 "하나씩" 이다. 간격을 좁히지 말 것.
+ * ⚠️ 아이콘의 path 개수만큼 있어야 한다. 지금 가장 많은 것이 6개(임플란트)다 —
+ *    아이콘에 획을 더하면 여기도 늘릴 것. 모자라면 그 획만 다른 획과 겹쳐 그어진다.
+ */
+.pillar-cycle:hover .icon-draw path:nth-child(2) { transition-delay: 0.14s }
+.pillar-cycle:hover .icon-draw path:nth-child(3) { transition-delay: 0.28s }
+.pillar-cycle:hover .icon-draw path:nth-child(4) { transition-delay: 0.42s }
+.pillar-cycle:hover .icon-draw path:nth-child(5) { transition-delay: 0.56s }
+.pillar-cycle:hover .icon-draw path:nth-child(6) { transition-delay: 0.70s }
+
+
+@media (prefers-reduced-motion: reduce) {
+  /*
+   * 연출만 끈다 — 손을 올리면 선은 **한 번에** 보인다(그어지는 과정 없이).
+   * ⚠️ 이제 그리기가 transition 이므로 끄는 대상도 transition 이다(animation 아님).
+   */
+  .icon-draw path,
+  .pillar-cycle {
+    transition: none !important;
+  }
+  .pillar-cycle:hover { transform: none }
+  .pillar-cycle:hover .icon-draw path { transition-delay: 0s !important }
+}
+
+/*
+ * ★ 카드가 앞으로 나온다 — 손을 올리면 기울면서 떠오르고, 사선으로 빛이 한 번 지나간다.
+ * ⚠️ rotateX 를 5도 넘게 주지 말 것 — 글자가 기울어 읽기 불편해진다.
+ * ⚠️ 빛(sheen)은 ::after 로 그린다. 카드에 overflow-hidden 이 필요하다 —
+ *    없으면 빛이 카드 밖으로 새어 나간다.
+ */
+.pane-card {
+  /* 빛 스치는 ::after 가 inset:0 으로 붙을 자리다. 카드에만 필요하다. */
+  position: relative;
+  transform: perspective(1100px) translateZ(0) rotateX(0deg);
+  transition:
+    transform 0.5s cubic-bezier(0, 0, 0.2, 1),
+    box-shadow 0.5s cubic-bezier(0, 0, 0.2, 1),
+    border-color 0.5s cubic-bezier(0, 0, 0.2, 1);
+}
+.pane-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    108deg,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0.16) 50%,
+    rgba(255, 255, 255, 0) 62%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.9s cubic-bezier(0, 0, 0.2, 1);
+}
+.pane-card:hover {
+  transform: perspective(1100px) translateZ(46px) rotateX(4deg);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 1px 0 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 4px 10px rgba(23, 23, 26, 0.18),
+    0 30px 60px -22px rgba(23, 23, 26, 0.5),
+    0 70px 120px -50px rgba(23, 23, 26, 0.6);
+}
+.pane-card:hover::after {
+  transform: translateX(120%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pane-card,
+  .pane-card:hover {
+    transform: none;
+    transition: none;
+  }
+  .pane-card::after {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pane-card,
+  .pane-card:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+/*
+ * ★ 구획 사이 실선 — 홈 (2026-08-28 오너: "세션 잘 구분되고").
+ *
+ * ⚠️⚠️ 실선은 **혼자 일하지 않는다** ⚠️⚠️
+ *   같은 날 오너: "의료진이랑 세션 바뀌는게 저 가운데 선 하나야?" — 밝은 면이 계속
+ *   이어지면 실선은 '접힌 자국' 정도로만 읽힌다. 그래서 면의 톤을 번갈아 준다:
+ *     진료과목(캔버스) → 의료진(bg-wine-soft) → 고민(어두운 면)
+ *     → 시설(캔버스) → 자주 묻는 질문(bg-wine-soft) → 진료시간(캔버스)
+ *   실선은 그 경계를 또렷하게 마무리하는 역할이다. 둘은 한 쌍이니 한쪽만 빼지 말 것.
+ *   밝은 면이 계속 이어지면 어디서 화제가 바뀌는지 안 보인다. 띠를 새로 깔지 않고
+ *   머리카락 같은 실선 하나로 나눈다 — 참고 사이트(Mercury)도 색 띠 대신 값 차이와
+ *   실선만으로 면을 나눈다.
+ * ⚠️ 어두운 구획(bg-wine-deep) 앞뒤에서는 실선이 안 보이는데 그래도 둔다 —
+ *    선택자를 복잡하게 만드는 값어치가 없고, 안 보이는 것은 해가 없다.
+ */
+.home-flow > section + section {
+  border-top: 1px solid var(--color-wine-line);
+}
+
+/*
+ * ⚠️ 첫 구획에도 실선이 필요하다 (2026-08-28 오너: 의료진 구획으로 넘어갈 때 구분이 안 됐다).
+ *   진료과목은 히어로를 덮는 **다른 상자** 안에 있어서 의료진과 형제가 아니다 —
+ *   그래서 위 `section + section` 규칙이 그 경계에는 안 걸렸다. 상자 자체에 위 실선을 준다.
+ */
+.home-flow {
+  border-top: 1px solid var(--color-wine-line);
+}
+
+/*
+ * ★★ 첫 화면이 덮이는 동안 뒤로 물러난다 (2026-08-28, Mercury 레퍼런스) ★★
+ *   다음 구획이 위를 덮고 올라오는 동안 히어로 내용이 조금 작아지고 흐려진다.
+ *   '가려진다' 가 아니라 '뒤로 간다' 로 읽혀서 두 화면이 이어져 보인다.
+ *
+ * ★ 스크롤 타임라인은 지원하는 브라우저에서만 동작한다. 안 되는 곳에서는 이 연출만
+ *   빠지고 **덮는 동작 자체는 그대로** 남는다 — 그건 sticky + z-index 라 CSS 기본 기능이다.
+ * ⚠️⚠️ 바깥 section(.hero-pin)에 transform 을 걸지 말 것 ⚠️⚠️
+ *    변형된 요소는 고정 기준이 달라져 **sticky 가 깨지고** 화면이 튄다.
+ *    그래서 안쪽 내용(.hero-inner)만 움직인다.
+ * ⚠️ 흐림을 더 키우지 말 것 — 8px 를 넘기면 덮이기 전부터 글자가 읽히지 않는다.
+ */
+.hero-pin {
+  view-timeline-name: --hero;
+  view-timeline-axis: block;
+}
+
+@supports (animation-timeline: --hero) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-inner {
+      animation: hero-recede linear both;
+      animation-timeline: --hero;
+      animation-range: exit 0% exit 85%;
+      will-change: transform, opacity;
+    }
+  }
+}
+
+@keyframes hero-recede {
+  to {
+    transform: scale(0.94);
+    opacity: 0.3;
+    filter: blur(6px);
+  }
+}
+
+/*
+ * ★ 카드 실선이 양옆에서 그려져 가운데서 만난다 — 홈 전용 (2026-08-27).
+ *
+ *   흔한 등장(페이드업)은 **카드 전체가 통째로 나타난다.** 이건 반대로 내용은 이미
+ *   자리에 있고 **테두리만 나중에 그어진다** — 도면이 완성되는 인상이라 이 팔레트와 맞는다.
+ *   사이트의 다른 어떤 페이지도 이 연출을 쓰지 않는다.
+ *
+ * 쓰는 법: <div class="card-draw rounded-[14px] bg-white"> … </div>  (border 클래스는 주지 말 것)
+ * ⚠️ 테두리를 실제 border 로 주면 처음부터 다 보인다. 겹쳐 놓은 두 겹이 그리는 것이므로
+ *    이 클래스를 쓰는 요소에는 border 유틸리티를 붙이지 않는다.
+ * ⚠️ 두 겹 다 같은 1px mist 라 겹쳐도 안 보인다 — 왼쪽에서 오는 것과 오른쪽에서 오는 것이
+ *    가운데서 만나는 것처럼 읽힌다.
+ * ⚠️ rounded 는 부모에 준다. inset-0 + border-radius:inherit 로 따라간다.
+ */
+.card-draw { position: relative }
+.card-draw::before,
+.card-draw::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* ⚠️ 카드 채움이 거의 투명하므로 이 실선이 **카드의 유일한 윤곽**이다. 지우지 말 것. */
+  border: 1px solid var(--color-wine-line);
+  border-radius: inherit;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.6s cubic-bezier(0, 0, 0.2, 1);
+}
+.card-draw::after { clip-path: inset(0 0 0 100%); transition-delay: 0.1s }
+.card-draw.is-shown::before,
+.card-draw.is-shown::after { clip-path: inset(0 0 0 0) }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-draw::before,
+  .card-draw::after { clip-path: none; transition: none }
+}
+
+/*
+ * ★ 세로 진행 막대 — 스크롤이 구간에 들어오면 위에서 아래로 채워진다.
+ *   충치가 겉에서 안으로 깊어지는 것을 형태로 말한다. 페이드로는 방향이 안 보인다.
+ */
+.depth-fill { transform: scaleY(0); transform-origin: top center; transition: transform 0.8s cubic-bezier(0, 0, 0.2, 1) }
+.depth-fill.is-shown { transform: none }
+
+/*
+ * ★ 가로 막대가 왼쪽에서 자란다 — 수치를 글자로만 적으면 크기 차이가 안 느껴진다.
+ *   삭제량처럼 "얼마나 다른가" 가 핵심인 값에 쓴다.
+ * 쓰는 법: <span class="bar-grow" style={{ ['--w']: '46%' }} />
+ * ⚠️ width 를 애니메이션하면 매 프레임 레이아웃이 다시 계산된다. transform 으로만 움직인다.
+ */
+.bar-grow {
+  display: block;
+  width: var(--w, 100%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.7s cubic-bezier(0, 0, 0.2, 1);
+}
+.bar-grow.is-shown { transform: scaleX(1) }
+
+/*
+ * ★ 글자가 흐릿한 데서 또렷해지며 올라온다. 페이드보다 "초점이 맞는" 느낌이라
+ *   한 문장짜리 선언에 잘 붙는다. 남발하지 말 것 — 페이지당 한두 곳.
+ */
+.focus-in {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, filter 0.55s ease, transform 0.55s cubic-bezier(0, 0, 0.2, 1);
+}
+.focus-in.is-shown { opacity: 1; filter: none; transform: none }
+
 .concern {
   opacity: 0;
   transform: translateY(40px) scale(0.96);
   transition:
-    opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0, 0, 0.2, 1);
 }
 .concern.is-shown {
   opacity: 1;
@@ -696,7 +1434,7 @@ time,
  */
 .wipe {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: clip-path 0.6s cubic-bezier(0, 0, 0.2, 1);
   will-change: clip-path;
 }
 
@@ -706,8 +1444,8 @@ time,
 }
 
 .wipe .wipe-inner {
-  transform: translateX(-36px);
-  transition: transform 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-16px);
+  transition: transform 0.6s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .wipe.is-shown .wipe-inner {
@@ -732,12 +1470,54 @@ time,
  *       (예: 유일한 설명을 여기 적으면) 영문으로 바꾸는 순간 그 뜻이 사라진다.
  * 주의: 색은 쓰는 쪽에서 정한다 -- 밝은 바탕에서는 brand-500, 사진 위에서는 gold-400.
  */
-.t-eyebrow {
-  font-size: 0.78rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
+/*
+ * 구획 눈썹 — 제목 위의 짧은 라벨.
+ *
+ * ⚠️⚠️ 영문 대문자 문법(자간 0.26em + uppercase)을 되살리지 말 것 (2026-08-28) ⚠️⚠️
+ *   한글에는 대문자가 없어서 text-transform 은 아무 일도 안 하고, 0.26em 자간만 남아
+ *   "비 용  가 이 드" 처럼 낱글자가 흩어진다(실제로 그렇게 보였다).
+ *   영문 라벨에는 멋있었지만 이 사이트의 라벨은 대부분 한글이다.
+ * ★ 지금은 홈의 라벨과 같은 규격이다 — 작게, 굵지 않게, 자간은 거의 0.
+ */
+/*
+ * ★★ 구획 눈금 — 작은 유리 알약 (2026-08-31) ★★
+ *   '짧은 선 + 라벨' 은 흔한 관용구라 레퍼런스와 구별되지 않았다. 이 사이트의 재질
+ *   (유리판)로 바꾼 것이다. 헤더·카드·퀵메뉴와 같은 언어를 눈금도 쓴다.
+ * ★ 색을 못 박지 않는다 — 테두리와 면을 currentColor 에서 만들어, 밝은 면에서도
+ *   어두운 면에서도 부르는 쪽 글자색을 따라 저절로 맞는다.
+ * ⚠️ 알약 안에 가로선을 다시 넣지 말 것 — 그 선을 없애려고 만든 장치다.
+ * ⚠️ 배경을 진하게 하지 말 것. 눈금은 제목을 소개하는 것이지 스스로 주인공이 아니다.
+ */
+.eyebrow-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+  background-color: color-mix(in srgb, currentColor 7%, transparent);
+  padding: 0.3rem 0.85rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  line-height: 1.2;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+/* 번호가 함께 오는 자리(진료 랜딩) — 번호만 금색으로 한 칸 앞세운다. */
+.eyebrow-chip .eyebrow-n {
+  /*
+   * ⚠️ 금색을 못 박지 말 것 — 어두운 면에서 clay-600 은 2.73:1 로 안 읽혔다(실측).
+   *    부르는 쪽 글자색(이미 대비가 맞은 색)에 금색을 **섞는다.** 그러면 밝기는
+   *    그 색을 따라가고 색기만 금색이 되어, 어느 면에서든 읽힌다.
+   */
+  color: color-mix(in srgb, currentColor 58%, var(--color-clay-400));
+  font-variant-numeric: tabular-nums;
+}
+
+.t-eyebrow {
+  /* ★ 14px → 15px (2026-08-31 오너: "너무 작아"). 아래 제목과는 여전히 세 배 넘게 차이가 난다. */
+  font-size: 0.9375rem;
+  letter-spacing: 0.005em;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 /*
@@ -772,7 +1552,7 @@ time,
 
 .seq-fade {
   opacity: 0;
-  transition: opacity 1.1s ease-out;
+  transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1);
   transition-delay: var(--d, 0ms);
 }
 
@@ -813,4 +1593,284 @@ time,
 
 @media (prefers-reduced-motion: reduce) {
   .live-dot::after { animation: none; opacity: 0; }
+}
+
+/* ══ 서브페이지 어두운 결 ══════════════════════════════════════════ */
+.page-dark {
+  /*
+   * 이 범위의 바탕과 기본 글자색. 아래 값들의 기준점이다.
+   * ★ 버건디 기운 — R 이 B 보다 6~8 높다(2026-08-31 오너 요청). 이 정도면 '색' 으로는
+   *   안 읽히고 회색보다 따뜻하다고만 느껴진다. 금색 강조가 이 위에서 가장 잘 산다.
+   * ⚠️ 채도를 더 올리지 말 것 — 의료 화면에서 붉은 바탕은 '경고' 로도 읽힌다.
+   */
+  --pd-bg: #1c1719;
+  --pd-card: #241d21;
+  --pd-card-2: #2b2328;
+  --pd-line: #3a3034;
+  --pd-fill: #f0ece4;
+
+  /* ① 글자로 주로 쓰이는 색 — 값을 갈아 끼운다(투명도 변형까지 따라온다) */
+  /* 제목 — 이 한 단계만 거의 흰색이다. */
+  --color-ink: #faf6ef;
+  --color-charcoal: #faf6ef;
+  /* 본문 */
+  --color-twilight: #ded7ca;
+  /* 보조 — 본문 아래 한 칸. 여기서 차이가 크게 나야 본문이 본문으로 읽힌다. */
+  --color-ink-soft: #b6ae9f;
+  /* 가장 약한 것(눈금 글자·단위·부연) */
+  --color-ink-muted: #9c9484;
+  --color-ash: #a8a091;
+  --color-brand-500: #9c9484;
+  --color-brand-600: #b6ae9f;
+  --color-brand-700: #ded7ca;
+  /*
+   * ⚠️ brand-800 / brand-900 은 **뒤집지 않는다**. 이 둘은 작은 버튼이 아니라
+   *    큰 어두운 면(사례 구획·띠)으로 쓰인다. 밝게 바꾸면 그 안의 흰 글자가
+   *    통째로 사라진다(실측 13건). 아래 '어두운 섬' 목록에 넣어 원래 값을 지킨다.
+   */
+  --color-brand-300: #8d887c;
+  --color-brand-400: #a09a8e;
+  /* 금색은 밝은 면에서 2.08:1 이라 글자로 못 쓴다. 어두운 면에서는 7.42:1 이라 쓸 수 있다. */
+  --color-gold-600: #e7bd72;
+  --color-clay-600: #e7bd72;
+  /*
+   * ⚠️ clay-500/700 도 함께 뒤집어야 한다. 밝은 면 전용으로 어둡게 잡힌 금색이라,
+   *    어두운 면에 그대로 두면 2.00:1 로 안 읽힌다(실측).
+   */
+  /* ⚠️ 유리판(.card-glass) 위에서 #e7bd72 는 3.27:1 로 미달이었다(실측). 한 단 더 밝게. */
+  --color-clay-700: #ffe6bb;
+  --color-clay-500: #d9a441;
+
+  background-color: var(--pd-bg);
+  color: var(--color-twilight);
+}
+
+/*
+ * ② 면 — 값을 갈아 끼운다.
+ * ⚠️⚠️ 클래스 덮어쓰기로는 부족하다 ⚠️⚠️
+ *   bg-brand-100/50 같은 **투명도 변형**은 .bg-brand-100 규칙에 안 걸린다.
+ *   실제로 그렇게 했다가 밝은 알약 위에 흰 글자가 남아 1.09:1 이 나왔다.
+ *   값을 갈면 변형까지 전부 따라온다.
+ */
+.page-dark {
+  --color-parchment: #241d21;
+  --color-brand-50: #241d21;
+  --color-brand-100: #2b2328;
+  --color-brand-200: #3a3034;
+  --color-mist: #3a3034;
+  --color-mist-soft: #2b2328;
+  --color-cream: #1c1719;
+  --color-cream-deep: #241d21;
+  --color-wine-bg: #1c1719;
+  --color-wine-soft: #241d21;
+  --color-wine-line: #3a3034;
+  --color-clay-tint: #2b2328;
+  /*
+   * ⚠️ 크라운·보철 페이지가 쓰는 자기 색(paper/inkw)도 함께 뒤집는다.
+   *    안 뒤집으면 그 페이지만 밝은 글자·어두운 바탕이 섞여 아래쪽 글이 사라진다(실측).
+   */
+  --color-paper: #1c1719;
+  --color-paper-2: #241d21;
+  --color-inkw: #ece5db;
+  --color-stone: #d2cabd;
+  --color-hairline: #3a3034;
+}
+
+/*
+ * ⚠️⚠️ 원래부터 어두웠던 구역은 **되돌린다** ⚠️⚠️
+ *   히어로 띠·어두운 CTA·어두운 유리 카드는 이미 '어두운 면 + 밝은 글자' 로 짜여 있다.
+ *   위에서 색을 뒤집으면 그 안의 밝은 글자가 어두워져 글이 사라진다(실측 60건 중 다수).
+ *   그래서 이 구역 안에서는 원래 값으로 돌려놓는다 — 어두운 섬 안은 손대지 않는다는 뜻이다.
+ * ⚠️ 새로 어두운 면을 만들면 여기에 그 클래스를 추가할 것. 빠뜨리면 그 안의 글자가 사라진다.
+ */
+.page-dark .bg-wine-deep,
+.page-dark .bg-wine-deep-2,
+.page-dark .bg-dusk,
+.page-dark .bg-night,
+.page-dark .bg-night-2,
+.page-dark .bg-abyss,
+.page-dark .bg-ink,
+.page-dark .bg-charcoal,
+.page-dark .bg-twilight,
+.page-dark .bg-brand-800,
+.page-dark .bg-brand-900,
+.page-dark .pane-dark,
+.page-dark .pane-frost {
+  --color-parchment: #fffdf8;
+  --color-mist: #e7e2d7;
+  --color-mist-soft: #f2efe7;
+  --color-brand-100: #f2efe7;
+  --color-brand-200: #e7e2d7;
+  --color-brand-300: #ccc7bb;
+  /*
+   * ⚠️⚠️ 글자 계열도 **원래 값으로** 되돌린다 ⚠️⚠️
+   *   어두운 섬은 원래부터 '어두운 면 + 밝은 글자' 로 짜인 곳이다. 즉 **밝은 결 기준으로
+   *   이미 완성된 구역**이라, 안에서는 원래 팔레트가 맞다.
+   *   되돌리지 않으면 'bg-parchment + text-ink' 같은 조합이 밝은 면 + 밝은 글자가 되어
+   *   버튼 글자가 통째로 사라진다(실측 1.01:1).
+   */
+  --color-ink: #171717;
+  --color-charcoal: #171717;
+  --color-twilight: #302c26;
+  --color-ink-soft: #5c5850;
+  --color-ink-muted: #5f6058;
+  --color-ash: #5e5a52;
+  --color-brand-500: #646158;
+  --color-brand-600: #5c5950;
+  --color-brand-700: #47443c;
+}
+
+/*
+ * ⚠️⚠️ ink / charcoal / twilight 은 **글자로도, 큰 어두운 면으로도** 쓰인다 ⚠️⚠️
+ *   글자 쪽이 압도적이라(text-ink 만 293곳) 값은 밝게 뒤집었다. 그런데 그 값이
+ *   면에도 쓰이는 바람에 임플란트 사례 패널이 통째로 하얘지고 안의 흰 글자가 사라졌다(실측).
+ *   면 쓰임만 골라 다시 어둡게 못 박는다. 값과 면을 따로 다루는 유일한 방법이다.
+ * ⚠️ 이 규칙을 지우면 어두운 사례 패널이 흰 판이 된다.
+ */
+.page-dark .bg-ink,
+.page-dark .bg-charcoal,
+.page-dark .bg-twilight {
+  background-color: #181316;
+}
+
+/*
+ * ⚠️⚠️ 채운 것들의 **글자만** 어둡게 눌러 준다 ⚠️⚠️
+ *   brand-500~900 은 위에서 값이 밝게 바뀌었다. 그래서 면은 저절로 뒤집혔는데,
+ *   그 위에 얹힌 text-white 는 그대로라 **밝은 면 위 흰 글자**가 됐다(실측 1.4~1.8:1).
+ *   그라데이션 버튼(from-/via-/to-)도 같은 색을 쓰므로 함께 잡는다.
+ * ⚠️ 이 블록을 지우면 채운 버튼과 지도 안내줄의 글자가 통째로 사라진다.
+ *    실제로 한 번 지웠다가 11건이 났다. 다른 규칙을 갈아 끼울 때 함께 날리지 말 것.
+ */
+.page-dark .bg-brand-500,
+.page-dark .bg-brand-600,
+.page-dark .bg-brand-700,
+.page-dark .from-brand-500,
+.page-dark .from-brand-700,
+.page-dark .via-brand-600,
+.page-dark .to-brand-600,
+.page-dark .to-brand-800 {
+  color: var(--pd-bg);
+}
+
+/*
+ * ⚠️ 그 **안쪽**에 따로 흰색을 못 박아 둔 것들도 같이 눌러 준다.
+ *   바깥에 색을 줘도 자식이 text-white 를 직접 갖고 있으면 물려받지 않는다.
+ *   흰 테두리도 마찬가지다 — 밝아진 면 위에서 흰 테두리는 사라진다.
+ */
+.page-dark .bg-brand-500 .text-white,
+.page-dark .bg-brand-600 .text-white,
+.page-dark .bg-brand-700 .text-white,
+.page-dark .from-brand-500 .text-white,
+.page-dark .from-brand-700 .text-white {
+  color: var(--pd-bg);
+}
+.page-dark .from-brand-700 [class*='border-white'],
+.page-dark .from-brand-500 [class*='border-white'],
+.page-dark .bg-brand-700 [class*='border-white'] {
+  border-color: color-mix(in srgb, var(--pd-bg) 42%, transparent);
+}
+.page-dark .from-brand-700 [class*='bg-white'],
+.page-dark .from-brand-500 [class*='bg-white'] {
+  background-color: color-mix(in srgb, var(--pd-bg) 8%, transparent);
+}
+
+/*
+ * 밝은 면 위에서 쓰던 유리 카드(.card-glass)는 흰빛을 얹는 재질이라
+ * 어두운 면에서는 회백색 판으로 떠 버린다. 어두운 면용 재질로 바꿔 준다.
+ * ⚠️ .pane-frost 와 같은 값이다 — 한쪽만 고치면 두 물건이 어긋난다.
+ */
+.page-dark .card-glass {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-image:
+    radial-gradient(120% 90% at 88% -10%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 56%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    0 22px 44px -22px rgba(0, 0, 0, 0.7);
+}
+/* 밝은 판 버튼도 마찬가지다. */
+.page-dark .btn-pane {
+  border-color: rgba(255, 255, 255, 0.18);
+  background-color: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+.page-dark .btn-pane:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/*
+ * ★ 원래부터 어두운 페이지 — .page-dark 의 뒤집기를 **되돌린다**.
+ *   이 페이지들은 밝은 결 기준으로 이미 완성돼 있어서, 값을 원래대로 두는 것이 맞다.
+ * ⚠️ .page-dark 에 새 값을 추가하면 여기에도 같은 이름을 되돌려 놔야 한다.
+ *    빠뜨리면 그 색만 두 번 어두워진다.
+ */
+.page-dark .page-native-dark {
+  --color-ink: #171717;
+  --color-charcoal: #171717;
+  --color-twilight: #302c26;
+  --color-ink-soft: #5c5850;
+  --color-ink-muted: #5f6058;
+  --color-ash: #5e5a52;
+  --color-brand-300: #ccc7bb;
+  --color-brand-400: #a4a094;
+  --color-brand-500: #646158;
+  --color-brand-600: #5c5950;
+  --color-brand-700: #47443c;
+  --color-gold-600: #8a5a1f;
+  --color-clay-600: #8a5a1f;
+  --color-clay-700: #6e4718;
+  --color-clay-500: #b8862f;
+  --color-parchment: #fffdf8;
+  --color-brand-50: #faf8f3;
+  --color-brand-100: #f2efe7;
+  --color-brand-200: #e7e2d7;
+  --color-mist: #e7e2d7;
+  --color-mist-soft: #f2efe7;
+  --color-cream: #efebe4;
+  --color-cream-deep: #e7e2d8;
+  --color-wine-bg: #efebe4;
+  --color-wine-soft: #e5e0d5;
+  --color-wine-line: #d9d3c6;
+  --color-clay-tint: #e7e2d8;
+  background-color: transparent;
+}
+/* 되돌린 페이지 안에서는 아래 덮어쓰기들도 풀어 준다. */
+.page-dark .page-native-dark .bg-ink,
+.page-dark .page-native-dark .bg-charcoal,
+.page-dark .page-native-dark .bg-twilight {
+  background-color: var(--color-ink);
+}
+.page-dark .page-native-dark .bg-brand-500,
+.page-dark .page-native-dark .bg-brand-600,
+.page-dark .page-native-dark .bg-brand-700,
+.page-dark .page-native-dark .from-brand-500,
+.page-dark .page-native-dark .from-brand-700,
+.page-dark .page-native-dark .via-brand-600,
+.page-dark .page-native-dark .to-brand-600,
+.page-dark .page-native-dark .to-brand-800 {
+  color: #fff;
+}
+.page-dark .page-native-dark .card-glass {
+  border: 0;
+  background-image: linear-gradient(135deg, rgba(254, 255, 252, 0.8), rgba(254, 255, 252, 0.62));
+  backdrop-filter: blur(40px) saturate(1.6);
+  -webkit-backdrop-filter: blur(40px) saturate(1.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 20px -12px rgba(40, 26, 31, 0.14),
+    0 24px 50px -26px rgba(40, 26, 31, 0.26);
+}
+
+/* 둘러보기 갤러리 — 사진이 바뀔 때 툭 갈리지 않게. ⚠️ 0.4s 를 넘기면 넘김이 굼떠 보인다. */
+@keyframes galleryFade {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-[galleryFade_0.4s_ease] { animation: none }
 }

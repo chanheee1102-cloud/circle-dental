@@ -15,7 +15,7 @@ import {
   IMPLANT_AFTERCARE,
 } from '@/lib/implantPage';
 import { IMPLANT_CASES, CASE_NOTICE } from '@/lib/implantCases';
-import { Container, Breadcrumb, QABlock, MedicalNotice, Sentences } from '@/components/ui';
+import { Container, Breadcrumb, MedicalNotice, Sentences } from '@/components/ui';
 import { SectionHead, Card, GlassCard, DarkPanel, NumChip } from '@/components/saas';
 import { ComparisonTable } from '@/components/ComparisonTable';
 import { JsonLd } from '@/components/JsonLd';
@@ -24,7 +24,6 @@ import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 import {
   breadcrumbSchema,
-  faqSchema,
   medicalWebPageSchema,
   articleSchema,
   og,
@@ -88,7 +87,6 @@ export default function ImplantPage() {
     { id: '치료-증례', label: '치료 증례' },
     { id: '진료-원칙', label: '진료 원칙' },
     ...(journey ? [{ id: '진행-순서', label: '진행 순서' }] : []),
-    { id: '자주-묻는-질문', label: '자주 묻는 질문' },
     { id: '주의사항', label: '주의사항' },
   ];
 
@@ -113,7 +111,6 @@ export default function ImplantPage() {
             keywords: [t.name, ...t.whoFor],
             hasImage: true,
           }),
-          faqSchema(t.qa, PATH),
         ]}
       />
 
@@ -123,18 +120,22 @@ export default function ImplantPage() {
           만드는 가장 큰 원인이었다(components/saas.tsx 규칙 ①).
         ⚠️ 사진을 화면 전체에 깔지 말 것 — 카드에 담아 층을 만든다.
       */}
-      <section className="relative overflow-hidden bg-cream">
+      {/*
+        ⚠️ 밝은 면으로 되돌리지 말 것 (2026-08-28 오너) — 하위 페이지 머리는 전부 어두운 띠다.
+        ⚠️ 이 면 위 글자는 parchment 계열이다. 회색조(ink-soft 등)는 3:1 대로 떨어진다.
+      */}
+      <section className="relative isolate -mt-[68px] overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(58%_48%_at_80%_14%,var(--color-clay-tint)_0%,transparent_62%)] opacity-80"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_58%_at_78%_10%,rgba(217,164,65,0.16)_0%,transparent_64%)]"
         />
-        <Container className="relative pt-8 pb-20 lg:pb-28">
-          <Breadcrumb trail={TRAIL} />
+        <Container className="relative pt-10 pb-20 lg:pb-28">
+          <Breadcrumb trail={TRAIL} tone="dark" />
 
           <div className="mt-12 grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
             <div>
               <span
-                className="enter inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3.5 py-1.5 text-[12.5px] font-black text-ink-soft shadow-[var(--shadow-soft)]"
+                className="enter inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[13.5px] font-black text-parchment backdrop-blur-[10px]"
                 style={{ animationDelay: '40ms' }}
               >
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-clay-500" />
@@ -142,7 +143,7 @@ export default function ImplantPage() {
               </span>
 
               <h1
-                className="enter display-sm mt-7 max-w-[15ch] text-[clamp(34px,5.6vw,64px)] leading-[1.14] tracking-[-0.035em] text-ink"
+                className="enter display-sm mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.14] tracking-[-0.035em] text-parchment"
                 style={{ animationDelay: '140ms' }}
               >
                 자연치아를 먼저 보고,
@@ -151,7 +152,7 @@ export default function ImplantPage() {
               </h1>
 
               <p
-                className="enter mt-7 max-w-[48ch] text-[17px] leading-[1.9] text-ink-soft"
+                className="enter mt-7 max-w-[48ch] text-[18px] leading-[1.9] text-parchment/85"
                 style={{ animationDelay: '260ms' }}
               >
                 <Sentences text={SUMMARY} />
@@ -162,14 +163,14 @@ export default function ImplantPage() {
                   href={CLINIC.booking.naver}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-colors hover:bg-brand-700"
+                  className="inline-flex items-center gap-2 rounded-full bg-parchment px-8 py-4 text-[16.5px] font-black text-wine-deep transition-colors hover:bg-mist"
                 >
                   진료 예약하기
                   <span aria-hidden>→</span>
                 </a>
                 <a
                   href={CLINIC.phoneHref}
-                  className="inline-flex items-center gap-2 rounded-full border border-brand-300 bg-white px-8 py-4 text-[15.5px] font-black text-ink transition-colors hover:border-ink"
+                  className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-parchment/70 px-8 py-4 text-[17px] font-semibold tabular-nums text-parchment transition-colors hover:bg-white/10"
                 >
                   {CLINIC.phone}
                 </a>
@@ -177,7 +178,7 @@ export default function ImplantPage() {
 
               {/* 지표 — 지어낸 숫자를 쓰지 않는다. 이 병원이 실제로 하는 일만 적는다. */}
               <dl
-                className="enter mt-12 grid max-w-[34rem] grid-cols-3 gap-x-6 border-t border-brand-200 pt-7"
+                className="enter mt-12 grid max-w-[34rem] grid-cols-3 gap-x-6 border-t border-white/20 pt-7"
                 style={{ animationDelay: '500ms' }}
               >
                 {[
@@ -186,8 +187,8 @@ export default function ImplantPage() {
                   { k: '검토', v: '통합치의학과 전문의' },
                 ].map((s) => (
                   <div key={s.k}>
-                    <dt className="text-[12px] font-bold text-clay-700">{s.k}</dt>
-                    <dd className="mt-1.5 text-[14.5px] leading-snug font-black text-ink">{s.v}</dd>
+                    <dt className="text-[13.5px] font-bold text-clay-300">{s.k}</dt>
+                    <dd className="mt-1.5 text-[15.5px] leading-snug font-black text-parchment">{s.v}</dd>
                   </div>
                 ))}
               </dl>
@@ -195,7 +196,7 @@ export default function ImplantPage() {
 
             <div className="relative">
               <div
-                className="img-in enter overflow-hidden rounded-[28px] border border-brand-200/70 bg-white shadow-[var(--shadow-lift)]"
+                className="img-in enter overflow-hidden rounded-[28px] border border-brand-200/70 card-glass shadow-[var(--shadow-lift)]"
                 style={{ animationDelay: '220ms' }}
               >
                 <div className="relative aspect-[4/3]">
@@ -210,11 +211,11 @@ export default function ImplantPage() {
                 </div>
               </div>
               <div
-                className="enter absolute -bottom-6 -left-4 hidden max-w-[17rem] rounded-2xl border border-brand-200/70 bg-white p-5 shadow-[var(--shadow-lift)] sm:block"
+                className="enter absolute -bottom-6 -left-4 hidden max-w-[17rem] rounded-2xl border border-brand-200/70 card-glass p-5 shadow-[var(--shadow-lift)] sm:block"
                 style={{ animationDelay: '660ms' }}
               >
-                <p className="text-[13px] font-black text-clay-700">진료 전 확인</p>
-                <p className="mt-2 text-[14px] leading-[1.7] text-ink-soft">
+                <p className="text-[14px] font-black text-clay-700">진료 전 확인</p>
+                <p className="mt-2 text-[15px] leading-[1.7] text-ink-soft">
                   뼈의 양과 신경 위치를 먼저 보고, 심을 수 있는지부터 말씀드립니다.
                 </p>
               </div>
@@ -226,17 +227,17 @@ export default function ImplantPage() {
       <SectionNav items={navItems} />
 
       {/* 01 — 내 얘기인가 */}
-      <section className="py-16 lg:py-20">
+      <section className="py-16 lg:py-24">
         <Container>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-14">
-            <h2 className="reveal display-sm max-w-[15ch] text-[clamp(21px,2.4vw,28px)] leading-[1.35] tracking-[-0.02em] text-ink">
+            <h2 className="reveal display-sm max-w-[20em] text-[clamp(21px,2.6vw,30px)] leading-[1.35] tracking-[-0.02em] text-ink">
               이런 상태라면 한번 확인해 보세요
             </h2>
             <ul className="reveal-stack grid gap-3 sm:grid-cols-3">
               {t.whoFor.map((w) => (
                 <Card as="li" key={w} className="reveal flex items-start gap-3 p-5">
                   <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-clay-500" />
-                  <span className="text-[14.5px] leading-[1.75] font-bold text-ink">{w}</span>
+                  <span className="text-[15.5px] leading-[1.75] font-bold text-ink">{w}</span>
                 </Card>
               ))}
             </ul>
@@ -267,10 +268,10 @@ export default function ImplantPage() {
                 />
               </div>
               <div className="p-8">
-                <h3 className="text-[19px] font-black tracking-[-0.015em] text-ink">
+                <h3 className="display-sm text-[19px] tracking-[-0.015em] text-ink">
                   화면에서 먼저 심어 봅니다
                 </h3>
-                <p className="mt-3.5 text-[15px] leading-[1.85] text-ink-soft">
+                <p className="mt-3.5 text-[16px] leading-[1.85] text-ink-soft">
                   신경관까지 남은 높이와 뼈 두께를 단면으로 확인하고, 고정체가 들어갈 자리를 미리
                   잡아 둡니다. 수술 중에 판단할 것을 수술 전으로 옮기는 것이 이 방식의 요점입니다.
                 </p>
@@ -283,8 +284,8 @@ export default function ImplantPage() {
                   <div className="flex items-start gap-4">
                     <NumChip n={i + 1} />
                     <div>
-                      <h3 className="text-[17px] font-black tracking-[-0.01em] text-ink">{b.title}</h3>
-                      <p className="mt-2.5 text-[14.5px] leading-[1.85] text-ink-soft">{b.body}</p>
+                      <h3 className="display-sm text-[18px] tracking-[-0.01em] text-ink">{b.title}</h3>
+                      <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft">{b.body}</p>
                     </div>
                   </div>
                 </Card>
@@ -295,7 +296,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 03 — 어떻게 하나 */}
-      <section className="border-y border-brand-200/60 bg-cream-deep/50 py-24 lg:py-32">
+      <section className="border-y border-brand-200/60 bg-wine-soft/50 py-24 lg:py-32">
         <Container>
           <SectionHead id="시술-방법" n="03" label="시술 방법" title="네 단계로 진행합니다" />
 
@@ -321,8 +322,8 @@ export default function ImplantPage() {
                       />
                     </div>
                     <div className="flex flex-1 flex-col p-6">
-                      <h3 className="text-[16.5px] font-black tracking-[-0.01em] text-ink">{s.title}</h3>
-                      <p className="mt-2.5 text-[14px] leading-[1.8] text-ink-soft">{s.body}</p>
+                      <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink">{s.title}</h3>
+                      <p className="mt-2.5 text-[15px] leading-[1.8] text-ink-soft">{s.body}</p>
                     </div>
                   </Card>
                 </li>
@@ -344,14 +345,14 @@ export default function ImplantPage() {
                 lift={ci === 1}
                 className={ci === 1 ? 'reveal border-clay-500/30 bg-clay-tint/30 p-8' : 'reveal p-8'}
               >
-                <p className={`text-[16px] font-black ${ci === 1 ? 'text-clay-700' : 'text-ink-soft'}`}>
+                <p className={`text-[17px] font-black ${ci === 1 ? 'text-clay-700' : 'text-ink-soft'}`}>
                   {IMPLANT_COMPARE.columns[ci]}
                 </p>
                 <dl className="mt-7 space-y-5">
                   {IMPLANT_COMPARE.rows.map((r) => (
                     <div key={r.label} className="border-t border-brand-200/70 pt-4 first:border-0 first:pt-0">
-                      <dt className="text-[12.5px] font-black text-ink-muted">{r.label}</dt>
-                      <dd className="mt-1.5 text-[15px] leading-[1.8] text-ink">{r[key]}</dd>
+                      <dt className="text-[13.5px] font-black text-ink-muted">{r.label}</dt>
+                      <dd className="mt-1.5 text-[16px] leading-[1.8] text-ink">{r[key]}</dd>
                     </div>
                   ))}
                 </dl>
@@ -360,7 +361,7 @@ export default function ImplantPage() {
           </div>
 
           {/* ⚠️ 이 단서를 지우지 말 것 — 카드 두 장만 두면 '디지털이 항상 낫다' 로 읽힌다. */}
-          <p className="reveal mt-8 max-w-[74ch] text-[13.5px] leading-[1.9] text-ink-muted">
+          <p className="reveal mt-8 max-w-[74ch] text-[14.5px] leading-[1.9] text-ink-muted">
             {IMPLANT_COMPARE.note}
           </p>
         </Container>
@@ -388,19 +389,19 @@ export default function ImplantPage() {
               {IMPLANT_CASES.map((c) => (
                 <GlassCard key={c.no} as="div" className="reveal p-7 sm:p-9">
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <span className="rounded-lg bg-white/12 px-2.5 py-1 text-[12px] font-black tracking-[0.06em] text-clay-300">
+                    <span className="rounded-lg bg-white/12 px-2.5 py-1 text-[13.5px] font-black tracking-[0.06em] text-clay-300">
                       {c.no}
                     </span>
                     {/* 기간을 숨기면 '금방 끝난다' 는 인상을 준다 — 원문 값을 그대로 적는다. */}
-                    <span className="text-[12.5px] font-bold text-brand-300">치료 기간 {c.period}</span>
+                    <span className="text-[13.5px] font-bold text-brand-300">치료 기간 {c.period}</span>
                   </div>
-                  <h3 className="mt-5 max-w-[34ch] text-[18px] leading-[1.5] font-black text-white sm:text-[20px]">
+                  <h3 className="display-sm mt-5 max-w-[30em] text-[18px] leading-[1.5] text-white sm:text-[20px]">
                     {c.title}
                   </h3>
                   <ul className="mt-7 grid gap-4 sm:grid-cols-3">
                     {c.images.map((im) => (
                       <li key={im.src}>
-                        <div className="img-in relative aspect-[3/2] overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 ring-inset">
+                        <div className="img-in relative aspect-[16/10] overflow-hidden rounded-xl card-glass/5 ring-1 ring-white/10 ring-inset">
                           <Image
                             src={im.src}
                             alt={im.alt}
@@ -409,7 +410,7 @@ export default function ImplantPage() {
                             className="object-cover"
                           />
                         </div>
-                        <p className="mt-2.5 text-[12.5px] font-bold text-brand-300">{im.caption}</p>
+                        <p className="mt-2.5 text-[13.5px] font-bold text-brand-300">{im.caption}</p>
                       </li>
                     ))}
                   </ul>
@@ -418,7 +419,7 @@ export default function ImplantPage() {
             </div>
 
             {/* ⚠️ 증례와 항상 함께 렌더한다. 따로 떼지 말 것. */}
-            <p className="reveal mt-10 max-w-[76ch] text-[13px] leading-[1.9] text-brand-300">
+            <p className="reveal mt-10 max-w-[76ch] text-[14px] leading-[1.9] text-brand-300">
               {CASE_NOTICE}
             </p>
           </DarkPanel>
@@ -426,7 +427,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 06 — 원칙 */}
-      <section className="border-y border-brand-200/60 bg-cream-deep/50 py-24 lg:py-32">
+      <section className="border-y border-brand-200/60 bg-wine-soft/50 py-24 lg:py-32">
         <Container>
           <SectionHead
             id="진료-원칙"
@@ -438,8 +439,8 @@ export default function ImplantPage() {
             {IMPLANT_STRENGTHS.map((s, i) => (
               <Card as="li" key={s.title} className="reveal p-7">
                 <NumChip n={String(i + 1).padStart(2, '0')} />
-                <h3 className="mt-5 text-[17px] font-black tracking-[-0.01em] text-ink">{s.title}</h3>
-                <p className="mt-2.5 text-[14.5px] leading-[1.85] text-ink-soft">{s.body}</p>
+                <h3 className="display-sm mt-5 text-[18px] tracking-[-0.01em] text-ink">{s.title}</h3>
+                <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft">{s.body}</p>
               </Card>
             ))}
           </ul>
@@ -447,7 +448,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 원장이 내건 문장 */}
-      <section className="py-24 lg:py-28">
+      <section className="py-24 lg:py-32">
         <Container>
           <DarkPanel className="reveal px-8 py-16 sm:px-14 lg:px-16 lg:py-24">
             {/*
@@ -460,7 +461,7 @@ export default function ImplantPage() {
                  한글 제목의 줄 수를 맞출 때는 **em** 으로 적을 것. 45자를 두 줄로 두려면 22em.
             */}
             <blockquote>
-              <p className="display-sm max-w-[22em] text-[clamp(26px,3.8vw,42px)] leading-[1.34] tracking-[-0.03em] text-white">
+              <p className="display-sm max-w-[22em] text-[clamp(28px,4.2vw,46px)] leading-[1.34] tracking-[-0.03em] text-white">
                 자연치아를 살리기 위해 노력하며, 임플란트는 마지막 선택이 될 수 있도록 합니다.
               </p>
             </blockquote>
@@ -470,12 +471,12 @@ export default function ImplantPage() {
               큰 인용문 아래에 둘 다 왼쪽으로 붙이면 패널 오른쪽 절반이 통째로 비어 보인다.
             */}
             <div className="mt-12 flex flex-wrap items-center justify-between gap-8 border-t border-white/12 pt-8">
-              <p className="max-w-[34em] text-[16px] leading-[1.9] text-brand-200">
+              <p className="max-w-[34em] text-[17px] leading-[1.9] text-brand-200">
                 장기적인 예후까지 생각한 계획으로 고민과 걱정을 덜어 드리겠습니다.
               </p>
               <Link
                 href="/treatment/save-natural-tooth"
-                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-7 py-3.5 text-[15px] font-black text-ink transition-colors hover:bg-brand-100"
+                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-parchment px-7 py-3.5 text-[16px] font-black text-ink transition-colors hover:bg-brand-100"
               >
                 자연치아 살리기 먼저 보기 <span aria-hidden>→</span>
               </Link>
@@ -486,7 +487,7 @@ export default function ImplantPage() {
 
       {/* 07 — 얼마나 걸리나 */}
       {journey && (
-        <section className="border-y border-brand-200/60 bg-cream-deep/50 py-24 lg:py-32">
+        <section className="border-y border-brand-200/60 bg-wine-soft/50 py-24 lg:py-32">
           <Container>
             <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
               <div className="lg:sticky lg:top-40 lg:self-start">
@@ -499,13 +500,13 @@ export default function ImplantPage() {
                 />
                 <dl className="reveal mt-9 flex gap-x-10">
                   <div>
-                    <dt className="text-[12px] font-bold text-clay-700">내원 횟수</dt>
+                    <dt className="text-[13.5px] font-bold text-clay-700">내원 횟수</dt>
                     <dd className="mt-1.5 text-[20px] font-black tracking-[-0.02em] text-ink">
                       {journey.visits}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[12px] font-bold text-clay-700">치료 기간</dt>
+                    <dt className="text-[13.5px] font-bold text-clay-700">치료 기간</dt>
                     <dd className="mt-1.5 text-[20px] font-black tracking-[-0.02em] text-ink">
                       {journey.duration}
                     </dd>
@@ -519,10 +520,10 @@ export default function ImplantPage() {
                     <div className="flex items-start gap-4">
                       <NumChip n={String(i + 1).padStart(2, '0')} />
                       <div>
-                        <h3 className="text-[16.5px] font-black tracking-[-0.01em] text-ink">
+                        <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink">
                           {st.label}
                         </h3>
-                        <p className="mt-2 text-[14.5px] leading-[1.8] text-ink-soft">{st.what}</p>
+                        <p className="mt-2 text-[15.5px] leading-[1.8] text-ink-soft">{st.what}</p>
                       </div>
                     </div>
                   </Card>
@@ -531,7 +532,7 @@ export default function ImplantPage() {
             </div>
 
             {journey.variables.length ? (
-              <p className="reveal mt-12 max-w-[74ch] text-[13.5px] leading-[1.9] text-ink-muted">
+              <p className="reveal mt-12 max-w-[74ch] text-[14.5px] leading-[1.9] text-ink-muted">
                 기간이 늘어나는 경우도 있습니다. {journey.variables.join(' ')}
               </p>
             ) : null}
@@ -540,24 +541,35 @@ export default function ImplantPage() {
       )}
 
       {/* 빠진 치아를 대신하는 방법 */}
-      <section className="py-24 lg:py-28">
+      <section className="py-24 lg:py-32">
         <Container>
           <ComparisonTable data={MISSING_TOOTH_OPTIONS} />
         </Container>
       </section>
 
-      {/* 08 — 남은 걱정 */}
-      <section className="border-y border-brand-200/60 bg-cream-deep/50 py-24 lg:py-32">
+      {/*
+        ★ 자주 묻는 질문의 정본은 /faq 가 갖는다 (2026-08-27 오너 지시 — 페이지가 너무 길다).
+        ⚠️ FAQPage 구조화 데이터도 함께 옮겼다. 화면에서 뺐는데 스키마만 남기면 보이지 않는
+           내용을 주장하는 꼴이 된다. 되살리려면 둘을 같이 옮길 것.
+      */}
+      <section className="border-y border-brand-200/60 bg-wine-soft/50 py-16 lg:py-24">
         <Container>
-          <SectionHead
-            id="자주-묻는-질문"
-            n="08"
-            label="자주 묻는 질문"
-            title="임플란트, 이런 것을 물으십니다"
-          />
-          <div className="mt-12">
-            <QABlock items={t.qa} />
-          </div>
+          <Link href="/faq#implant" className="reveal group block">
+            <Card className="flex flex-wrap items-center justify-between gap-6 p-8 transition-all group-hover:border-clay-400 group-hover:shadow-[var(--shadow-lift)]">
+              <div>
+                <p className="text-[13.5px] font-black text-clay-700">자주 묻는 질문</p>
+                <p className="mt-2.5 text-[19px] font-black tracking-[-0.015em] text-ink">
+                  임플란트에 대해 많이 묻는 것 {t.qa.length}가지
+                </p>
+                <p className="mt-2 text-[15.5px] leading-[1.8] text-ink-soft">
+                  기간과 횟수, 통증, 뼈이식, 건강보험까지 한자리에 모아 두었습니다.
+                </p>
+              </div>
+              <span className="shrink-0 text-[16px] font-black text-clay-700">
+                전체 보기 <span aria-hidden>→</span>
+              </span>
+            </Card>
+          </Link>
         </Container>
       </section>
 
@@ -566,7 +578,7 @@ export default function ImplantPage() {
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
             <Card lift className="reveal img-in overflow-hidden">
-              <div className="relative aspect-[5/4] bg-brand-100">
+              <div className="relative aspect-[4/3] bg-brand-100">
                 <Image
                   src="/img/clinic/implant-aftercare.webp"
                   alt="상담실에서 원장이 모니터의 파노라마 영상을 보며 임플란트 부품을 환자에게 설명하는 모습."
@@ -587,7 +599,7 @@ export default function ImplantPage() {
                 {IMPLANT_AFTERCARE.map((a, i) => (
                   <li key={a} className="reveal flex gap-4">
                     <NumChip n={String(i + 1).padStart(2, '0')} />
-                    <p className="text-[15.5px] leading-[1.85] text-ink-soft">{a}</p>
+                    <p className="text-[16.5px] leading-[1.85] text-ink-soft">{a}</p>
                   </li>
                 ))}
               </ol>
@@ -597,18 +609,18 @@ export default function ImplantPage() {
       </section>
 
       {/* 세부 주제 */}
-      <section className="border-y border-brand-200/60 bg-cream-deep/50 py-24 lg:py-28">
+      <section className="border-y border-brand-200/60 bg-wine-soft/50 py-24 lg:py-32">
         <Container>
           <SectionHead n="10" label="더 자세히" title="임플란트, 나눠서 더 보기" />
           <div className="reveal-stack mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {IMPLANT_TOPICS.map((o) => (
               <Link key={o.slug} href={`/treatment/implant/${o.slug}`} className="reveal group">
                 <Card className="flex h-full flex-col p-7 transition-all group-hover:-translate-y-1 group-hover:border-clay-400 group-hover:shadow-[var(--shadow-lift)]">
-                  <h3 className="text-[16.5px] font-black tracking-[-0.01em] text-ink group-hover:text-clay-700">
+                  <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink group-hover:text-clay-700">
                     {o.name}
                   </h3>
-                  <p className="mt-2.5 flex-1 text-[14px] leading-[1.8] text-ink-soft">{o.tagline}</p>
-                  <span className="mt-6 text-[13.5px] font-black text-clay-700">
+                  <p className="mt-2.5 flex-1 text-[15px] leading-[1.8] text-ink-soft">{o.tagline}</p>
+                  <span className="mt-6 text-[14.5px] font-black text-clay-700">
                     자세히 보기 <span aria-hidden>→</span>
                   </span>
                 </Card>
@@ -620,9 +632,9 @@ export default function ImplantPage() {
 
       {/* 관련 증상 */}
       {related.length > 0 && (
-        <section className="py-16 lg:py-20">
+        <section className="py-16 lg:py-24">
           <Container>
-            <h2 className="reveal text-[19px] font-black tracking-[-0.01em] text-ink">
+            <h2 className="display-sm reveal text-[19px] tracking-[-0.01em] text-ink">
               이런 증상이라면 함께 보세요
             </h2>
             <div className="reveal mt-6 flex flex-wrap gap-2.5">
@@ -630,7 +642,7 @@ export default function ImplantPage() {
                 <Link
                   key={s!.slug}
                   href={`/insight/symptom/${s!.slug}`}
-                  className="rounded-full border border-brand-200 bg-white px-5 py-2.5 text-[14.5px] font-bold text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                  className="rounded-full btn-pane border px-5 py-2.5 text-[15.5px] font-bold text-ink-soft transition-colors hover:border-ink hover:text-ink"
                 >
                   {s!.title}
                 </Link>
@@ -654,10 +666,10 @@ export default function ImplantPage() {
           <Card lift className="reveal px-8 py-14 sm:px-12">
             <div className="flex flex-wrap items-end justify-between gap-10">
               <div>
-                <h2 className="display-sm max-w-[17ch] text-[clamp(24px,3vw,34px)] leading-[1.3] tracking-[-0.025em] text-ink">
+                <h2 className="display-sm max-w-[20em] text-[clamp(21px,2.6vw,30px)] leading-[1.3] tracking-[-0.025em] text-ink">
                   심을 수 있는지부터 확인해 보세요
                 </h2>
-                <p className="mt-5 max-w-[50ch] text-[15.5px] leading-[1.9] text-ink-soft">
+                <p className="mt-5 max-w-[50ch] text-[16.5px] leading-[1.9] text-ink-soft">
                   뼈의 양과 잇몸 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이
                   필요한지 말씀드립니다.
                 </p>
@@ -667,13 +679,13 @@ export default function ImplantPage() {
                   href={CLINIC.booking.naver}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-colors hover:bg-brand-700"
+                  className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[16.5px] font-black text-white shadow-[var(--shadow-btn)] transition-colors hover:bg-brand-700"
                 >
                   진료 예약하기 <span aria-hidden>→</span>
                 </a>
                 <a
                   href={CLINIC.phoneHref}
-                  className="inline-flex items-center gap-2 rounded-full border border-brand-300 bg-white px-8 py-4 text-[15.5px] font-black text-ink transition-colors hover:border-ink"
+                  className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-charcoal/70 px-8 py-4 text-[17px] font-semibold tabular-nums text-charcoal transition-colors hover:bg-charcoal/6"
                 >
                   {CLINIC.phone}
                 </a>

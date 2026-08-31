@@ -21,7 +21,7 @@ export function VideoFacade({
   poster,
   posterAlt,
   label,
-  ratio = 'aspect-video',
+  ratio = 'aspect-[16/10]',
 }: {
   /** 재생 시 넣을 iframe 주소. autoplay 파라미터를 포함해 넘길 것. */
   embedSrc: string;
@@ -60,7 +60,7 @@ export function VideoFacade({
         fill
         sizes="(max-width: 1024px) 100vw, 50vw"
         loading="lazy"
-        className="object-cover transition-transform duration-700 group-hover:scale-105"
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
       {/* 재생 버튼 위 글씨·아이콘의 대비를 확보한다. 밝은 프레임에서 흰 삼각형이 사라진다. */}
       <span aria-hidden className="absolute inset-0 bg-brand-900/35 transition-colors group-hover:bg-brand-900/25" />

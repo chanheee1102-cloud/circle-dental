@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import { TREATMENTS } from '@/lib/treatments';
-import { Container, SectionHead, Breadcrumb, ContactCta } from '@/components/ui';
+import { Container, ContactCta, PageHero } from '@/components/ui';
 import { CareListSection } from '@/components/CareListSection';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, itemListSchema } from '@/lib/seo';
@@ -35,9 +35,13 @@ export default function TreatmentIndexPage() {
           ),
         ]}
       />
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="corridor"
+        eyebrow="진료과목"
+        title="어떤 경우에 어떤 진료를 하나요?"
+        desc="같은 증상이라도 남은 치아와 잇몸뼈 상태에 따라 선택이 달라집니다. 그래서 시술 이름이 아니라 ‘이런 경우에 봅니다’ 로 나눴습니다."
+      />
 
       <Container className="py-12 lg:py-16">
         {/*
@@ -45,12 +49,6 @@ export default function TreatmentIndexPage() {
             '무엇을 하는 곳인지, 각 치료가 어떤 과정인지' 는 목차 제목이지 사람이 치는 문장이
             아니다. 홈에서 이 목록을 옮겨 오면서 홈에서 쓰던 질문형 제목을 함께 가져왔다.
         */}
-        <SectionHead
-          as="h1"
-          eyebrow="진료과목"
-          title="어떤 경우에 어떤 진료를 하나요?"
-          desc={`${TREATMENTS.length}가지 진료 영역을 ‘이런 경우에 봅니다’ 기준으로 정리했습니다. 자기 상황과 가까운 줄을 눌러 보세요. 치료마다 자주 나오는 질문도 함께 적어 두었습니다.`}
-        />
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">

@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
-import Image from 'next/image';
-import { IMG } from '@/lib/assets';
 import { CLINIC } from '@/lib/clinic';
-import { Container, SectionHead, Breadcrumb, ContactCta } from '@/components/ui';
-import { Reveal } from '@/components/Reveal';
+import { Container, ContactCta, PageHero } from '@/components/ui';
+import { InteriorGallery } from '@/components/InteriorGallery';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/seo';
 
@@ -34,17 +32,15 @@ export default function TourPage() {
     <>
       <JsonLd data={breadcrumbSchema(TRAIL)} />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="booth"
+        eyebrow="Circle Dental Clinic"
+        title="동그라미 치과 내부 둘러보기"
+        desc="상담실과 진료실을 미리 보고 오시면 첫 방문이 조금 덜 낯섭니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="Circle Dental Clinic"
-          title="동그라미 치과 내부 둘러보기"
-          desc="상담실과 진료실을 미리 보고 오시면 첫 방문이 조금 덜 낯섭니다."
-        />
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -59,37 +55,21 @@ export default function TourPage() {
             설명은 lib/assets.ts 한 곳에서만 온다 — 사진 순서가 바뀌어도 어긋나지 않는다.
         */}
         {/*
-          ★★ 격자로 바꿨다 — 벽돌쌓기(masonry)를 걷어냈다 (2026-08-14 운영자: "줄이나 규격 좀 맞춰줘") ★★
-            `columns-3` 는 원본 비율대로 세로 길이가 제각각이라 **줄이 안 맞는다.**
-            게다가 CSS 다단은 위→아래로 채운 뒤 다음 단으로 넘어가서 사진 순서가
-            **왼쪽 위 → 왼쪽 아래 → 가운데 위** 로 읽힌다. 사람이 훑는 순서와 반대다.
-            → 4:3 로 통일한 격자로 바꿨다. 줄이 맞고, 읽는 순서도 왼→오른쪽이다.
+          ★★ 격자 → **큰 사진 한 장 + 썸네일 줄** (2026-08-31 운영자) ★★
+            운영자가 기존 홈페이지의 '둘러보기' 화면을 보여 주며 "우리도 이렇게 하는거 어때".
+            격자는 열두 장을 한 번에 보여 주지만 **한 장도 크게 볼 수 없었다.**
+            이 페이지는 '어떤 곳인지 미리 본다' 가 목적이라 크게 보는 쪽이 맞는다.
 
-          ★ 카드 높이도 맞춘다 — 설명 줄 수가 달라 카드 키가 들쭉날쭉하던 것을
-            `h-full` + `flex-col` + `mt-auto` 로 아래 선까지 맞췄다.
-          ★ 사진은 순서대로 떠오른다(Reveal delay). 열두 장이 한꺼번에 나타나면
-            어디부터 볼지 알 수 없다.
+          ★ 앞선 두 번의 판단은 지금도 유효하다 —
+            ① 벽돌쌓기(masonry)로 되돌리지 말 것. 줄이 안 맞고 읽는 순서가 뒤집힌다
+               (2026-08-14 운영자: "줄이나 규격 좀 맞춰줘").
+            ② **설명을 없애지 말 것.** 사진만 열두 장이던 시절 이 페이지는 인용할 문장이
+               하나도 없었다. 지금은 큰 사진 아래 캡션 한 줄 + 썸네일 열두 장의 alt 로
+               열두 줄이 모두 문서에 남는다(components/InteriorGallery.tsx 주석 참조).
+          ⚠️ 홈의 흐르는 띠(InteriorSlider)와 헷갈리지 말 것 — 홈은 그대로 둔다.
         */}
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {IMG.interior.map((shot, i) => (
-            <Reveal key={shot.src} delay={(i % 3) * 70} className="h-full">
-              <figure className="group flex h-full flex-col overflow-hidden rounded-2xl border border-brand-200/60 bg-white shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-300 hover:shadow-[var(--shadow-lift)]">
-                <div className="relative aspect-[4/3] overflow-hidden bg-brand-100">
-                  <Image
-                    src={shot.src}
-                    alt={shot.alt}
-                    fill
-                    priority={i < 3}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.06]"
-                  />
-                </div>
-                <figcaption className="px-5 py-4 text-[13.5px] leading-relaxed text-ink-soft">
-                  {shot.alt}
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
+        <div className="mt-14">
+          <InteriorGallery />
         </div>
       </Container>
 

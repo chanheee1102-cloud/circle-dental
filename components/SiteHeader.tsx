@@ -50,7 +50,17 @@ export function SiteHeader() {
    *   헤더 자리에 크림색 띠가 남거나 히어로가 헤더에 잘린다.
    */
   const pathname = usePathname();
-  const overHero = pathname === '/' && !scrolled && !openMenu && !mobileOpen;
+  /*
+   * ⚠️ 전에는 메뉴를 열면(openMenu) 사진 위 상태를 풀었다. 그때는 헤더가 **크림색 띠**로
+   *    바뀌어야 흰 메가메뉴가 붙어 보였기 때문이다. 지금은 헤더가 떠 있는 유리판이라
+   *    그럴 이유가 없고, 오히려 손을 올릴 때마다 어두운 유리 → 밝은 유리로 튄다.
+   * ⚠️ 모바일 서랍(mobileOpen)은 여전히 뺀다 — 서랍이 크림색 판이라 위에 어두운 유리가
+   *    얹히면 두 재질이 붙어 어색하다.
+   */
+  const overHero = pathname === '/' && !scrolled && !mobileOpen;
+
+  /** 지금 열린 메뉴 항목 — 판을 알약 밖에서 한 번만 그리므로 여기서 찾아 둔다. */
+  const openPanel = NAV.find((n) => n.label === openMenu && n.children?.length);
   const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -88,21 +98,60 @@ export function SiteHeader() {
       ref={headerRef}
       onMouseLeave={() => setOpenMenu(null)}
       onBlur={onHeaderBlur}
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        overHero
-          ? 'border-b border-transparent bg-transparent'
-          : openMenu
-            ? 'border-b border-brand-200/60 bg-cream/95 backdrop-blur-xl'
-            : scrolled
-              ? 'border-b border-brand-200/60 bg-cream/85 shadow-[0_4px_24px_-12px_rgba(58,33,26,0.25)] backdrop-blur-xl'
-              : 'border-b border-transparent bg-cream/60 backdrop-blur-md'
-      }`}
+      /*
+       * ⚠️ 바깥 <header> 는 **아무것도 안 그린다.** 배경도 테두리도 없다.
+       *    여기에 배경이나 그라디언트를 다시 넣으면 상자가 끝나는 자리에 가로줄이 생긴다
+       *    (2026-08-27 에 실제로 생겼던 그 선이다).
+       */
+      className="sticky top-0 z-50"
     >
       <div
-        className={`mx-auto flex max-w-[1320px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
-          scrolled ? 'h-[52px] sm:h-[68px]' : 'h-[60px] sm:h-[86px]'
+        className={`relative mx-auto max-w-[1320px] px-4 transition-all duration-300 lg:px-6 ${
+          scrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
         }`}
       >
+        {/*
+          ★★ 떠 있는 유리판 ★★
+            헤더가 화면을 가로지르는 '띠' 가 아니라 사진 위에 **얹힌 물건**이 된다.
+            히어로 왼쪽 아래 카드와 같은 재질이라 첫 화면에 유리 두 장이 같은 언어로 놓인다.
+          ★ 3D 느낌은 세 겹이 만든다 —
+              ① 위 모서리 안쪽의 밝은 실선(inset 하이라이트) = 빛을 받는 유리 윗면
+              ② 아래로 깔리는 부드러운 그림자 = 떠 있는 높이
+              ③ 대각선 그라데이션 = 판이 평평하지 않다는 느낌
+            셋 중 하나만 빼도 그냥 반투명 네모가 된다.
+          ⚠️ 사진 위(overHero)와 밝은 면에서 재질이 반대다. 한쪽만 고치지 말 것.
+          ⚠️ overflow-hidden 을 주지 말 것 — 메가메뉴가 이 판 밖으로 내려와야 한다.
+
+          ★★ 더 투명하게 (2026-08-27, 오너: "내가 보낸것처럼 더 투명하게") ★★
+            색을 얹어 어둡게 하면 판이 **불투명한 회색 네모**가 된다. 참고 사이트의 판은
+            뒤가 훤히 비치는데도 글자가 읽힌다 — 색을 얹는 대신 **뒤 배경 자체를 눌러서**다.
+            backdrop-brightness 가 그 역할을 한다. 판은 비쳐 보이고 대비는 남는다.
+          ⚠️ 얹는 색(gradient)을 다시 올리지 말 것 — 그 순간 투명함이 사라진다.
+          ⚠️ 반대로 brightness 를 1 에 가깝게 되돌리면 밝은 사진 위에서 글자가 무너진다.
+             값을 만지면 반드시 실측할 것 — 사진 위 글자는 CSS 만 봐선 알 수 없다.
+        */}
+        <div
+          className={`flex w-full items-center justify-between gap-3 rounded-[18px] border px-3 backdrop-saturate-150 transition-all duration-300 sm:px-4 lg:mx-auto lg:w-fit lg:gap-8 ${
+            // ⚠️ 히어로의 -mt-[68px] sm:-mt-[94px] 와 짝이다. 여백+판 높이의 합을 맞출 것.
+            scrolled ? 'h-12 sm:h-[58px]' : 'h-14 sm:h-[70px]'
+          } ${
+            overHero
+              ? // 사진 위 — 뒤가 훤히 비쳐야 한다. 흐림을 약하게 두어 형체가 남고,
+                //   밝기만 눌러 흰 글자의 대비를 만든다(실측 6.7~11.8:1).
+                'border-white/16 bg-[linear-gradient(135deg,rgba(23,23,26,0.22),rgba(23,23,26,0.06))] backdrop-blur-[7px] backdrop-brightness-[0.76] shadow-[inset_0_1px_0_rgba(255,255,255,0.20),0_18px_44px_-20px_rgba(0,0,0,0.7)]'
+              : // ★★ 내려도 흰 판이 되지 않는다 (2026-08-28 오너: "헤더가 내리면 하얀색으로 변하네?") ★★
+                //   전에는 거의 다 채워서 유리 느낌이 사라졌다. 지금은 면을 훨씬 비우고
+                //   **흐림을 아주 세게**(40px) 걸어 뒤 글자를 형체 없이 뭉갠다.
+                // ⚠️ 흐림을 줄이지 말 것 — 어두운 글자는 밝기를 눌러도 안 지워지므로,
+                //    옅은 면 + 약한 흐림이면 본문이 헤더 글자와 겹쳐 읽힌다(실제로 겪었다).
+                // ⚠️ backdrop-saturate 로 뒤 색을 살짝 살린다 — 완전한 무채색이면 유리가 아니라
+                //    반투명 종이로 보인다.
+                // ⚠️ 2026-08-28: 너무 비워서 판이 안 보였다(오너). 면을 조금 채우고
+                //    테두리·그림자를 세워 '떠 있는 물건' 으로 읽히게 한다.
+                //    흐림 40px 은 그대로 — 이걸 줄이면 뒤 본문이 헤더 글자와 겹친다.
+                'border-charcoal/16 bg-[linear-gradient(135deg,rgba(254,255,252,0.80),rgba(254,255,252,0.64))] backdrop-blur-[40px] backdrop-saturate-[1.6] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_20px_-12px_rgba(23,23,23,0.18),0_24px_50px_-26px_rgba(23,23,23,0.35)]'
+          }`}
+        >
         {/*
           ⚠️ 실시간 '진료 중' 배지를 뺐다 (2026-08-14 운영자: "저거 라이브도 빼줘").
              자동으로 여닫힘을 판정하는 표시는 **공휴일·임시 휴진을 알 수 없다**
@@ -112,6 +161,11 @@ export function SiteHeader() {
              ⚠️ 되살리려면 그 한계(공휴일 판정 불가)부터 해결할 것.
         */}
         <div className="flex items-center gap-3">
+          {/*
+            ⚠️ 데스크톱 알약 안에서는 **마크만** 쓴다 — 워드마크(214px)가 알약을 두 배로 벌린다.
+               좁은 화면은 알약이 화면 폭을 다 쓰므로 워드마크를 그대로 둔다.
+            ⚠️ 링크와 aria-label 은 양쪽 다 같다 — 마크만 보여도 병원명은 읽힌다.
+          */}
           <Link href="/" aria-label={`${CLINIC.name} 홈`} className="transition-opacity hover:opacity-80">
             <LogoLockup tone={overHero ? 'light' : 'brand'} />
           </Link>
@@ -128,7 +182,22 @@ export function SiteHeader() {
              버튼과 카드 사이에 빈틈이 생기면 마우스가 그 틈을 지날 때 hover 가 끊겨
              카드가 닫힌다. 여백이 껍데기 안에 있어야 마우스가 계속 안에 머문다.
         */}
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="주 메뉴">
+        {/*
+          ★★ 메뉴를 알약 하나에 담는다 (2026-08-27) ★★
+            GIC 의 표식 중 하나가 **50px 알약 안에 든 메뉴**다. 줄글처럼 늘어놓던 메뉴가
+            하나의 덩어리가 되면서 헤더가 '바' 가 아니라 '얹힌 물건' 으로 읽힌다.
+          ⚠️ overflow-hidden 을 주지 말 것 — 메가메뉴가 이 알약 밖으로 내려와야 한다.
+          ⚠️ 사진 위(overHero)에서는 알약을 그리지 않는다. 반투명 흰 알약이 사진 위에
+             떠 있으면 헤더가 두 겹으로 보인다.
+        */}
+        {/*
+          ⚠️ 유리판 안이므로 메뉴 알약에 테두리를 두지 않는다 — 상자 안의 상자가 된다.
+             열린 항목만 옅은 면으로 표시한다.
+        */}
+        <nav
+          className="hidden items-center gap-0.5 lg:flex"
+          aria-label="주 메뉴"
+        >
           {NAV.map((item) => {
             const open = openMenu === item.label;
             return (
@@ -137,33 +206,30 @@ export function SiteHeader() {
                 className="relative"
                 onMouseEnter={() => setOpenMenu(item.children ? item.label : null)}
               >
+                {/*
+                  ⚠️ 밑줄 표시를 뺐다 — 알약 안에서는 밑줄이 알약 테두리에 붙어 지저분해진다.
+                     열린 항목은 **옅은 면**으로 표시한다. 채운 dusk 로 하면 메뉴 하나가
+                     버튼처럼 보여 진짜 버튼(예약하기)과 다툰다.
+                  ⚠️ 굵기를 900 → 500 으로 내렸다. 이 시스템은 굵기로 강조하지 않는다.
+                */}
                 <Link
                   href={item.href}
                   onFocus={() => setOpenMenu(item.children ? item.label : null)}
                   aria-expanded={item.children ? open : undefined}
-                  className={`relative inline-flex items-center gap-1 rounded-lg px-4 py-2.5 text-[15.5px] font-bold transition-colors ${
+                  className={`relative inline-flex items-center gap-1 rounded-full px-4 py-2.5 text-[17px] font-medium transition-colors ${
                     overHero
-                      ? 'text-white/90 hover:text-white'
+                      ? open
+                        ? 'bg-white/14 text-white'
+                        : 'text-white/90 hover:text-white'
                       : open
-                        ? 'text-brand-700'
-                        : 'text-ink-soft hover:text-brand-700'
+                        ? 'bg-charcoal/8 text-charcoal'
+                        : 'text-twilight hover:text-charcoal'
                   }`}
                 >
                   {item.label}
                   {item.children && <Chevron open={open} />}
-                  <span
-                    aria-hidden
-                    className={`absolute inset-x-3 -bottom-px h-[2.5px] rounded-full bg-brand-600 transition-transform duration-300 ${
-                      open ? 'scale-x-100' : 'scale-x-0'
-                    }`}
-                  />
                 </Link>
 
-                {item.children && open && (
-                  <div className="mega-in absolute top-full left-1/2 z-10 -translate-x-1/2 pt-2.5">
-                    <MegaPanel item={item} onNavigate={() => setOpenMenu(null)} />
-                  </div>
-                )}
               </div>
             );
           })}
@@ -180,55 +246,22 @@ export function SiteHeader() {
             헤더가 거의 흰 바탕이라 채운 초록 버튼이 가장 먼저 눈에 든다.
         */}
         <div className="flex items-center gap-2">
-          <a
-            href={CLINIC.phoneHref}
-            className={`hidden h-10 items-center gap-2 rounded-full border px-5 text-[15px] font-black transition-colors md:inline-flex ${
-              overHero
-                ? 'border-white/40 bg-transparent text-white hover:border-white hover:bg-white/10'
-                : 'border-brand-300 bg-white/80 text-brand-700 hover:border-brand-500 hover:bg-white'
-            }`}
-          >
-            <PhoneIcon />
-            <span className="tabular-nums">{CLINIC.phone}</span>
-          </a>
           {/*
-            ★ 누르면 **네이버 예약**으로 간다 (2026-08-14 운영자).
-              예전엔 전화 걸기였는데, 그러면 옆의 전화번호 버튼과 같은 동작이라 버튼이 둘인 의미가 없다.
-              지금은 '전화로 물어보기' 와 '지금 바로 시간 잡기' 로 갈린다.
-              네이버 예약은 플레이스 지표로도 쌓여 지역 검색에 직접 기여한다(lib/clinic.ts 주석 참고).
-            ★ 글자는 '네이버 예약' 이 아니라 **'예약하기'** 다 (2026-08-14 운영자).
-              버튼 글자는 '어디로 가는지' 가 아니라 '무엇을 하는지' 를 말해야 한다.
-              가는 곳이 네이버라는 것은 눌러 보면 안다 — 그걸 미리 알려 주는 대가로
-              화면에서 가장 중요한 버튼이 남의 브랜드 이름을 달고 있을 이유는 없다.
-              ⚠️ 목적지는 그대로다. 글자만 바뀐 것이라 링크를 /visit 등으로 바꾸지 말 것.
-            ★ 외부 도메인이라 새 창으로 열고 rel="noopener" 를 붙인다 — 없으면 열린 창이
-              window.opener 로 이 페이지를 조작할 수 있다.
-            ★ aria-label 에는 목적지를 남긴다 — 새 창이 뜨는 이유를 스크린리더가 먼저 알려야 한다.
+            ★★ 전화·예약 버튼을 알약에서 뺐다 (2026-08-27 오너) ★★
+              참고 사이트의 알약에는 링크와 버튼 하나뿐이라 좁다. 우리는 여기에 전화번호
+              버튼(약 170px)과 예약 버튼까지 넣어서 같은 알약이 두 배로 벌어져 있었다.
+            ⚠️ 두 행동을 없앤 것이 아니다 —
+                 예약: 히어로 주 버튼 · 퀵메뉴(네이버예약) · 모바일 서랍/하단 바 · 푸터
+                 전화: 히어로 보조 버튼(번호 그대로 보인다) · 퀵메뉴(전화상담) ·
+                       모바일 서랍/하단 바 · 푸터
+            ⚠️ 여기에 버튼을 다시 넣지 말 것. 넣는 순간 알약이 다시 벌어지고,
+               좁은 알약이 이 헤더의 전부다.
           */}
-          <a
-            href={CLINIC.booking.naver}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-            /*
-              ⚠️ 색을 갈색 → 민트로 바꿨다 (2026-08-25). 히어로의 주 버튼도 '예약하기'
-                 인데 그쪽이 민트라, 같은 화면에 **같은 글자의 버튼이 두 색**으로 있었다.
-                 사이트의 주 행동 버튼은 한 색이어야 한다.
-              ⚠️ 스크롤 상태에 따라 색을 바꾸지 않는다 — 같은 버튼이 스크롤 중에
-                 색이 변하면 다른 버튼처럼 보인다.
-            */
-            className="group hidden h-10 items-center gap-2 rounded-full bg-mint-500 px-6 text-[15px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-0.5 hover:bg-mint-400 sm:inline-flex"
-          >
-            예약하기
-            <span aria-hidden className="text-[13px] transition-transform group-hover:translate-x-0.5">
-              →
-            </span>
-          </a>
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-full border sm:h-10 sm:w-10 lg:hidden ${
-              overHero ? 'border-white/40 text-white' : 'border-brand-300 text-brand-700'
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-[8px] border sm:h-11 sm:w-11 lg:hidden ${
+              overHero ? 'border-white/40 text-white' : 'border-wine-line text-charcoal'
             }`}
             aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
             aria-expanded={mobileOpen}
@@ -236,11 +269,28 @@ export function SiteHeader() {
             <span className="text-lg leading-none">{mobileOpen ? '✕' : '☰'}</span>
           </button>
         </div>
+        </div>
+
+        {/*
+          ★★ 메가메뉴는 알약 **밖**에 그린다 (2026-08-27) ★★
+            알약이 backdrop-filter 를 쓰기 때문에, 그 안에 있으면 판의 backdrop-filter 가
+            통째로 죽는다(위 알약 주석 참고). 밖으로 빼야 판도 뒤를 눌러 글자를 살릴 수 있다.
+          ⚠️ 그래도 <header> 의 자손으로는 남겨야 한다 — 밖으로 빼면 알약에서 판으로
+             마우스를 옮기는 순간 header 의 onMouseLeave 가 떠서 메뉴가 닫힌다.
+          ⚠️ transform 으로 가운데를 맞추지 말 것 — transform 도 backdrop root 를 만든다.
+             판 폭이 600px 로 못 박혀 있으므로 고정 음수 여백으로 맞춘다.
+          ★ 항목마다 따로 띄우던 것을 알약 아래 **한 자리**로 모았다. 어느 메뉴를 열어도
+            같은 자리에 떠서 메뉴를 가로질러도 판이 움직이지 않는다.
+        */}
+        {openPanel && (
+          <div className="absolute top-full left-1/2 z-10 ml-[-300px]">
+            <MegaPanel item={openPanel} onNavigate={() => setOpenMenu(null)} overHero={overHero} />
+          </div>
+        )}
       </div>
 
-
       {mobileOpen && (
-        <div className="border-t border-brand-200/70 bg-white lg:hidden">
+        <div className="border-t border-wine-line bg-wine-bg lg:hidden">
           {/*
             ★★ 예약·전화를 메뉴 맨 위에 (2026-08-14 운영자) ★★
               헤더에서 예약 버튼을 뺐으니 그 행동이 갈 곳이 있어야 한다. 메뉴를 연 사람은
@@ -254,14 +304,14 @@ export function SiteHeader() {
                 rel="noopener noreferrer"
                 onClick={() => setMobileOpen(false)}
                 aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-4 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)]"
+                className="inline-flex items-center justify-center rounded-[8px] bg-dusk px-4 py-3.5 text-[16px] font-semibold text-parchment"
               >
                 예약하기
               </a>
               <a
                 href={CLINIC.phoneHref}
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-300 bg-white px-4 py-3.5 text-[15.5px] font-black text-brand-700"
+                className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-signal card-glass px-4 py-3.5 text-[16px] font-semibold text-charcoal"
               >
                 <PhoneIcon />
                 {CLINIC.phone}
@@ -286,14 +336,14 @@ export function SiteHeader() {
             {NAV.map((item) => {
               const expanded = mobileGroup === item.label;
               return (
-                <div key={item.href} className="border-b border-brand-100 last:border-0">
+                <div key={item.href} className="border-b border-wine-line last:border-0">
                   {item.children ? (
                     <>
                       <button
                         type="button"
                         onClick={() => setMobileGroup(expanded ? null : item.label)}
                         aria-expanded={expanded}
-                        className="flex w-full items-center justify-between gap-3 py-4 text-left text-[15.5px] font-black text-brand-700"
+                        className="flex w-full items-center justify-between gap-3 py-4 text-left text-[16.5px] font-black text-charcoal"
                       >
                         {item.label}
                         <Chevron open={expanded} />
@@ -305,7 +355,7 @@ export function SiteHeader() {
                             <Link
                               href={item.href}
                               onClick={() => setMobileOpen(false)}
-                              className="flex items-center gap-2 py-2.5 text-[14px] font-black text-brand-600"
+                              className="flex items-center gap-2 py-2.5 text-[15px] font-black text-ash"
                             >
                               전체 보기
                               <span aria-hidden>→</span>
@@ -316,13 +366,13 @@ export function SiteHeader() {
                               <Link
                                 href={c.href}
                                 onClick={() => setMobileOpen(false)}
-                                className="block border-t border-brand-50 py-2.5"
+                                className="block border-t border-mist-soft py-2.5"
                               >
-                                <span className="block text-[14.5px] font-bold text-ink">
+                                <span className="block text-[15.5px] font-bold text-charcoal">
                                   {c.label}
                                 </span>
                                 {c.desc && (
-                                  <span className="mt-0.5 block text-[12.5px] text-ink-muted">
+                                  <span className="mt-0.5 block text-[13.5px] text-ash">
                                     {c.desc}
                                   </span>
                                 )}
@@ -336,7 +386,7 @@ export function SiteHeader() {
                     <Link
                       href={item.href}
                       onClick={() => setMobileOpen(false)}
-                      className="block py-4 text-[15.5px] font-black text-brand-700"
+                      className="block py-4 text-[16.5px] font-black text-charcoal"
                     >
                       {item.label}
                     </Link>
@@ -360,7 +410,23 @@ export function SiteHeader() {
  * ⚠️ 카드 안의 링크를 누르면 반드시 카드를 닫는다(onNavigate). Next.js 는 페이지를 갈아
  *    끼우는 방식이라 헤더가 다시 마운트되지 않는다 — 안 닫으면 이동한 뒤에도 떠 있다.
  */
-function MegaPanel({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
+/**
+ * 메가메뉴.
+ *
+ * ⚠️ 재질을 헤더 알약과 **같이** 간다 (2026-08-27 오너: "하얀색 디자인말고 지금처럼 투명하게").
+ *    유리 알약 아래에 흰 판이 붙어 있으면 한 덩어리가 아니라 두 벌로 보인다.
+ * ⚠️ 밝은 면에서는 투명하게 두면 안 된다 — 스크롤하는 본문 글자가 판을 뚫고 비친다
+ *    (헤더에서 실제로 겪었다). 어두운 글자는 밝기를 눌러도 안 지워진다.
+ */
+function MegaPanel({
+  item,
+  onNavigate,
+  overHero,
+}: {
+  item: NavItem;
+  onNavigate: () => void;
+  overHero: boolean;
+}) {
   const children = item.children ?? [];
 
   /*
@@ -369,15 +435,28 @@ function MegaPanel({ item, onNavigate }: { item: NavItem; onNavigate: () => void
     ⚠️ 화면 폭보다 넓어지지 않게 상한을 함께 건다 — 카드는 트리거 가운데에 맞춰
        좌우로 펼쳐지므로, 폭이 화면을 넘으면 한쪽이 잘려 나간다.
   */
+  /* ⚠️ 그림자를 크게 쓰지 말 것 — 이 시스템은 그림자 대신 실선으로 면을 나눈다. */
   return (
-    <div className="w-[600px] max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-2xl border border-brand-200/70 bg-white p-5 shadow-[0_24px_60px_-24px_rgba(58,33,26,0.45)]">
+    <div
+      className={`mega-in w-[600px] max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-[16px] border p-5 backdrop-saturate-150 ${
+        overHero
+          ? // ★ 알약보다 조금 더 누른다 — 판이 600×340 으로 넓어 사진의 밝은 구역을
+            //   통째로 덮는다. 알약과 같은 값이면 밝은 쪽 글자가 기준에 못 미친다.
+            'border-white/16 bg-[linear-gradient(135deg,rgba(23,23,26,0.28),rgba(23,23,26,0.12))] backdrop-blur-[10px] backdrop-brightness-[0.50] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_22px_50px_-26px_rgba(0,0,0,0.75)]'
+          : // ⚠️ 알약과 **같은 재질**이어야 한다 — 알약만 유리이고 판만 흰색이면 두 벌로 보인다.
+            //    흐림을 세게 거는 이유는 알약과 같다(뒤 글자를 형체 없이 뭉개려고).
+            'border-charcoal/12 bg-[linear-gradient(135deg,rgba(254,255,252,0.72),rgba(254,255,252,0.56))] backdrop-blur-[40px] backdrop-saturate-[1.6] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_18px_40px_-28px_rgba(23,23,23,0.32)]'
+      }`}
+    >
       {/* 머리 줄 — 왼쪽에 지금 연 메뉴, 오른쪽에 그 그룹 대표 페이지로 가는 길. */}
-      <div className="flex items-baseline justify-between gap-4 border-b-2 border-ink pb-3">
-        <p className="text-[16px] font-black text-ink">{item.label}</p>
+      <div className={`flex items-baseline justify-between gap-4 border-b pb-3 ${overHero ? 'border-white/15' : 'border-wine-line'}`}>
+        <p className={`text-[18px] font-semibold ${overHero ? 'text-parchment' : 'text-charcoal'}`}>{item.label}</p>
         <Link
           href={item.href}
           onClick={onNavigate}
-          className="group inline-flex shrink-0 items-center gap-1.5 text-[12.5px] font-bold text-ink-muted transition-colors hover:text-brand-700"
+          className={`group inline-flex shrink-0 items-center gap-1.5 text-[15px] font-medium transition-colors ${
+            overHero ? 'text-mist/80 hover:text-parchment' : 'text-ash hover:text-charcoal'
+          }`}
         >
           전체 보기
           <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
@@ -398,16 +477,23 @@ function MegaPanel({ item, onNavigate }: { item: NavItem; onNavigate: () => void
             <Link
               href={c.href}
               onClick={onNavigate}
-              className="group block h-full rounded-xl border border-brand-100 px-4 py-3 transition-colors hover:border-brand-300 hover:bg-brand-50"
+              className={`group block h-full rounded-[12px] border px-4 py-3 transition-colors ${
+                overHero
+                  ? 'border-white/14 hover:border-parchment/60 hover:bg-white/10'
+                  : 'border-wine-line hover:border-charcoal/40 hover:bg-wine-soft/60'
+              }`}
             >
-              <span className="block text-[14.5px] font-black text-ink transition-colors group-hover:text-brand-700">
+              {/*
+                ⚠️ 설명 줄(c.desc)을 그리지 않는다 (2026-08-27 오너: "저 서브 설명같은 문구들
+                   다 지워줘"). 이름만 남기니 판이 짧아지고 훑기 쉬워진다.
+                ⚠️ lib/nav.ts 의 desc 데이터는 지우지 않았다 — 다른 곳(/insight 카드 등)에서
+                   쓰고, 되살릴 때도 필요하다. 여기서 안 그릴 뿐이다.
+              */}
+              <span className={`block text-[17px] font-semibold transition-colors ${
+                overHero ? 'text-parchment' : 'text-charcoal group-hover:text-twilight'
+              }`}>
                 {c.label}
               </span>
-              {c.desc && (
-                <span className="mt-1 block text-[12.5px] leading-snug text-ink-muted">
-                  {c.desc}
-                </span>
-              )}
             </Link>
           </li>
         ))}

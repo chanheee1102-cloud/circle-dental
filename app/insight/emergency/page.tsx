@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import { CLINIC } from '@/lib/clinic';
-import { Container, SectionHead, Breadcrumb, MedicalNotice } from '@/components/ui';
+import { Container, MedicalNotice, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
 
@@ -130,17 +130,15 @@ export default function EmergencyPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="sterile"
+        eyebrow="응급 상황"
+        title="지금 할 수 있는 것과, 하면 안 되는 것"
+        desc="응급 상황에서는 좋은 뜻으로 한 행동이 결과를 바꾸기도 합니다. 병원에 오시기 전 몇 분이 그만큼 중요합니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="응급 상황"
-          title="지금 할 수 있는 것과, 하면 안 되는 것"
-          desc="응급 상황에서는 좋은 뜻으로 한 행동이 결과를 바꾸기도 합니다. 병원에 오시기 전 몇 분 동안의 조치를 정리했습니다."
-        />
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -150,14 +148,14 @@ export default function EmergencyPage() {
         {/* 전화 안내를 맨 위에 둔다 — 급한 사람이 아래까지 읽지 않는다. */}
         <div className="mt-8 flex flex-wrap items-center gap-4 rounded-2xl bg-brand-700 px-7 py-6 text-white">
           <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-black">지금 상황을 먼저 말씀해 주세요</p>
-            <p className="mt-1 text-[13.5px] text-brand-100/85">
+            <p className="text-[16px] font-black">지금 상황을 먼저 말씀해 주세요</p>
+            <p className="mt-1 text-[14.5px] text-brand-100/85">
               바로 오셔야 하는지, 조치 후 다음 진료일에 오셔도 되는지 판단해 드립니다.
             </p>
           </div>
           <a
             href={CLINIC.phoneHref}
-            className="shrink-0 rounded-full bg-white px-6 py-3 text-[16px] font-black text-brand-700"
+            className="shrink-0 rounded-full bg-parchment px-6 py-3 text-[17px] font-black text-brand-700"
           >
             {CLINIC.phone}
           </a>
@@ -168,24 +166,24 @@ export default function EmergencyPage() {
             <article
               key={c.id}
               id={c.id}
-              className="scroll-mt-28 overflow-hidden rounded-2xl border border-brand-100 bg-white"
+              className="scroll-mt-28 overflow-hidden rounded-2xl border border-brand-100 card-glass"
             >
               <div className="border-b border-brand-50 p-7">
-                <span className="inline-flex rounded-full bg-gold-400/20 px-3 py-1 text-[12.5px] font-black text-gold-600">
+                <span className="inline-flex rounded-full bg-gold-400/20 px-3 py-1 text-[13.5px] font-black text-gold-600">
                   {c.urgency}
                 </span>
                 <h2 className="mt-3.5 text-[20px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[22px]">
                   {c.title}
                 </h2>
-                <p className="mt-3 max-w-[68ch] text-[16px] leading-[1.85] text-ink">{c.answer}</p>
+                <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.85] text-ink">{c.answer}</p>
               </div>
 
               <div className="grid gap-0 sm:grid-cols-2">
                 <div className="border-b border-brand-50 p-7 sm:border-b-0 sm:border-r">
-                  <h3 className="text-[13px] font-black tracking-wide text-brand-700">이렇게 하세요</h3>
+                  <h3 className="text-[14px] font-black tracking-wide text-brand-700">이렇게 하세요</h3>
                   <ul className="mt-3.5 space-y-2.5">
                     {c.doList.map((d) => (
-                      <li key={d} className="flex gap-2.5 text-[14.5px] leading-relaxed text-ink-soft">
+                      <li key={d} className="flex gap-2.5 text-[15.5px] leading-relaxed text-ink-soft">
                         <span aria-hidden className="mt-0.5 shrink-0 font-black text-brand-500">
                           ○
                         </span>
@@ -195,12 +193,12 @@ export default function EmergencyPage() {
                   </ul>
                 </div>
                 <div className="p-7">
-                  <h3 className="text-[13px] font-black tracking-wide text-gold-600">
+                  <h3 className="text-[14px] font-black tracking-wide text-gold-600">
                     이건 하지 마세요
                   </h3>
                   <ul className="mt-3.5 space-y-2.5">
                     {c.dontList.map((d) => (
-                      <li key={d} className="flex gap-2.5 text-[14.5px] leading-relaxed text-ink-soft">
+                      <li key={d} className="flex gap-2.5 text-[15.5px] leading-relaxed text-ink-soft">
                         <span aria-hidden className="mt-0.5 shrink-0 font-black text-gold-600">
                           ✕
                         </span>
@@ -211,8 +209,13 @@ export default function EmergencyPage() {
                 </div>
               </div>
 
-              <p className="border-t border-brand-50 bg-cream/60 px-7 py-4 text-[13.5px] leading-relaxed text-ink-soft">
-                {c.note}
+              {/*
+                ⚠️ 띠는 카드 폭 전체를 쓰되 **글만** 좁게 둔다 — p 자체에 max-w 를 주면
+                   색 띠까지 같이 줄어 카드가 잘린 것처럼 보인다. 그래서 안쪽 span 에 준다.
+                ⚠️ em 단위여야 한다. ch 는 한글에서 절반으로 계산된다(이 세션에서 겪었다).
+              */}
+              <p className="border-t border-brand-50 bg-wine-bg/60 px-7 py-4 text-[14.5px] leading-relaxed text-ink-soft">
+                <span className="block max-w-[44em]">{c.note}</span>
               </p>
             </article>
           ))}

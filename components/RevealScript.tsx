@@ -37,7 +37,7 @@ export function RevealScript() {
      *    .img-in / .line-in / .count-in = 랜딩 페이지 모션 3종(2026-08-26).
      */
     const targets = document.querySelectorAll<HTMLElement>(
-      '.reveal, .reveal-stack, .concern, .wipe, .seq, .img-in, .line-in, .count-in',
+      '.reveal, .reveal-stack, .concern, .wipe, .seq, .img-in, .line-in, .count-in, .line-rise, .depth-fill, .bar-grow, .focus-in, .card-draw',
     );
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -79,18 +79,26 @@ export function RevealScript() {
           io.unobserve(e.target);
         }
       },
-      /* 조금 일찍 시작한다 — 화면에 완전히 들어온 뒤 움직이면 읽던 글이 흔들린다. */
-      { rootMargin: '0px 0px -12% 0px' },
+      /*
+       * ★★ 화면에 들어오기 **전**에 시작한다 (2026-08-28 오너: "바로바로 나오게") ★★
+       *   전에는 -12% 였다 — 요소가 화면 안쪽으로 12% 들어와야 켜졌다. 그래서 스크롤을
+       *   멈추고 나서야 글이 움직이기 시작했고, "늦게 나온다" 로 느껴졌다.
+       *   지금은 +18% — 아직 화면 아래에 있을 때 미리 켜져서, 눈에 들어올 즈음엔
+       *   이미 자리를 잡고 있다.
+       * ⚠️ 음수로 되돌리지 말 것. 읽던 글이 흔들리는 문제는 등장 거리를 10px 로 줄이면서
+       *    이미 해결됐다(globals.css .reveal 주석).
+       */
+      { rootMargin: '0px 0px 18% 0px' },
     );
     targets.forEach((el) => io.observe(el));
 
     /*
      * ★★ 구제 타이머 — 없으면 화면 아래쪽 글이 영영 안 보인다 ★★
-     *   위 rootMargin 은 아래쪽을 12% 잘라 둔다(읽던 글이 흔들리지 않게 하려고).
-     *   그래서 **더 이상 스크롤할 수 없는 페이지의 맨 아랫부분**은 관찰자가 영원히
-     *   못 잡는다. .reveal 은 opacity 0 으로 시작하므로 그 글은 그냥 사라진 것이 된다.
+     *   rootMargin 이 +18% 라 대부분은 미리 잡히지만, 아주 짧은 페이지에서는
+     *   요소가 처음부터 화면 안에 있어 교차 이벤트가 한 번도 안 날 수 있다.
+     *   .reveal 은 opacity 0 으로 시작하므로 그 글은 그냥 사라진 것이 된다.
      *   짧은 페이지(개인정보·문의 등)에서 실제로 일어날 수 있는 일이라 받침을 둔다.
-     * ⚠️ 1.2초를 기다리는 이유 — 그 전에 켜 버리면 화면에 들어와 있던 요소들이
+     * ⚠️ 0.8초를 기다리는 이유 — 그 전에 켜 버리면 화면에 들어와 있던 요소들이
      *    등장 연출 없이 그냥 나타난다. 관찰자가 할 일을 다 한 뒤에 남은 것만 줍는다.
      */
     const rescue = window.setTimeout(() => {
@@ -98,7 +106,7 @@ export function RevealScript() {
         if (el.classList.contains('is-shown')) return;
         if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-shown');
       });
-    }, 1200);
+    }, 800);
 
     /*
      * 고민 카드의 스포트라이트 — 커서 자리에서 빛이 번진다.

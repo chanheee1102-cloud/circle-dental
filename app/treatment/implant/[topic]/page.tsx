@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { IMPLANT_TOPICS, implantTopicBySlug } from '@/lib/implantTopics';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
-import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, headingId, charCount } from '@/components/article';
@@ -89,23 +89,21 @@ export default async function ImplantTopicPage({
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={trail} />
-      </Container>
-
       <article>
-        <Container className="py-10 lg:py-14">
-          <p className="text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
-            임플란트
-          </p>
-          <h1 className="display mt-4 max-w-3xl text-[32px] text-ink sm:text-[46px]">{t.name}</h1>
-          <p className="mt-3 text-[16px] font-semibold text-ink-muted">{t.tagline}</p>
+        {/*
+          ⚠️ 머리를 손으로 다시 그리지 말 것 — PageHero 하나가 전담한다(2026-08-28).
+          ⚠️ 바로 아래 '즉답 블록' 은 히어로로 옮기지 말 것 — 같은 문장이 두 번 나오면
+             인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
+        */}
+        <PageHero trail={trail} photo="consult" eyebrow="임플란트" title={t.name} desc={t.tagline} />
 
-          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6 shadow-[var(--shadow-soft)]">
-            <p className="text-[17px] leading-[1.85] text-ink"><Sentences text={t.answer} /></p>
+        <Container className="py-12 lg:py-16">
+
+          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 card-glass p-6 shadow-[var(--shadow-soft)]">
+            <p className="text-[18px] leading-[1.85] text-ink"><Sentences text={t.answer} /></p>
           </div>
 
-          <p className="mt-7 max-w-[66ch] text-[16px] leading-[1.85] text-ink-soft"><Sentences text={t.detail} /></p>
+          <p className="mt-7 max-w-[66ch] text-[17px] leading-[1.85] text-ink-soft"><Sentences text={t.detail} /></p>
 
           <div className="mt-9 max-w-[70ch]">
             <ArticleMeta path={BUILDPATH} />
@@ -117,7 +115,7 @@ export default async function ImplantTopicPage({
           </div>
         </Container>
 
-        <section className="border-y border-brand-200/60 bg-white py-14">
+        <section className="border-y border-brand-200/60 bg-parchment py-14">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
@@ -126,10 +124,10 @@ export default async function ImplantTopicPage({
                 </h2>
                 <ul className="mt-6 space-y-3">
                   {t.indications.map((s) => (
-                    <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
+                    <li key={s} className="flex gap-3 text-[16.5px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[12.5px] text-white"
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[13.5px] text-white"
                       >
                         ✓
                       </span>
@@ -145,10 +143,10 @@ export default async function ImplantTopicPage({
                 </h2>
                 <ul className="mt-6 space-y-3">
                   {t.cautions.map((s) => (
-                    <li key={s} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
+                    <li key={s} className="flex gap-3 text-[16.5px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500 text-[12.5px] text-white"
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500 text-[13.5px] text-white"
                       >
                         !
                       </span>
@@ -169,7 +167,7 @@ export default async function ImplantTopicPage({
             {t.faq.map((f) => (
               <article key={f.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{f.q}</h3>
-                <p className="mt-3 max-w-[68ch] text-[15.5px] leading-[1.85] text-ink-soft">{f.a}</p>
+                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{f.a}</p>
               </article>
             ))}
           </div>
@@ -183,18 +181,18 @@ export default async function ImplantTopicPage({
                 <Link
                   key={o.slug}
                   href={`/treatment/implant/${o.slug}`}
-                  className="group rounded-xl border border-brand-200/70 bg-white px-5 py-4 transition-colors hover:border-brand-400"
+                  className="group rounded-xl border border-brand-200/70 card-glass px-5 py-4 transition-colors hover:border-brand-400"
                 >
-                  <span className="block text-[15px] font-black text-ink group-hover:text-brand-700">
+                  <span className="block text-[16px] font-black text-ink group-hover:text-brand-700">
                     {o.name}
                   </span>
-                  <span className="mt-1 block text-[13px] text-ink-muted">{o.tagline}</span>
+                  <span className="mt-1 block text-[14px] text-ink-muted">{o.tagline}</span>
                 </Link>
               ))}
             </div>
             <Link
               href="/insight/journey/implant"
-              className="mt-8 inline-flex items-center gap-2 text-[15px] font-black text-brand-700 hover:underline"
+              className="mt-8 inline-flex items-center gap-2 text-[16px] font-black text-brand-700 hover:underline"
             >
               임플란트는 몇 번 오고 얼마나 걸리나요 <span aria-hidden>→</span>
             </Link>

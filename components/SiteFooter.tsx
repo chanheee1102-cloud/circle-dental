@@ -25,9 +25,20 @@ import { SITE_MODIFIED, formatKoreanDate } from '@/lib/contentMeta';
  */
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-brand-100 bg-brand-900 text-brand-100">
+    /*
+     * ⚠️ 푸터는 전 페이지 공용이다 — 색만 dusk 로 맞추고 짜임은 건드리지 않는다.
+     * ⚠️⚠️ **mt-24(바깥 여백)로 되돌리지 말 것** (2026-08-31 운영자) ⚠️⚠️
+     *    바깥 여백은 그 96px 만큼 **페이지 바탕을 드러낸다.** 어두운 본문과 어두운 푸터
+     *    사이에 크림색 띠가 한 줄 끼어 있던 것이 그 때문이다("푸터쪽에 간격이 있던데
+     *    전부 채워줘"). 그렇다고 여백을 아예 없애면 앞 구획과 푸터가 맞붙는다
+     *    ("그냥 붙여졌는데").
+     * ★ 그래서 같은 간격을 **푸터 안쪽(pt-20)** 으로 옮겼다. 간격은 그대로인데 그 자리를
+     *   푸터 자신의 색이 채우므로 띠가 안 생긴다. 페이지가 밝게 끝나든 어둡게 끝나든 같다.
+     * ⚠️ 아래 컨테이너의 위 여백은 뺀다(pt-0) — 안 그러면 테두리에서 글까지 152px 이 된다.
+     */
+    <footer className="border-t border-wine-line bg-dusk pt-20 text-mist">
       {/* 본문 Container(max-w-[1320px] px-5 lg:px-8)와 같은 폭·여백 — 푸터만 좁으면 축이 어긋난다. */}
-      <div className="mx-auto max-w-[1320px] px-5 py-14 lg:px-8">
+      <div className="mx-auto max-w-[1320px] px-5 pb-14 lg:px-8">
         {/*
           ★ 5칸 한 줄 — 브랜드 한 칸 + 메뉴 네 칸. 메뉴를 3칸에 넣으면 4번째가 반드시 밀린다.
           ⚠️ 메뉴 칸을 minmax(0,1fr) 로 잡을 것. 그냥 1fr 이면 '오시는 길·진료시간' 같은
@@ -47,10 +58,10 @@ export function SiteFooter() {
               ★ 영문 세리프로 쓴다 — 라틴 문자만 있는 자리라 조건에 맞고, 푸터에서
                 한 줄이 결이 다르면 그것만으로 마감이 정돈돼 보인다.
             */}
-            <p className="display-en mt-4 text-[13px] tracking-[0.22em] text-brand-300/80">
+            <p className="display-en mt-4 text-[14px] tracking-[0.22em] text-mist/70">
               {CLINIC.nameEn}
             </p>
-            <p className="mt-5 text-[14px] leading-relaxed text-brand-200/90 lg:max-w-none">
+            <p className="mt-5 text-[15px] leading-relaxed text-mist/90 lg:max-w-none">
               {CLINIC.description}
             </p>
             {/*
@@ -61,7 +72,7 @@ export function SiteFooter() {
             */}
             <a
               href={CLINIC.phoneHref}
-              className="mt-6 flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-white/10 text-[16.5px] font-black text-white transition-colors hover:bg-white/20 sm:max-w-[340px] lg:max-w-none"
+              className="mt-6 flex h-12 w-full items-center justify-center gap-2.5 rounded-[8px] card-glass/10 text-[17.5px] font-semibold text-white transition-colors hover:bg-white/20 sm:max-w-[340px] lg:max-w-none"
             >
               <span className="tabular-nums">{CLINIC.phone}</span>
             </a>
@@ -84,7 +95,7 @@ export function SiteFooter() {
                  나머지 셋과 어긋났다(실제로 그런 상태였다).
             */}
             <div className="mt-7 sm:max-w-[340px] lg:max-w-none">
-              <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/60 uppercase">
+              <p className="text-[13.5px] font-semibold tracking-[0.16em] text-mist/60 uppercase">
                 공식 채널
               </p>
               {/*
@@ -100,7 +111,7 @@ export function SiteFooter() {
                       target="_blank"
                       rel="noopener noreferrer me"
                       aria-label={`${CLINIC.name} ${ch.label} (새 창)`}
-                      className="group flex h-11 w-full items-center justify-between gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 text-[13px] font-bold text-brand-100 transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
+                      className="group flex h-11 w-full items-center justify-between gap-2 rounded-[8px] border border-white/15 card-glass/5 px-3.5 text-[14px] font-bold text-mist transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
                     >
                       <span className="flex min-w-0 items-center gap-2">
                         <ch.Icon />
@@ -108,7 +119,7 @@ export function SiteFooter() {
                       </span>
                       <span
                         aria-hidden
-                        className="shrink-0 text-[12.5px] text-brand-200/60 transition-transform group-hover:translate-x-0.5"
+                        className="shrink-0 text-[13.5px] text-mist/60 transition-transform group-hover:translate-x-0.5"
                       >
                         ↗
                       </span>
@@ -125,13 +136,13 @@ export function SiteFooter() {
           */}
           {NAV.map((item) => (
             <nav key={item.href} aria-label={`푸터 ${item.label}`}>
-              <p className="text-[13px] font-black tracking-wide text-white">{item.label}</p>
+              <p className="text-[14px] font-semibold tracking-wide text-white">{item.label}</p>
               <ul className="mt-4 space-y-2.5">
                 {(item.children ?? [{ label: item.label, href: item.href }]).map((c) => (
                   <li key={c.href}>
                     <Link
                       href={c.href}
-                      className="text-[13px] leading-snug text-brand-200/80 transition-colors hover:text-white"
+                      className="text-[14px] leading-snug text-mist/80 transition-colors hover:text-white"
                     >
                       {c.label}
                     </Link>
@@ -153,12 +164,12 @@ export function SiteFooter() {
           ⚠️ hours.verified 가 false 면 통째로 감춘다 — 확인 안 된 진료시간을 적어 두면
              그걸 보고 온 환자가 헛걸음한다.
         */}
-        <dl className="mt-14 grid gap-x-8 gap-y-9 border-t border-white/10 pt-9 text-[12.5px] sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="mt-14 grid gap-x-8 gap-y-9 border-t border-white/10 pt-9 text-[13.5px] sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
+            <dt className="text-[13.5px] font-semibold tracking-[0.16em] text-mist/70 uppercase">
               주소
             </dt>
-            <dd className="mt-2.5 space-y-1 leading-relaxed text-brand-200/80">
+            <dd className="mt-2.5 space-y-1 leading-relaxed text-mist/80">
               <span className="block">{CLINIC.address.full}</span>
               <span className="block">
                 {CLINIC.address.building} · {CLINIC.nearestStation} 인근
@@ -167,20 +178,20 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
+            <dt className="text-[13.5px] font-semibold tracking-[0.16em] text-mist/70 uppercase">
               연락처
             </dt>
-            <dd className="mt-2.5 space-y-1 leading-relaxed text-brand-200/80">
+            <dd className="mt-2.5 space-y-1 leading-relaxed text-mist/80">
               <span className="block">대표전화 / FAX {CLINIC.phone}</span>
               <span className="block break-all">{CLINIC.email}</span>
             </dd>
           </div>
 
           <div>
-            <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
+            <dt className="text-[13.5px] font-semibold tracking-[0.16em] text-mist/70 uppercase">
               사업자 정보
             </dt>
-            <dd className="mt-2.5 space-y-1 leading-relaxed text-brand-200/80">
+            <dd className="mt-2.5 space-y-1 leading-relaxed text-mist/80">
               <span className="block">대표자 {CLINIC.director}</span>
               <span className="block">사업자등록번호 {CLINIC.bizNo}</span>
             </dd>
@@ -188,17 +199,17 @@ export function SiteFooter() {
 
           {UNVERIFIED.hours.verified && (
             <div>
-              <dt className="text-[12.5px] font-black tracking-[0.16em] text-brand-200/50 uppercase">
+              <dt className="text-[13.5px] font-semibold tracking-[0.16em] text-mist/70 uppercase">
                 진료시간
               </dt>
-              <dd className="mt-2.5 space-y-1 leading-relaxed text-brand-200/80">
+              <dd className="mt-2.5 space-y-1 leading-relaxed text-mist/80">
                 {UNVERIFIED.hours.display.map((h) => (
                   <span key={h.label} className="flex justify-between gap-3">
                     <span>{h.label}</span>
-                    <span className="tabular-nums text-brand-200/90">{h.time}</span>
+                    <span className="tabular-nums text-mist/90">{h.time}</span>
                   </span>
                 ))}
-                <span className="block pt-1 text-brand-200/60">{UNVERIFIED.hours.closed}</span>
+                <span className="block pt-1 text-mist/60">{UNVERIFIED.hours.closed}</span>
               </dd>
             </div>
           )}
@@ -211,7 +222,7 @@ export function SiteFooter() {
              글줄 길이는 문단이, 선은 칸이 각각 맡는다.
         */}
         <div className="mt-12 border-t border-white/10 pt-8">
-          <p className="max-w-[86ch] text-[12.5px] leading-relaxed text-brand-200/50">
+          <p className="max-w-[86ch] text-[13.5px] leading-relaxed text-mist/70">
             본 사이트의 진료 정보는 일반적인 이해를 돕기 위한 것으로 개별 진단을 대신하지 않습니다. 치료
             결과는 개인의 구강 상태와 전신 건강에 따라 다를 수 있으며, 모든 의료 행위에는 부작용이 따를 수
             있습니다.
@@ -239,22 +250,22 @@ export function SiteFooter() {
           좁은 화면에서는 세로로 쌓는다. 셋을 한 줄에 흘려 두면 줄바꿈 위치가 화면 폭마다
           달라져 어디서 끊길지 알 수 없었다.
         */}
-        <div className="mt-8 flex flex-col gap-3 text-[12.5px] sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-3 text-[13.5px] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link
               href="/privacy"
-              className="font-bold text-brand-200/80 transition-colors hover:text-white"
+              className="font-bold text-mist/80 transition-colors hover:text-white"
             >
               개인정보처리방침
             </Link>
-            <span className="text-brand-200/60">
+            <span className="text-mist/60">
               병원 정보 최종 확인{' '}
-              <time dateTime={SITE_MODIFIED} className="font-semibold text-brand-200/80">
+              <time dateTime={SITE_MODIFIED} className="font-semibold text-mist/80">
                 {formatKoreanDate(SITE_MODIFIED)}
               </time>
             </span>
           </div>
-          <span className="text-brand-200/40">
+          <span className="text-mist/65">
             &copy; {new Date().getFullYear()} {CLINIC.name}. All rights reserved.
           </span>
         </div>

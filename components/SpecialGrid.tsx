@@ -18,7 +18,7 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
         <Link
           key={s.slug}
           href={`/about/special/${s.slug}`}
-          className="group flex flex-col overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+          className="group flex flex-col overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
         >
           <div className="relative aspect-[16/10] overflow-hidden">
             <Image
@@ -27,7 +27,7 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
               fill
               priority={eager && i < 2}
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             {/* 아래쪽만 어둡게 — 그 위에 올린 번호와 아이콘이 밝은 사진에서도 읽힌다. */}
             <div
@@ -36,7 +36,7 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
             />
             <span
               aria-hidden
-              className="absolute bottom-4 left-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/95 text-brand-600 shadow-lg backdrop-blur"
+              className="absolute bottom-4 left-5 flex h-11 w-11 items-center justify-center rounded-xl card-glass/95 text-brand-600 shadow-lg backdrop-blur"
             >
               <StrengthIcon name={s.key} />
             </span>
@@ -49,16 +49,16 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
           </div>
 
           <div className="flex flex-1 flex-col p-7">
-            <p className="text-[12.5px] font-black tracking-[0.12em] text-brand-500">{s.eyebrow}</p>
+            <p className="text-[13.5px] font-black tracking-[0.12em] text-brand-500">{s.eyebrow}</p>
             <h3 className="display-sm mt-2.5 text-[20px] text-ink group-hover:text-brand-700">
               {s.title}
             </h3>
-            <p className="mt-3.5 flex-1 text-[14.5px] leading-[1.8] text-ink-soft">{s.body}</p>
-            <span className="mt-5 inline-flex items-center gap-2 text-[13.5px] font-black text-brand-700">
+            <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">{s.body}</p>
+            <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-brand-700">
               자세히 보기
               <span
                 aria-hidden
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[12.5px] transition-all group-hover:bg-brand-500 group-hover:text-white"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[13.5px] transition-all group-hover:bg-brand-500 group-hover:text-white"
               >
                 →
               </span>

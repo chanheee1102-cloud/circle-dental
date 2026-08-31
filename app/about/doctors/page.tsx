@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { IMG } from '@/lib/assets';
-import { Container, SectionHead, Breadcrumb, ContactCta } from '@/components/ui';
+import { Container, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, medicalWebPageSchema } from '@/lib/seo';
 
@@ -40,12 +40,12 @@ export default function DoctorsPage() {
      *   이것이다(@id 가 같아 병합될 때 Physician 이 Person 을 덮었다).
      */
     '@type': ['Person', 'Physician'],
-    '@id': `${CLINIC.url}/about/doctors/${d.slug}#physician`,
+    '@id': `${CLINIC.url}/about/doctors#${d.slug}`,
     name: `${d.name} ${d.role}`,
     givenName: d.name,
     jobTitle: `치과의사 · ${d.role}`,
     medicalSpecialty: 'Dentistry',
-    url: abs(`/about/doctors/${d.slug}`),
+    url: abs('/about/doctors'),
     image: abs(d.photo),
     worksFor: { '@id': `${CLINIC.url}/#clinic` },
     knowsAbout: d.focus,
@@ -69,25 +69,30 @@ export default function DoctorsPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="room"
+        eyebrow="의료진 소개"
+        title={
+          <>
+            {/* ⚠️ 줄바꿈 앞에 공백을 둔다 — 없으면 문서의 제목이 "교수출신대표원장님과" 로
+                   붙는다(화면은 멀쩡한데 크롤러가 읽는 글자만 망가진다). */}
+            대학병원 교수출신{' '}
+            <br />
+            대표원장님과 의료진
+          </>
+        }
+        /*
+          ⚠️⚠️ '한차원 높은 의료서비스' 로 되돌리지 말 것 (2026-08-31) ⚠️⚠️
+            원문은 "**개인 맞춤형 진료**를 제공합니다" 다. '한차원 높은' 은 우리가 붙인
+            말이고, 다른 병원과 견주어 낫다는 **비교·우월성 표현**이라 의료광고 심의에서
+            지적받는 유형이다. 원문에 있던 사실만 남긴다.
+          ⚠️ '인증' → '인정' 은 유지한다(전문의 자격 제도의 공식 용어, lib/clinic.ts 정정 이력).
+        */
+        desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부 인정 전문의들로만 구성된 의료진이 개인 맞춤형 진료를 제공합니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="의료진 소개"
-          title={
-            <>
-              {/* ⚠️ 줄바꿈 앞에 공백을 둔다 — 없으면 문서의 제목이 "교수출신대표원장님과" 로
-                     붙는다(화면은 멀쩡한데 크롤러가 읽는 글자만 망가진다). */}
-              대학병원 교수출신{' '}
-              <br />
-              대표원장님과 의료진
-            </>
-          }
-          desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부 인정 전문의들로만 구성된 의료진이 한차원 높은 의료서비스를 제공합니다."
-        />
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="reveal mt-8 max-w-[70ch]">
@@ -98,8 +103,10 @@ export default function DoctorsPage() {
         <div className="mt-14 space-y-6">
           {DOCTORS.map((d, i) => (
             <article
+              /* 닻 — 홈·스키마가 /about/doctors#slug 로 이 사람을 가리킨다. 지우지 말 것. */
+              id={d.slug}
               key={d.slug}
-              className="rounded-2xl border border-brand-200/70 bg-white p-7 shadow-[var(--shadow-soft)] lg:p-10"
+              className="rounded-2xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] lg:p-10"
             >
               {/*
                 ★ 사진 비율을 건드리지 않는다.
@@ -133,7 +140,7 @@ export default function DoctorsPage() {
                 </div>
 
                 <div>
-                  <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-500">
+                  <p className="text-[13.5px] font-black tracking-[0.16em] text-brand-500">
                     동그라미치과 {d.role}
                   </p>
                   <h2 className="display mt-2 text-[32px] tracking-[0.06em] text-ink sm:text-[36px]">
@@ -142,7 +149,7 @@ export default function DoctorsPage() {
 
                   <ul className="mt-6 space-y-[7px]">
                     {d.career.map((c) => (
-                      <li key={c} className="text-[15px] leading-[1.65] text-ink-soft">
+                      <li key={c} className="text-[16px] leading-[1.65] text-ink-soft">
                         {c}
                       </li>
                     ))}
@@ -150,12 +157,12 @@ export default function DoctorsPage() {
 
                   {d.societies.length > 0 && (
                     <>
-                      <span className="mt-6 inline-flex rounded-full bg-brand-500 px-3 py-1.5 text-[12.5px] font-black text-white">
+                      <span className="mt-6 inline-flex rounded-full bg-brand-500 px-3 py-1.5 text-[13.5px] font-black text-white">
                         학회활동
                       </span>
                       <ul className="mt-3 space-y-[7px]">
                         {d.societies.map((s) => (
-                          <li key={s} className="text-[15px] leading-[1.65] text-ink-soft">
+                          <li key={s} className="text-[16px] leading-[1.65] text-ink-soft">
                             {s}
                           </li>
                         ))}
@@ -163,12 +170,11 @@ export default function DoctorsPage() {
                     </>
                   )}
 
-                  <Link
-                    href={`/about/doctors/${d.slug}`}
-                    className="mt-7 inline-flex items-center gap-2 rounded-full border-[1.5px] border-brand-300 px-6 py-3 text-[14.5px] font-bold text-brand-700 transition-all hover:-translate-y-0.5 hover:border-brand-400 hover:bg-brand-50"
-                  >
-                    {d.name} {d.role} 자세히 <span aria-hidden>→</span>
-                  </Link>
+                  {/*
+                    ⚠️ '자세히' 버튼을 되살리지 말 것 — 원장 개별 페이지는 없앴다
+                       (2026-08-31 운영자: "의료진페이지 한명한명 만들지말고, 지금 의료진
+                       소개 페이지만 냅둬줘"). 경력·학회는 이 페이지에 이미 전부 있다.
+                  */}
                 </div>
               </div>
             </article>
@@ -176,8 +182,57 @@ export default function DoctorsPage() {
         </div>
       </Container>
 
+      {/*
+        ★★ 사회활동 — 원본 의료진 페이지에 있는데 우리에게 없던 구획 (2026-08-31) ★★
+          운영자가 원본 캡처를 주며 "빠진 내용은 보충하고".
+        ⚠️ 글자는 **원문 그대로**다. '십수년간' 같은 기간 표현도 병원이 쓴 말이라 손대지 않았다.
+        ⚠️ 사진 설명은 현수막에 **적혀 있는 것만** 옮겼다 — 날짜·장소·주최가 사진에 다 있다.
+           사진에 없는 것(참여 인원, 진료 건수 따위)을 덧붙이지 말 것. 그건 지어내는 것이다.
+      */}
+      <section className="border-t border-brand-200/60 py-16">
+        <Container>
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,52%)] lg:gap-16">
+            <div>
+              <p className="text-[15.5px] leading-[1.8] text-ink-soft">
+                기부와 나눔의 문화로
+                <br />
+                사회활동에 적극적으로 참여하는 치과
+              </p>
+              <h2 className="display-sm mt-5 text-[26px] leading-[1.45] text-ink sm:text-[30px]">
+                동그라미치과는 십수년간
+                <br />
+                농어촌 무료 진료봉사를
+                <br />
+                이어왔습니다.
+              </h2>
+            </div>
+
+            <figure>
+              <div className="overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-50">
+                <Image
+                  src="/img/20210906_f3a7bf044c792.png"
+                  alt="농촌사랑 의료봉사 활동 단체 사진 — 현수막에 '경희대학교 치과대학병원 무료진료', 기간 2014. 02. 05~02. 08, 장소 팔탄농협 2층 회의실, 주최 팔탄농업협동조합과 경희대학교 치과대학 봉사동아리(CDSA)"
+                  width={760}
+                  height={430}
+                  sizes="(max-width: 1024px) 100vw, 52vw"
+                  className="h-auto w-full"
+                />
+              </div>
+              {/*
+                ⚠️ 이 설명을 지우지 말 것 — 사진 속 현수막이 유일한 근거다. 캡션으로 적어 두면
+                   사람도 기계도 '언제·어디서·누구와' 를 사진을 뜯어보지 않고 알 수 있다.
+              */}
+              <figcaption className="mt-3 text-[14px] leading-relaxed text-ink-muted">
+                농촌사랑 의료봉사 활동전개 · 2014. 02. 05 ~ 02. 08 · 팔탄농협 2층 회의실 ·
+                팔탄농업협동조합, 경희대학교 치과대학 봉사동아리(CDSA)
+              </figcaption>
+            </figure>
+          </div>
+        </Container>
+      </section>
+
       {/* 인증·수료 */}
-      <section className="border-y border-brand-200/60 bg-white py-16">
+      <section className="border-y border-brand-200/60 bg-parchment py-16">
         <Container>
           <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">어떤 인증과 수료를 받았나요?</h2>
           {/*
@@ -204,7 +259,7 @@ export default function DoctorsPage() {
                     className="object-contain p-4"
                   />
                 </div>
-                <figcaption className="mt-3.5 text-center text-[12.5px] leading-snug text-ink-soft">
+                <figcaption className="mt-3.5 text-center text-[13.5px] leading-snug text-ink-soft">
                   {c.label}
                 </figcaption>
               </figure>
@@ -215,21 +270,21 @@ export default function DoctorsPage() {
 
       {/* 발표 논문 */}
       <Container className="py-16">
-        <div className="overflow-hidden rounded-2xl border border-brand-200/70 bg-white shadow-[var(--shadow-soft)]">
+        <div className="overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)]">
           <div className="grid gap-0 lg:grid-cols-2">
             <div className="p-8 lg:p-10">
-              <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
+              <p className="text-[13.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
                 발표 논문
               </p>
               <h2 className="display-sm mt-4 text-[21px] leading-snug text-ink">
                 {PUBLICATION_DETAIL.title}
               </h2>
-              <p className="mt-4 text-[14px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
+              <p className="mt-4 text-[15px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
               <div className="mt-6 rounded-2xl bg-brand-50 p-5">
-                <p className="text-[12.5px] font-black tracking-[0.14em] text-brand-600 uppercase">
+                <p className="text-[13.5px] font-black tracking-[0.14em] text-brand-600 uppercase">
                   Clinical Relevance
                 </p>
-                <p className="mt-2.5 text-[14px] leading-relaxed text-ink-soft">
+                <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">
                   {PUBLICATION_DETAIL.relevanceKo}
                 </p>
               </div>

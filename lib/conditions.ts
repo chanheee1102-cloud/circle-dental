@@ -370,7 +370,7 @@ export const CONDITIONS: Condition[] = [
       { q: '매복 사랑니 발치는 위험한가요?', a: '아래 사랑니 뿌리가 아래이틀신경과 가까운 경우가 있어 신경 손상 가능성을 사전에 확인합니다. CT로 거리를 파악하고 계획을 세우면 위험을 크게 줄일 수 있습니다.' },
     ],
     relatedSymptoms: ['wisdom-tooth-pain', 'tooth-eruption', 'jaw-swelling'],
-    relatedTreatments: ['wisdom-tooth', 'pediatric'],
+    relatedTreatments: ['wisdom-tooth', 'cavity'],
   },
   {
     slug: 'xerostomia',

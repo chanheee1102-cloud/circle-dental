@@ -3,7 +3,7 @@ import { ArticleMeta } from '@/components/article';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SYMPTOMS } from '@/lib/symptoms';
-import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
 
@@ -31,17 +31,15 @@ export default function SymptomIndexPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="room"
+        eyebrow="증상으로 찾기"
+        title="지금 느끼는 것에서 시작하세요"
+        desc="어떤 치료가 필요한지는 진단의 결과입니다. 출발점은 증상이어야 합니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="증상으로 찾기"
-          title="지금 느끼는 것에서 시작하세요"
-          desc="어떤 치료가 필요한지는 진단의 결과입니다. 출발점은 증상이어야 합니다. 각 항목에는 가능한 원인, 내원 전 할 수 있는 것, 바로 와야 하는 신호를 함께 적었습니다."
-        />
 
         {/*
           도입 삽화.
@@ -67,12 +65,17 @@ export default function SymptomIndexPage() {
           <ArticleMeta path="/insight/symptom" />
         </div>
 
-        <div className="mt-12 space-y-3">
+        {/*
+          ⚠️ 한 단으로 되돌리지 말 것 (2026-08-31) — 카드가 화면 폭을 다 쓰면서 안의 글이
+             한 줄에 76자가 됐다(실측). 한글에서 편한 한 줄은 35~45자다.
+          ⚠️ h-full 을 지우지 말 것 — 없으면 좌우 두 카드의 높이가 서로 달라진다.
+        */}
+        <div className="mt-12 grid gap-3 lg:grid-cols-2">
           {SYMPTOMS.map((s) => (
             <Link
               key={s.slug}
               href={`/insight/symptom/${s.slug}`}
-              className="group block rounded-2xl border border-brand-100 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+              className="group block h-full rounded-2xl border border-brand-100 card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
             >
               <div className="flex items-start justify-between gap-5">
                 <div className="min-w-0">
@@ -80,7 +83,7 @@ export default function SymptomIndexPage() {
                     {s.title}
                   </h2>
                   {/* 목록에서도 즉답 첫 문장을 보여 준다 — 클릭 전에 답의 방향을 알 수 있게. */}
-                  <p className="mt-2.5 line-clamp-2 text-[14.5px] leading-relaxed text-ink-soft">
+                  <p className="mt-2.5 line-clamp-2 text-[15.5px] leading-relaxed text-ink-soft">
                     {s.answer}
                   </p>
                 </div>

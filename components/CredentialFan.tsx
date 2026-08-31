@@ -56,13 +56,13 @@ export function CredentialFan() {
             <Link
               href="/about/doctors"
               aria-label={`${c.label} — 의료진 페이지에서 크게 보기`}
-              className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-4 focus-visible:ring-offset-cream"
+              className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-4 focus-visible:ring-offset-cream"
             >
               <figure className="relative px-2">
                 {/* 바닥 그림자 — 판만 뜨고 이건 바닥에 남는다(translateZ 없음). */}
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-x-5 bottom-[52px] h-[20px] rounded-[50%] bg-brand-900/25 blur-[13px] sm:bottom-[62px]"
+                  className="pointer-events-none absolute inset-x-5 bottom-[52px] h-[20px] rounded-[50%] bg-dusk/20 blur-[13px] sm:bottom-[62px]"
                 />
 
                 {/*
@@ -108,7 +108,8 @@ export function CredentialFan() {
                   카드 아래 선이 어긋난다(원본이 정확히 그랬다).
                 */}
                 <figcaption
-                  className="relative mt-5 flex min-h-[2.9rem] items-start justify-center text-center text-[13px] leading-snug text-ink-soft"
+                  /* ⚠️ text-ash 로 되돌리지 말 것 — 어두운 구획에서 1.7:1 로 안 보인다(app/page.tsx 주석). */
+                  className="relative mt-5 flex min-h-[2.9rem] items-start justify-center text-center text-[14.5px] leading-snug text-oat"
                   style={{ transform: 'translateZ(20px)' }}
                 >
                   {c.label}

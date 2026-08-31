@@ -50,9 +50,14 @@ export function SectionNav({ items }: { items: Array<{ id: string; label: string
 
   return (
     <div className="sticky top-[60px] z-40 flex justify-center px-4 sm:top-[78px]">
+      {/*
+        ⚠️ 배경을 bg-white 로 되돌리지 말 것 (2026-08-31) — 어두운 서브페이지에서
+           이 막대만 흰색으로 남아 글자가 1.29:1 이 됐다(실측). parchment 는 색 이름이라
+           어두운 결에서 값이 함께 바뀐다. 흰색은 못 박힌 값이라 안 바뀐다.
+      */}
       <nav
         aria-label="이 페이지 안에서 이동"
-        className="max-w-full overflow-x-auto rounded-full border border-brand-200/70 bg-white/90 p-1.5 shadow-[var(--shadow-soft)] backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="max-w-full overflow-x-auto rounded-full border border-brand-200/70 bg-parchment/90 p-1.5 shadow-[var(--shadow-soft)] backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         <div className="flex gap-0.5">
           {items.map((i) => (
@@ -60,7 +65,7 @@ export function SectionNav({ items }: { items: Array<{ id: string; label: string
               key={i.id}
               href={`#${i.id}`}
               aria-current={active === i.id ? 'true' : undefined}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold whitespace-nowrap transition-colors ${
+              className={`shrink-0 rounded-full px-3.5 py-1.5 text-[14px] font-bold whitespace-nowrap transition-colors ${
                 active === i.id
                   ? 'bg-ink text-white'
                   : 'text-ink-soft hover:bg-brand-100 hover:text-ink'

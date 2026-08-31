@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CLINIC, TREATMENT_PILLARS, OUTREACH, CREDENTIALS } from '@/lib/clinic';
 import { IMG } from '@/lib/assets';
-import { Container, SectionHead, Breadcrumb, ContactCta } from '@/components/ui';
+import { Container, SectionHead, ContactCta, PageHero } from '@/components/ui';
 import { SpecialGrid } from '@/components/SpecialGrid';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { JsonLd } from '@/components/JsonLd';
@@ -66,51 +66,62 @@ export default function AboutPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      {/*
+        ⚠️ 여기서 자기 h1 을 다시 그리지 말 것 (2026-08-28) — 전에 그렇게 두는 바람에
+           15장을 한 번에 바꿀 때 이 페이지만 옛 모습으로 남았다(오너: "여기는 그대론데?").
+           머리는 PageHero 하나가 전담한다.
+        ⚠️ 문장은 기존 홈페이지 원문 그대로다. 병원 방침을 지어내면 의료법 제56조 위반이다.
+      */}
+      <PageHero
+        trail={TRAIL}
+        photo="corridor"
+        eyebrow="병원 소개"
+        title="자연 그대로의 치아를 최대한 살리는 것이 동그라미 치과의 진료 철학입니다"
+        desc="임플란트는 마지막 선택이 될 수 있도록 합니다. 뽑고 심는 것이 빠른 길처럼 보여도, 자연치아는 씹는 힘의 세기와 방향을 감지하는 감각을 갖고 있어 대체하기 어렵습니다. 그래서 남길 수 있는 조건인지를 먼저 확인합니다."
+      />
 
-      {/* 진료 철학 — 원문 그대로 */}
       <Container className="py-12 lg:py-16">
-        <p className="text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
-          병원 소개
-        </p>
-        <h1 className="display mt-4 max-w-3xl text-[32px] text-ink sm:text-[46px]">
-          자연 그대로의 치아를 최대한 살리는 것이
-          <br className="hidden sm:block" /> 동그라미 치과의 진료 철학입니다.
-        </h1>
-        <p className="mt-8 max-w-[62ch] text-[17px] leading-[1.85] text-ink-soft">
-          임플란트는 마지막 선택이 될 수 있도록 합니다. 뽑고 심는 것이 빠른 길처럼 보여도, 자연치아는
-          씹는 힘의 세기와 방향을 감지하는 감각을 갖고 있어 대체하기 어렵습니다. 그래서 남길 수 있는
-          조건인지를 먼저 확인합니다.
-        </p>
-
-        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
-        <div className="mt-8 max-w-[70ch]">
+        <div className="max-w-[70ch]">
           <ArticleMeta path="/about" />
         </div>
 
-        <div className="mt-10 flex flex-wrap gap-2.5">
+        {/*
+          진료 네 갈래 — **같은 크기의 카드 넷**으로 둔다.
+          ⚠️ 알약으로 되돌리지 말 것 (2026-08-28 오너) — 이름 길이가 제각각이라 알약이
+             네 개 다른 크기로 늘어서고, 왼쪽에 몰려 붙는다. 격자는 그 둘을 한 번에 없앤다.
+        */}
+        <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {TREATMENT_PILLARS.map((p) => (
             <Link
               key={p.key}
               href={p.href}
-              className="rounded-full border border-brand-300 bg-white px-5 py-2.5 text-[14.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="card-glass group flex items-center justify-between gap-3 rounded-[16px] border border-mist px-6 py-5 text-[16.5px] font-bold text-charcoal"
             >
               {p.name}
+              <span
+                aria-hidden
+                className="text-ash transition-transform group-hover:translate-x-0.5"
+              >
+                →
+              </span>
             </Link>
           ))}
         </div>
       </Container>
 
       {/* 자주 묻는 것 — AEO 인용 지점 */}
-      <section className="border-y border-brand-200/60 bg-white py-16">
+      <section className="border-y border-brand-200/60 bg-parchment py-16">
         <Container>
-          <div className="divide-y divide-brand-100">
+          {/* ⚠️ 실선 구분으로 되돌리지 말 것 — 글만 늘어놓으면 덩어리의 오른쪽 끝이
+              들쭉날쭉해진다(2026-08-28 오너 지적). 가장자리를 잡아 주는 것은 카드다. */}
+          <div className="mx-auto grid max-w-4xl gap-4">
             {ABOUT_QA.map((qa) => (
-              <article key={qa.q} className="py-7 first:pt-0 last:pb-0">
+              <article
+                key={qa.q}
+                className="card-glass rounded-[18px] border border-mist p-7 sm:p-8"
+              >
                 <h2 className="display-sm text-[20px] text-ink sm:text-[22px]">{qa.q}</h2>
-                <p className="mt-3.5 max-w-[70ch] text-[16px] leading-[1.85] text-ink-soft">{qa.a}</p>
+                <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft">{qa.a}</p>
               </article>
             ))}
           </div>
@@ -118,7 +129,7 @@ export default function AboutPage() {
       </section>
 
       {/* 특별함 5 — 원문 그대로 */}
-      <section className="py-16 lg:py-20">
+      <section className="py-16 lg:py-24">
         <Container>
           <SectionHead
             eyebrow="동그라미 치과만의 특별함"
@@ -132,7 +143,7 @@ export default function AboutPage() {
       </section>
 
       {/* 의료진 — 원문 그대로 */}
-      <section className="border-y border-brand-200/60 bg-brand-50/40 py-16 lg:py-20">
+      <section className="border-y border-brand-200/60 bg-brand-50/40 py-16 lg:py-24">
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
@@ -149,10 +160,10 @@ export default function AboutPage() {
               />
               <ul className="mt-8 space-y-2.5">
                 {CREDENTIALS.map((c) => (
-                  <li key={c} className="flex items-start gap-3 text-[15px] text-ink-soft">
+                  <li key={c} className="flex items-start gap-3 text-[16px] text-ink-soft">
                     <span
                       aria-hidden
-                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[12.5px] text-white"
+                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[13.5px] text-white"
                     >
                       ✓
                     </span>
@@ -162,13 +173,13 @@ export default function AboutPage() {
               </ul>
               <Link
                 href="/about/doctors"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[16.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
               >
                 의료진 자세히 보기 <span aria-hidden>→</span>
               </Link>
             </div>
             {/* 홈(app/page.tsx)의 의료진 사진과 같은 틀·같은 기준점 — 이유는 그쪽 주석 참조. */}
-            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-gradient-to-b from-brand-100 to-brand-200 shadow-[var(--shadow-lift)]">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-b from-brand-100 to-brand-200 shadow-[var(--shadow-lift)]">
               <Image
                 src={IMG.doctors}
                 alt="동그라미치과의원 의료진"
@@ -195,7 +206,7 @@ export default function AboutPage() {
         <SectionHead eyebrow="사회공헌" title="동그라미 치과 사회공헌" />
         <div className="mt-8 max-w-2xl space-y-3">
           {OUTREACH.map((o) => (
-            <p key={o} className="text-[16px] leading-relaxed text-ink-soft">
+            <p key={o} className="text-[17px] leading-relaxed text-ink-soft">
               {o}
             </p>
           ))}
@@ -210,10 +221,10 @@ export default function AboutPage() {
             <Link
               key={c.href}
               href={c.href}
-              className="group rounded-2xl border border-brand-200/70 bg-white p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400"
+              className="group rounded-2xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400"
             >
-              <h2 className="text-[17px] font-black text-ink group-hover:text-brand-700">{c.t}</h2>
-              <p className="mt-2 text-[14px] text-ink-soft">{c.d}</p>
+              <h2 className="text-[18px] font-black text-ink group-hover:text-brand-700">{c.t}</h2>
+              <p className="mt-2 text-[15px] text-ink-soft">{c.d}</p>
             </Link>
           ))}
         </div>

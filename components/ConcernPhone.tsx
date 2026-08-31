@@ -29,162 +29,78 @@ import { buildWeek, liveOf, useSeoulNow } from '@/lib/liveHours';
  *   이 병원 팔레트로 쓴다 — 환자 쪽은 테라코타(gold-400), 병원 쪽은 흰 면.
  *   ⚠️ 화면 아래 '예시' 한 줄을 지우지 말 것. 그 한 줄이 오인을 막는다.
  *
- * ★★ 스크롤이 대화를 진행시킨다 ★★
- *   섹션이 화면에 붙어 있는 동안 말풍선이 **하나씩 도착하고**, 최신 말풍선이 늘
- *   화면 아래쪽에 오도록 대화가 위로 밀린다. 실제로 대화를 나누는 순서 그대로다.
- *   ⚠️ 움직이는 값은 transform 과 opacity **둘뿐**이다. 매 프레임 레이아웃이 돌면
- *      그 순간 스크롤이 끊긴다. height·top 같은 것을 여기에 끼워 넣지 말 것.
+ * ★★★ **기기 위에서만 안이 굴러간다** (2026-08-31 운영자) ★★★
+ *   "핸드폰 위에 스크롤 할때만 안에 내용 스크롤되게 해줘. 나머지 스크롤 하면 그냥
+ *    메인페이지 자체 스크롤 되게 해줘."
  *
- * ★★ 고정은 조건부다 — 안 켜지면 그냥 대화 목록이다 ★★
- *   서버가 내는 HTML 은 **고정이 아닌 쪽**이라 자바스크립트가 없어도 열두 마디가
- *   전부 읽히고, 크롤러와 AI 도 처음부터 다 본다. 접거나 숨기지 않는다.
+ *   ⚠️⚠️ **화면 고정(sticky pin)을 되살리지 말 것** ⚠️⚠️
+ *     전에는 이 섹션이 화면에 235vh 동안 붙어 있고 **페이지 스크롤이 말풍선을 하나씩
+ *     보냈다.** 연출은 좋았지만 대가가 컸다 — 이 구획 하나가 2,234px 이었고, 지나가려면
+ *     대화를 끝까지 봐야 했다. 요청은 정확히 그 반대다.
+ *   ★ 지금은 대화 영역이 그냥 **스크롤되는 상자**다. 커서가 그 위에 있으면 안이 굴러가고,
+ *     밖이면 페이지가 굴러간다 — 브라우저가 원래 하는 일이라 스크롤을 가로채지 않는다.
+ *   ⚠️ overscroll-behavior:contain 을 넣지 말 것. 안이 끝까지 내려가면 그 자리에서
+ *      페이지가 **멈춘다** — 커서를 치우기 전까지 갇힌다. 끝에서는 페이지로 이어져야 한다.
+ *
+ * ★ 자바스크립트가 없어도 열두 마디가 전부 읽힌다. 접거나 숨기지 않는다.
  *   (이 사이트 본문 링크 열일곱 개 중 여섯 개가 여기 있다.)
  */
-
-/** 고정 구간의 길이 = 화면 높이 × 이 값. 체감 속도는 여기 하나로 조절한다. */
-const PIN_RATIO = 1.35;
-/** 최신 말풍선과 대화 영역 아래 사이에 남길 여백. */
-const TAIL = 18;
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
 export function ConcernPhone({ heading }: { heading: ReactNode }) {
-  const outerRef = useRef<HTMLDivElement>(null);
-  const screenRef = useRef<HTMLDivElement>(null);
+  /** 대화가 굴러가는 상자. 목차와 '이 이야기로 가기' 가 이걸 기준으로 움직인다. */
+  const areaRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
-  const indexRef = useRef<HTMLUListElement>(null);
+  /** 지금 몇 번째 고민을 보고 있나 — 왼쪽 목차가 이 값을 짚는다. */
+  const [at, setAt] = useState(0);
 
-  const [pinned, setPinned] = useState(false);
-  const [pinPx, setPinPx] = useState(0);
-
-  /* ── 고정을 켤지 말지 ─────────────────────────────────────────── */
+  /*
+   * 안쪽 스크롤 → 목차.
+   * ★ 환자 말풍선(짝수 번째)의 위치를 기준으로 삼는다 — 고민 하나는 '환자 한 마디 +
+   *   병원 한 마디' 라, 환자 말풍선이 화면 위쪽에 걸리는 순간이 그 이야기의 시작이다.
+   * ⚠️ 스크롤마다 바로 계산하지 않고 다음 프레임에 한 번만 한다. 스크롤 이벤트는
+   *    한 프레임에 여러 번 온다.
+   * ⚠️ offsetTop 은 스크롤 컨테이너 기준이라 매번 다시 읽어도 된다(레이아웃이 안 바뀐다).
+   */
   useEffect(() => {
-    const decide = () => {
-      const ok =
-        window.matchMedia('(min-width: 1024px)').matches &&
-        /* 제목 옆에 기기가 통째로 들어가는 최소 높이(실측). 낮으면 화면이 잘린다. */
-        window.innerHeight >= 780 &&
-        !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      setPinned(ok);
-      setPinPx(ok ? Math.round(window.innerHeight * PIN_RATIO) : 0);
-    };
-    decide();
-    window.addEventListener('resize', decide);
-    return () => window.removeEventListener('resize', decide);
-  }, []);
-
-  /* ── 고정일 때: 스크롤이 말풍선을 하나씩 보낸다 ────────────────── */
-  useEffect(() => {
+    const area = areaRef.current;
     const column = columnRef.current;
-    if (!column) return;
-
-    const bubbles = () => Array.from(column.children) as HTMLElement[];
-
-    if (!pinned) {
-      /* 끌 때는 손으로 쓴 스타일을 반드시 지운다 — 안 지우면 투명한 채로 굳는다. */
-      column.style.transform = '';
-      bubbles().forEach((el) => {
-        el.style.transform = '';
-        el.style.opacity = '';
-      });
-      Array.from(indexRef.current?.children ?? []).forEach((li) => {
-        const el = li as HTMLElement;
-        el.style.opacity = '';
-        el.style.color = '';
-        (el.firstElementChild as HTMLElement).style.width = '';
-      });
-      return;
-    }
-
+    if (!area || !column) return;
     let raf = 0;
-    /*
-     * 말풍선마다 "이게 도착했을 때 대화를 얼마나 밀어 올려야 하는가" 를 미리 계산한다.
-     * ⚠️ 매 프레임 offsetTop 을 읽으면 브라우저가 강제로 레이아웃을 다시 돌린다.
-     */
-    let targets: number[] = [];
-    const measure = () => {
-      /*
-       * ⚠️⚠️ 기기 화면이 아니라 **대화 영역**의 높이여야 한다 — 여기서 한 번 틀렸다.
-       *    화면 위쪽은 상태 표시줄과 상대 이름이, 아래쪽은 전화 버튼이 먹고 있다.
-       *    화면 전체 높이로 재는 동안 최신 말풍선이 영역 아래로 35~69px 잘려 있었다(실측).
-       *    부모의 clientHeight 를 쓰면 위아래 크롬 높이를 바꿔도 계산이 따라온다.
-       */
-      const area = column.parentElement;
-      if (!area) return;
-      const H = area.clientHeight;
-      targets = bubbles().map((el) => Math.max(0, el.offsetTop + el.offsetHeight + TAIL - H));
-    };
-
-    const frame = () => {
+    const read = () => {
       raf = 0;
-      const outer = outerRef.current;
-      if (!outer || targets.length === 0) return;
-
-      const r = outer.getBoundingClientRect();
-      /* 화면 밖이면 아무것도 하지 않는다 — 이 섹션은 홈의 한 부분일 뿐이다. */
-      if (r.bottom < 0 || r.top > window.innerHeight) return;
-
-      const travel = r.height - window.innerHeight;
-      const p = travel > 0 ? clamp(-r.top / travel, 0, 1) : 0;
-
-      const n = targets.length;
+      const marks = Array.from(column.children).filter((_, i) => i % 2 === 0) as HTMLElement[];
+      /* 상자 위에서 1/4 되는 지점에 걸린 이야기를 '지금' 으로 본다. */
+      const line = area.scrollTop + area.clientHeight * 0.25;
+      let k = 0;
+      for (let i = 0; i < marks.length; i++) if (marks[i].offsetTop <= line) k = i;
       /*
-       * f = 지금까지 도착한 말풍선 수(소수). 시작하자마자 첫 마디는 이미 와 있어야
-       * 대화가 빈 화면에서 시작하지 않는다 — 그래서 1 부터 센다.
+       * ⚠️ 바닥에 닿으면 **무조건 마지막**이다 (2026-08-31 실측).
+       *    마지막 이야기는 더 밀어 올릴 곳이 없어 25% 선까지 못 올라온다. 그래서 끝까지
+       *    내려도 목차가 다섯 번째를 짚고 있었다 — 다 봤는데 안 봤다고 하는 셈이다.
        */
-      const f = 1 + p * (n - 1);
-      const k = clamp(Math.floor(f) - 1, 0, n - 1);
-      const next = Math.min(k + 1, n - 1);
-      const y = targets[k] + (targets[next] - targets[k]) * clamp(f - Math.floor(f), 0, 1);
-      column.style.transform = `translate3d(0, ${-y.toFixed(1)}px, 0)`;
-
-      const list = bubbles();
-      for (let i = 0; i < n; i++) {
-        /* 0 = 아직 안 옴, 1 = 다 도착. 도착하는 동안 아래에서 살짝 올라오며 커진다. */
-        const a = clamp(f - i, 0, 1);
-        list[i].style.opacity = a.toFixed(3);
-        list[i].style.transform = `translate3d(0, ${((1 - a) * 12).toFixed(1)}px, 0) scale(${(0.94 + 0.06 * a).toFixed(3)})`;
-      }
-
-      /*
-       * 왼쪽 목차 — 지금 몇 번째 이야기인지 짚어 준다.
-       * ⚠️ 말풍선은 '환자 한 마디 + 병원 한 마디' 라 두 개가 고민 하나다. 그래서 2 로 나눈다.
-       *    이 관계가 깨지면(중간에 한 마디를 더 넣는다든지) 목차가 엉뚱한 데를 짚는다.
-       */
-      const items = Array.from(indexRef.current?.children ?? []) as HTMLElement[];
-      if (items.length > 0) {
-        const active = clamp(Math.floor((f - 1) / 2), 0, items.length - 1);
-        for (let i = 0; i < items.length; i++) {
-          const on = i === active;
-          items[i].style.opacity = on ? '1' : '0.32';
-          items[i].style.color = on ? '#ffffff' : '';
-          (items[i].firstElementChild as HTMLElement).style.width = on ? '28px' : '10px';
-        }
-      }
+      if (area.scrollTop >= area.scrollHeight - area.clientHeight - 2) k = marks.length - 1;
+      setAt(clamp(k, 0, marks.length - 1));
     };
-
-    /*
-     * ⚠️ 스크롤마다 바로 그리지 않고 다음 프레임에 한 번만 그린다. 스크롤 이벤트는
-     *    한 프레임에 여러 번 올 수 있어서, 그대로 받으면 같은 그림을 여러 번 그린다.
-     */
     const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(frame);
+      if (!raf) raf = requestAnimationFrame(read);
     };
-    const onResize = () => {
-      measure();
-      onScroll();
-    };
-
-    measure();
-    frame();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
+    read();
+    area.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
+      area.removeEventListener('scroll', onScroll);
     };
-  }, [pinned]);
+  }, []);
+
+  /** 목차를 누르면 그 이야기로 데려간다. ⚠️ 페이지가 아니라 **상자 안**을 움직인다. */
+  const jump = (n: number) => {
+    const area = areaRef.current;
+    const el = columnRef.current?.children[n * 2] as HTMLElement | undefined;
+    if (!area || !el) return;
+    area.scrollTo({ top: Math.max(0, el.offsetTop - 16), behavior: 'smooth' });
+  };
 
   /*
    * ★★ 기기 안의 시계와 진료 상태 (2026-08-26 운영자) ★★
@@ -207,12 +123,12 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
   ]);
 
   return (
-    <div
-      ref={outerRef}
-      className="relative"
-      style={pinned ? { height: `calc(100vh + ${pinPx}px)` } : undefined}
-    >
-      <div className={pinned ? 'sticky top-0 flex h-screen items-center' : 'py-24 lg:py-28'}>
+    <div className="relative">
+      {/*
+        ⚠️ 여기에 sticky·h-screen·calc 높이를 다시 넣지 말 것 — 위 머리말 참조.
+           페이지 스크롤은 이 구획을 그냥 지나간다.
+      */}
+      <div className="py-24 lg:py-32">
         <div className="mx-auto w-full max-w-[1320px] px-5 lg:px-8">
           {/*
             ★★ 규격 (2026-08-25 운영자: "좀 규격? 배치? 를 좀더 잘 맞춰볼래?") ★★
@@ -235,26 +151,64 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
             ⚠️ 왼쪽 끝은 컨테이너 그대로다 — 페이지의 다른 제목들과 같은 선을 지킨다.
           */}
           <div className="grid items-stretch gap-14 lg:max-w-[1100px] lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
-            <div className="flex flex-col justify-between lg:pb-[2.4rem]">
+            {/*
+              ⚠️⚠️ justify-between 으로 되돌리지 말 것 (2026-08-31) ⚠️⚠️
+                화면 고정이던 시절에는 위아래 두 줄을 기기와 맞추려고 벌려 뒀다. 고정을
+                없앤 뒤에도 그대로 두었더니 제목과 목차 사이에 **200px 넘는 빈 띠**가
+                남았다(실측). 벌릴 이유가 사라졌으므로 한 덩어리로 묶어 기기 높이의
+                가운데에 맞춘다.
+            */}
+            <div className="flex flex-col justify-center">
               <div>{heading}</div>
 
               {/*
-                목차 — 대화가 어디까지 왔는지. 왼쪽의 빈 세로를 채우는 동시에
-                스크롤 연출이 무엇을 하는지 읽히게 한다(움직이기만 하고 뜻이 없으면 장식이다).
+                목차 — **여섯 고민의 차례표이자 이동 수단.**
+
+                ⚠️⚠️ 흐릿한 장식으로 되돌리지 말 것 (2026-08-31) ⚠️⚠️
+                  전에는 opacity 0.32 로 눌러 둔 글자였다. 어두운 바탕에서 그 값은
+                  1.8:1 — 읽으라고 둔 글이 아니라 무늬였다. 게다가 스크롤에 따라
+                  **움직이기만 하고 누를 수는 없어서**, 여섯 줄이 눈에는 걸리는데
+                  아무 데도 데려다주지 않았다.
+                ★ 지금은 button 이다. 누르면 기기 안이 그 이야기로 굴러간다.
+                  기기가 오른쪽에 있고 목차가 왼쪽이라, 손이 닿는 자리가 하나 늘어난다.
                 ⚠️ 문구는 lib/concerns.ts 의 topic 에서만 온다. 여기서 만들지 않는다.
-                ⚠️ 좁은 화면에서는 숨긴다 — 거기서는 위아래로 쌓여 빈 세로가 없다.
+                ⚠️ 좁은 화면에서는 숨긴다 — 거기서는 기기가 아래로 내려와 목차가 멀어진다.
               */}
-              <ul ref={indexRef} className="mt-10 hidden lg:block">
-                {CONCERNS.map((con) => (
-                  <li
-                    key={con.topic}
-                    className="flex items-center gap-3.5 py-[15px] text-[15.5px] text-brand-200 transition-[opacity,color] duration-300"
-                    style={{ opacity: 0.32 }}
-                  >
-                    <span aria-hidden className="h-px shrink-0 bg-current transition-[width] duration-300" style={{ width: '10px' }} />
-                    {con.topic}
-                  </li>
-                ))}
+              {/*
+                ★★ **쓰는 법을 한 줄로 말한다** (2026-08-31) ★★
+                  전에는 페이지를 내리면 대화가 저절로 진행돼서 아무 설명이 필요 없었다.
+                  지금은 기기 안이 스스로 굴러가지 않으므로, 말하지 않으면 아무도
+                  **여섯 마디가 더 있다는 것**도 **목차를 누를 수 있다는 것**도 모른다.
+                ⚠️ 지우지 말 것. 이 한 줄이 없으면 첫 대화 한 판만 보고 지나간다.
+              */}
+              <p className="mt-9 hidden text-[14.5px] text-mist lg:block">
+                아래 고민을 누르거나, 화면 위에서 굴려 보세요.
+              </p>
+              <ul className="mt-3 hidden lg:block">
+                {CONCERNS.map((con, n) => {
+                  const on = n === at;
+                  return (
+                    <li key={con.topic}>
+                      <button
+                        type="button"
+                        onClick={() => jump(n)}
+                        aria-current={on}
+                        className={`flex w-full items-center gap-3.5 py-[13px] text-left text-[16.5px] transition-colors duration-300 ${
+                          on ? 'font-bold text-parchment' : 'text-mist hover:text-parchment'
+                        }`}
+                      >
+                        {/* 지금 보고 있는 줄만 눈금이 길어지고 금색이 된다 — 색과 길이 둘로 말한다. */}
+                        <span
+                          aria-hidden
+                          className={`h-px shrink-0 transition-[width,background-color] duration-300 ${
+                            on ? 'w-7 bg-signal' : 'w-2.5 bg-mist'
+                          }`}
+                        />
+                        {con.topic}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
@@ -271,12 +225,11 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                     대신 고정이 아닐 때는 **손가락으로 안을 굴린다** — 실제 메신저와 같다.
                 */}
                 <div
-                  ref={screenRef}
-                  className="relative w-[330px] overflow-hidden rounded-[2.4rem] bg-cream-deep"
+                  className="relative w-[330px] overflow-hidden rounded-[2.4rem] bg-wine-soft"
                   style={{ height: 'clamp(520px, 60vh, 640px)' }}
                 >
                   {/* ── 상태 표시줄 ── */}
-                  <div className="relative z-20 flex items-center justify-between px-6 pt-3 pb-1 text-[13px] font-bold text-ink">
+                  <div className="relative z-20 flex items-center justify-between px-6 pt-3 pb-1 text-[14px] font-bold text-charcoal">
                     {/*
                       ⚠️ 고정된 '9:41'(목업 관습)을 쓰지 않는다 — 운영자 요청대로 실제
                          서울 시각이다. 서버에서는 비워 두고(hydration 보호) 마운트 뒤에 뜬다.
@@ -294,19 +247,19 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                   </div>
 
                   {/* ── 대화 상대 ── */}
-                  <div className="relative z-20 flex items-center gap-3 border-b border-ink/10 bg-white/80 px-4 py-3 backdrop-blur">
+                  <div className="relative z-20 flex items-center gap-3 border-b border-wine-line bg-white/80 px-4 py-3 backdrop-blur">
                     {/* 글자 '동' 대신 실제 로고 마크 — 간판·명함과 같은 표시를 쓴다. */}
                     <span aria-hidden className="flex h-9 w-9 shrink-0 items-center justify-center">
                       <LogoMark size={36} />
                     </span>
                     <span className="min-w-0">
-                      <span className="block truncate text-[14px] font-bold text-ink">{CLINIC.name}</span>
+                      <span className="block truncate text-[15px] font-bold text-charcoal">{CLINIC.name}</span>
                       {/*
                         오늘 진료시간 + 지금 상태.
                         ⚠️ 시간 글자는 now 없이도 나온다 — 서버가 낸 HTML 에 남아야 크롤러가 읽는다.
                            살아 움직이는 배지만 마운트 뒤에 붙는다.
                       */}
-                      <span className="flex items-center gap-1.5 text-[12.5px] text-ink-muted">
+                      <span className="flex items-center gap-1.5 text-[13.5px] text-ash">
                         {/*
                           ⚠️ 휴진인 날에는 시간 글자를 빼야 한다 — 안 그러면 "휴진 · 오늘 휴진"
                              처럼 같은 말이 두 번 나온다(일요일에 실제로 그랬다).
@@ -325,7 +278,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                             {!today?.closed && <span aria-hidden>·</span>}
                             <span
                               className={`inline-flex items-center gap-1.5 font-bold ${
-                                live.open ? 'text-brand-700' : 'text-ink-muted'
+                                live.open ? 'text-charcoal' : 'text-ash'
                               }`}
                             >
                               <span
@@ -350,22 +303,27 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                        높이 합이다. 그 둘을 바꾸면 이 숫자도 같이 바꿀 것.
                   */}
                   <div
-                    className={`relative h-[calc(100%-172px)] px-4 ${
-                      pinned ? 'overflow-hidden' : 'scrollbar-none overflow-y-auto overscroll-contain'
-                    }`}
+                    ref={areaRef}
+                    /*
+                     * ⚠️ overscroll-contain 을 넣지 말 것 — 끝까지 내려간 뒤 커서가 여기
+                     *    있으면 페이지가 멈춰 갇힌다. 끝에서는 페이지로 이어져야 한다.
+                     * ⚠️ 높이 계산(104 + 68)은 위 상태 표시줄·상대 이름과 아래 전화 버튼의
+                     *    높이 합이다. 그 둘을 바꾸면 이 숫자도 같이 바꿀 것.
+                     */
+                    className="scrollbar-none relative h-[calc(100%-172px)] overflow-y-auto px-4"
                   >
-                    <div ref={columnRef} className="flex flex-col gap-3 pt-4 pb-4 will-change-transform">
+                    <div ref={columnRef} className="flex flex-col gap-3 pt-4 pb-4">
                       {messages.map((m) =>
                         m.who === 'me' ? (
                           <p
                             key={m.key}
-                            className="max-w-[80%] self-end rounded-2xl rounded-tr-md bg-gold-400 px-4 py-2.5 text-[13.5px] leading-[1.6] font-bold text-ink"
+                            className="max-w-[80%] self-end rounded-2xl rounded-tr-md bg-signal px-4 py-2.5 text-[14.5px] leading-[1.6] font-semibold text-charcoal"
                           >
                             {m.text}
                           </p>
                         ) : (
                           <span key={m.key} className="flex max-w-[86%] flex-col items-start gap-1.5 self-start">
-                            <span className="rounded-2xl rounded-tl-md bg-white px-4 py-3 text-[13px] leading-[1.75] text-ink shadow-[0_2px_8px_-4px_rgba(0,0,0,.25)]">
+                            <span className="rounded-2xl rounded-tl-md card-glass px-4 py-3 text-[14px] leading-[1.75] text-charcoal shadow-[0_2px_8px_-4px_rgba(0,0,0,.25)]">
                               {m.text}
                             </span>
                             {/*
@@ -374,7 +332,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                             */}
                             <Link
                               href={m.href!}
-                              className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-white/70 px-3 py-1.5 text-[12.5px] font-bold text-brand-700 transition hover:border-ink/35 hover:bg-white"
+                              className="inline-flex items-center gap-1.5 rounded-full border border-wine-line bg-white/70 px-3 py-1.5 text-[13.5px] font-bold text-charcoal transition hover:border-ash/50 hover:bg-parchment"
                             >
                               {m.cta}
                               <span aria-hidden>→</span>
@@ -392,10 +350,10 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                       전화번호를 둔다. 기기 안에서 끝맺음이 되고, 하는 일도 정직하다.
                     ★ 잘린 단면이 그대로 보이면 기기가 아니라 상자다 — 위로 옅게 사라지게 둔다.
                   */}
-                  <div className="absolute inset-x-0 bottom-0 z-10 h-[68px] border-t border-ink/10 bg-white/85 px-4 py-3 backdrop-blur">
+                  <div className="absolute inset-x-0 bottom-0 z-10 h-[68px] border-t border-wine-line bg-white/85 px-4 py-3 backdrop-blur">
                     <a
                       href={`tel:${CLINIC.phone.replace(/[^0-9]/g, '')}`}
-                      className="flex h-full items-center justify-center gap-2 rounded-full bg-brand-700 text-[13px] font-bold text-white transition hover:bg-brand-800"
+                      className="flex h-full items-center justify-center gap-2 rounded-full bg-wine-deep text-[14px] font-semibold text-parchment transition hover:bg-wine-deep-2"
                     >
                       전화로 물어보기 {CLINIC.phone}
                     </a>
@@ -420,9 +378,12 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                     2026-08-14 에 그 이유로 한 번 걷어냈다가, 한계를 화면에 적는 조건으로
                     되살린 것이다(lib/liveHours.ts 머리말). 전화 버튼이 바로 위에 있다.
               */}
-              <p className="mt-5 max-w-[330px] text-center text-[12.5px] leading-relaxed text-brand-300">
-                자주 듣는 질문을 대화 형식으로 구성한 예시입니다. 공휴일·임시 휴진은 위 진료 상태에
-                반영되지 않습니다.
+              {/*
+                ⚠️ 이 한 줄을 지우지 말 것 — 위 주석의 두 이유가 그대로 살아 있다.
+                   2026-08-31 오너 요청으로 두 문장을 한 줄로 줄인 것이지, 없앤 것이 아니다.
+              */}
+              <p className="mt-5 max-w-[330px] text-center text-[13.5px] leading-relaxed text-mist/80">
+                예시 대화 · 공휴일·임시 휴진은 반영되지 않습니다
               </p>
             </div>
           </div>
@@ -436,7 +397,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
 
 function Bars() {
   return (
-    <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" className="text-ink">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" className="text-charcoal">
       <rect x="0" y="7.5" width="3" height="3.5" rx="1" />
       <rect x="4.5" y="5" width="3" height="6" rx="1" />
       <rect x="9" y="2.5" width="3" height="8.5" rx="1" />
@@ -447,7 +408,7 @@ function Bars() {
 
 function Wifi() {
   return (
-    <svg width="15" height="11" viewBox="0 0 15 11" fill="none" className="text-ink">
+    <svg width="15" height="11" viewBox="0 0 15 11" fill="none" className="text-charcoal">
       <path d="M1 3.6a9.5 9.5 0 0 1 13 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       <path d="M3.6 6.3a5.8 5.8 0 0 1 7.8 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       <circle cx="7.5" cy="9.3" r="1.3" fill="currentColor" />
@@ -457,7 +418,7 @@ function Wifi() {
 
 function Battery() {
   return (
-    <svg width="24" height="11" viewBox="0 0 24 11" fill="none" className="text-ink">
+    <svg width="24" height="11" viewBox="0 0 24 11" fill="none" className="text-charcoal">
       <rect x="0.6" y="0.6" width="19" height="9.8" rx="2.6" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1.2" />
       <rect x="2.2" y="2.2" width="14" height="6.6" rx="1.5" fill="currentColor" />
       <path d="M21.4 4v3c.9-.3 1.4-.8 1.4-1.5S22.3 4.3 21.4 4Z" fill="currentColor" fillOpacity="0.4" />

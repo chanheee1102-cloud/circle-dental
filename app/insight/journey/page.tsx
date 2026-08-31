@@ -3,7 +3,7 @@ import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import { JOURNEYS } from '@/lib/insight';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
-import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
 
@@ -36,17 +36,15 @@ export default function JourneyIndexPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="corridor"
+        eyebrow="치료 여정"
+        title="몇 번 오고, 얼마나 걸리고, 그때마다 무엇을 하는지"
+        desc="치료가 길어지는 이유는 대부분 시술이 아니라 기다림입니다. 어디서 기다리는지를 알면 일정을 세우기 쉬워집니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="치료 여정"
-          title="몇 번 오고, 얼마나 걸리고, 그때마다 무엇을 하는지"
-          desc="치료가 길어지는 이유는 대부분 시술이 아니라 기다림입니다. 어디서 기다리는지를 알면 일정을 세우기 쉬워집니다."
-        />
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -58,21 +56,21 @@ export default function JourneyIndexPage() {
             <Link
               key={j.slug}
               href={`/insight/journey/${j.slug}`}
-              className="group flex h-full flex-col rounded-xl border border-brand-200/70 bg-white p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+              className="group flex h-full flex-col rounded-xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
             >
-              <span className="inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[12.5px] font-black text-brand-700">
+              <span className="inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[13.5px] font-black text-brand-700">
                 {j.treatment}
               </span>
               <h2 className="display-sm mt-4 text-[18px] text-ink group-hover:text-brand-700">
                 {j.question}
               </h2>
-              <p className="mt-3 flex-1 text-[14.5px] leading-[1.8] text-ink-soft">{j.answer}</p>
+              <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">{j.answer}</p>
 
               <div className="mt-5 flex flex-wrap gap-2 border-t border-brand-100 pt-4">
-                <span className="rounded-full border border-brand-200 px-3 py-1.5 text-[12.5px] font-bold text-brand-700">
+                <span className="rounded-full border border-brand-200 px-3 py-1.5 text-[13.5px] font-bold text-brand-700">
                   내원 {j.visits}
                 </span>
-                <span className="rounded-full border border-brand-200 px-3 py-1.5 text-[12.5px] font-bold text-brand-700">
+                <span className="rounded-full border border-brand-200 px-3 py-1.5 text-[13.5px] font-bold text-brand-700">
                   {j.duration}
                 </span>
               </div>

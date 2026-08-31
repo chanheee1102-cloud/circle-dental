@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GLOSSARY } from '@/lib/insight';
-import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, articleSchema, medicalWebPageSchema } from '@/lib/seo';
 import { ArticleMeta, References, charCount } from '@/components/article';
@@ -71,23 +71,21 @@ export default function GlossaryPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="booth"
+        eyebrow="용어 사전"
+        title="설명을 들을 때 옆에 두고 보세요"
+        desc="진료실에서 쓰는 말이 어렵게 들리는 것은 당연합니다. 자주 나오는 것만 한두 문장으로 풀었습니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="용어 사전"
-          title="설명을 들을 때 옆에 두고 보세요"
-          desc="진료실에서 쓰는 말이 어렵게 들리는 것은 당연합니다. 자주 나오는 것만 한두 문장으로 풀었습니다."
-        />
 
         <dl className="mt-12 grid gap-3 sm:grid-cols-2">
           {GLOSSARY.map((t) => (
             <div
               key={t.term}
-              className="rounded-2xl border border-brand-100 bg-white p-6 transition-colors hover:border-brand-200"
+              className="rounded-2xl border border-brand-100 card-glass p-6 transition-colors hover:border-brand-200"
             >
               {/*
                 ★★ <abbr title> 로 감싼다 (2026-08-14) ★★
@@ -101,26 +99,29 @@ export default function GlossaryPage() {
               <dt className="flex flex-wrap items-baseline gap-2">
                 <abbr
                   title={t.def}
-                  className="text-[17px] font-black text-ink no-underline decoration-transparent"
+                  className="text-[18px] font-black text-ink no-underline decoration-transparent"
                 >
                   {t.term}
                 </abbr>
                 {t.reading && (
-                  <span className="text-[13px] font-semibold text-ink-muted">({t.reading})</span>
+                  <span className="text-[14px] font-semibold text-ink-muted">({t.reading})</span>
                 )}
               </dt>
-              <dd className="mt-2.5 text-[14.5px] leading-relaxed text-ink-soft">
+              <dd className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft">
                 {t.def}
+                {/*
+                  ⚠️ 링크를 설명 문장 **뒤에 이어 붙이지** 말 것 (2026-08-31) —
+                     '관련 진료 보기' 가 통째로 다음 줄로 떨어져 끝줄에 두 글자만 남았다(실측).
+                     줄을 따로 세우면 그 일이 구조적으로 안 생기고, 누를 곳도 더 잘 보인다.
+                */}
                 {t.related && (
-                  <>
-                    {' '}
-                    <Link
-                      href={`/treatment/${t.related}`}
-                      className="font-bold text-brand-700 underline underline-offset-2"
-                    >
-                      관련 진료 보기
-                    </Link>
-                  </>
+                  <Link
+                    href={`/treatment/${t.related}`}
+                    className="mt-2.5 inline-flex items-center gap-1.5 text-[14.5px] font-bold text-brand-700 underline underline-offset-4"
+                  >
+                    관련 진료 보기
+                    <span aria-hidden>→</span>
+                  </Link>
                 )}
               </dd>
             </div>

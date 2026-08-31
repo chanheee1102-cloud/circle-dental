@@ -65,13 +65,13 @@ export function KeyPoints({ items, title = '한눈에 보기' }: { items: string
       aria-label={title}
       className="reveal rounded-2xl border border-brand-200/70 bg-brand-50/60 p-6 sm:p-7"
     >
-      <p className="flex items-center gap-2.5 text-[12.5px] font-black tracking-[0.16em] text-brand-600 uppercase">
+      <p className="flex items-center gap-2.5 text-[13.5px] font-black tracking-[0.16em] text-brand-600 uppercase">
         <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
         {title}
       </p>
       <ul className="mt-4 space-y-2.5">
         {items.slice(0, 5).map((t) => (
-          <li key={t} className="flex gap-3 text-[15px] leading-[1.75] text-ink-soft">
+          <li key={t} className="flex gap-3 text-[16px] leading-[1.75] text-ink-soft">
             <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400" />
             <span>{t}</span>
           </li>
@@ -93,11 +93,11 @@ export function KeyPoints({ items, title = '한눈에 보기' }: { items: string
 export function TableOfContents({ items }: { items: string[] }) {
   if (items.length < 3) return null; // 두 줄짜리 목차는 자리만 차지한다
   return (
-    <nav aria-label="목차" className="reveal rounded-2xl border border-brand-200/70 bg-white p-6 sm:p-7">
-      <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-600 uppercase">목차</p>
+    <nav aria-label="목차" className="reveal rounded-2xl border border-brand-200/70 card-glass p-6 sm:p-7">
+      <p className="text-[13.5px] font-black tracking-[0.16em] text-brand-600 uppercase">목차</p>
       <ol className="mt-4 space-y-2">
         {items.map((t, i) => (
-          <li key={t} className="flex gap-3 text-[14.5px] leading-relaxed">
+          <li key={t} className="flex gap-3 text-[15.5px] leading-relaxed">
             {/* ⚠️ brand-300 은 밝은 바탕에서 2.08:1 이었다. 번호도 읽는 글이다. */}
             <span aria-hidden className="shrink-0 tabular-nums font-black text-brand-500">
               {String(i + 1).padStart(2, '0')}
@@ -127,23 +127,51 @@ export function TableOfContents({ items }: { items: string[] }) {
  *    이 글들은 병원이 공개한 자료를 정리한 것이고, 의료 내용은 대표원장이 **검토**한다.
  *    작성 주체를 부풀리면 그 자체가 거짓 표시다(의료법 제56조).
  */
-export function ArticleMeta({ path }: { path: string }) {
+/**
+ * @param tone 어두운 배경에 놓을 때는 'dark'.
+ *   ⚠️ 바깥에서 `[&_p]:text-...` 로 글자색만 덮지 말 것 — 테두리와 링크 색이 따로 놀아
+ *      어두운 면에서 안 보인다(2026-08-27에 겪은 일).
+ */
+/**
+ * ⚠️⚠️ **화면에서 걷어냈다 — 되살리려면 운영자 GO 가 필요하다** (2026-08-31) ⚠️⚠️
+ *   운영자: "페이지마다 이런내용 꼭 넣어야돼? 없애고싶어."
+ *
+ *   ★ 법적으로 필요한 것이 아니었다. 의료광고 심의가 부작용 고지를 요구하는 것은
+ *     **치료 전후 사진·환자 경험담**을 쓸 때이고, 이 사이트는 그런 것을 쓰지 않는다.
+ *     이 줄은 검색·AI 인용에서 저자 신뢰를 얻으려고 넣었던 것이다.
+ *   ★ 부르는 곳(수십 군데)은 그대로 두고 여기서 null 을 돌려준다 — 되살릴 때
+ *     이 파일 한 곳만 고치면 되고, 호출부를 다시 찾아 넣을 일이 없다.
+ *   ⚠️ 구조화 데이터(JSON-LD)와는 무관하다. 저자·수정일 선언은 lib/seo.ts 가 따로 낸다.
+ */
+export function ArticleMeta(_: { path: string; tone?: 'light' | 'dark' }) {
+  return null;
+}
+
+function ArticleMetaHidden({ path, tone = 'light' }: { path: string; tone?: 'light' | 'dark' }) {
   const { published, modified } = contentDates(path);
   const d = DOCTORS[0];
+  const dark = tone === 'dark';
   return (
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-brand-100 pt-6 text-[13.5px] text-ink-muted">
+    <div
+      className={`flex flex-wrap items-center gap-x-5 gap-y-2 border-t pt-6 text-[14.5px] ${
+        dark ? 'border-white/15 text-white/60' : 'border-brand-100 text-ink-soft'
+      }`}
+    >
       <span>
         의료 내용 검토{' '}
         <Link
-          href={`/about/doctors/${d.slug}`}
+          href={`/about/doctors#${d.slug}`}
           rel="author"
-          className="font-bold text-brand-700 underline-offset-4 hover:underline"
+          className={`font-bold underline-offset-4 hover:underline ${dark ? 'text-white' : 'text-brand-700'}`}
         >
           {d.name} {d.role}
         </Link>
-        <span className="ml-1.5 text-ink-muted">· 보건복지부 인정 통합치의학과 전문의</span>
+        {/* ⚠️ paper(#f5f1e4) 위에서 ink-muted 는 4.44:1 로 미달이었다(실측) — ink-soft 는 5.9:1. */}
+        <span className={`ml-1.5 ${dark ? 'text-white/60' : 'text-ink-soft'}`}>
+          · 보건복지부 인정 통합치의학과 전문의
+        </span>
       </span>
-      <span aria-hidden className="text-ink-muted">
+      <span aria-hidden className={dark ? 'text-white/40' : 'text-ink-muted'}>
         |
       </span>
       <span>
@@ -173,32 +201,58 @@ export interface Reference {
  *    출처 목록은 "이 주장에 근거가 있다" 는 선언이다. 관련 없는 링크를 늘어놓으면
  *    권위를 빌리는 시늉일 뿐이고, 의료 정보에서는 그 자체가 위험한 거짓말이 된다.
  */
-export function References({ items }: { items: Reference[] }) {
+/** @param tone 어두운 배경에 놓을 때는 'dark'. 면·글자·링크가 한 벌로 바뀐다. */
+/**
+ * ⚠️⚠️ **화면에서 걷어냈다 — 되살리려면 운영자 GO 가 필요하다** (2026-08-31) ⚠️⚠️
+ *   운영자: "페이지마다 이런내용 꼭 넣어야돼? 없애고싶어."
+ *
+ *   ★ 법적으로 필요한 것이 아니었다. 의료광고 심의가 부작용 고지를 요구하는 것은
+ *     **치료 전후 사진·환자 경험담**을 쓸 때이고, 이 사이트는 그런 것을 쓰지 않는다.
+ *     출처 목록도 인용을 노린 것이지 고지 의무가 아니다.
+ *   ★ 부르는 곳(수십 군데)은 그대로 두고 여기서 null 을 돌려준다 — 되살릴 때
+ *     이 파일 한 곳만 고치면 되고, 호출부를 다시 찾아 넣을 일이 없다.
+ *   ⚠️ 구조화 데이터(JSON-LD)와는 무관하다. 저자·수정일 선언은 lib/seo.ts 가 따로 낸다.
+ */
+export function References(_: { items: Reference[]; tone?: 'light' | 'dark' }) {
+  return null;
+}
+
+function ReferencesHidden({ items, tone = 'light' }: { items: Reference[]; tone?: 'light' | 'dark' }) {
   if (items.length === 0) return null;
+  const dark = tone === 'dark';
   return (
-    <section aria-labelledby="references" className="reveal rounded-2xl border border-brand-200/70 bg-white p-6 sm:p-7">
-      <h2 id="references" className="text-[15px] font-black text-ink">
+    <section
+      aria-labelledby="references"
+      className={`reveal rounded-2xl border p-6 sm:p-7 ${
+        dark ? 'border-white/15 card-glass/[0.04]' : 'border-brand-200/70 bg-parchment'
+      }`}
+    >
+      <h2 id="references" className={`text-[16px] font-black ${dark ? 'text-white' : 'text-ink'}`}>
         참고자료 · 출처
       </h2>
       <ol className="mt-4 space-y-3">
         {items.map((r) => (
-          <li key={r.url} className="text-[13.5px] leading-relaxed text-ink-soft">
-            <span className="font-bold text-ink">{r.publisher}</span>{' '}
+          <li key={r.url} className={`text-[14.5px] leading-relaxed ${dark ? 'text-white/70' : 'text-ink-soft'}`}>
+            <span className={`font-bold ${dark ? 'text-white' : 'text-ink'}`}>{r.publisher}</span>{' '}
             <a
               href={r.url}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="text-brand-700 underline underline-offset-4 hover:text-brand-500"
+              className={`underline underline-offset-4 ${dark ? 'text-white hover:text-white/70' : 'text-brand-700 hover:text-brand-500'}`}
             >
               {r.title}
             </a>
-            <span aria-hidden className="ml-1 text-[12.5px] text-ink-muted">
+            <span aria-hidden className={`ml-1 text-[13.5px] ${dark ? 'text-white/50' : 'text-ink-muted'}`}>
               ↗
             </span>
           </li>
         ))}
       </ol>
-      <p className="mt-4 text-[12.5px] leading-relaxed text-ink-muted">
+      {/*
+        ⚠️ 이 한 줄만 tone 을 안 받고 있었다 — 어두운 페이지에서 3.27:1 이었다(실측).
+           같은 컴포넌트 안의 다른 줄들은 전부 tone 분기를 타는데 여기만 빠져 있었다.
+      */}
+      <p className={`mt-4 text-[13.5px] leading-relaxed ${dark ? 'text-white/65' : 'text-ink-muted'}`}>
         본 문서의 의료 정보는 {CLINIC.name} 의료진이 검토했습니다. 개인의 상태에 따라 적용이 다를
         수 있으므로 진단은 반드시 내원 후 받으시기 바랍니다.
       </p>

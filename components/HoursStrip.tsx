@@ -72,7 +72,7 @@ export function HoursStrip() {
              선 색을 바꾸려면 dl 배경을 바꿔야 한다 — 칸마다 border 를 주면 맞닿는
              자리에서 두 겹이 된다.
         */}
-        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border border-white/25 bg-white/22 sm:grid-cols-4 lg:grid-cols-7">
+        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border border-white/25 card-glass/22 sm:grid-cols-4 lg:grid-cols-7">
           {week.map((d, n) => {
             const on = todayIdx === n;
             const live = on && now ? liveOf(d, now.min) : null;
@@ -93,10 +93,10 @@ export function HoursStrip() {
                  */
                 className={`relative flex flex-col gap-3 px-5 py-7 ${
                   n === week.length - 1 ? 'col-span-2 lg:col-span-1' : ''
-                } bg-brand-900 ${on ? '' : 'shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]'}`}
+                } bg-dusk ${on ? '' : 'shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]'}`}
                 style={
                   on
-                    ? { boxShadow: 'inset 0 0 0 2px var(--color-mint-400)' }
+                    ? { boxShadow: 'inset 0 0 0 2px var(--color-signal)' }
                     : undefined
                 }
               >
@@ -105,14 +105,14 @@ export function HoursStrip() {
                      글자가 유일한 근거다. 배지를 지우지 말 것.
                 */}
                 {on && (
-                  <span className="absolute top-4 right-4 rounded-full border border-mint-400/60 px-2.5 py-[3px] text-[12.5px] font-bold tracking-[0.14em] text-mint-400 uppercase">
+                  <span className="absolute top-4 right-4 rounded-full border border-signal/60 px-2.5 py-[3px] text-[13.5px] font-medium text-signal">
                     Today
                   </span>
                 )}
 
                 <dt
-                  className={`text-[14px] font-semibold tracking-[0.02em] ${
-                    d.closed ? 'text-white/45' : on ? 'text-white/75' : 'text-white/55'
+                  className={`text-[15px] font-semibold tracking-[0.02em] ${
+                    d.closed ? 'text-white/60' : on ? 'text-white/75' : 'text-white/55'
                   }`}
                 >
                   {/* 화면에는 '월', 낭독기에는 '월요일'. */}
@@ -122,7 +122,7 @@ export function HoursStrip() {
 
                 <dd>
                   <span
-                    className={`tabular block text-[16.5px] leading-[1.5] font-bold tracking-[-0.01em] ${
+                    className={`tabular block text-[17.5px] leading-[1.5] font-bold tracking-[-0.01em] ${
                       d.closed ? 'text-white/55' : 'text-white'
                     }`}
                   >
@@ -130,8 +130,8 @@ export function HoursStrip() {
                   </span>
                   {d.note && (
                     <span
-                      className={`mt-2 block text-[13px] leading-[1.5] font-medium ${
-                        d.closed ? 'text-white/65' : 'text-mint-400'
+                      className={`mt-2 block text-[14px] leading-[1.5] font-medium ${
+                        d.closed ? 'text-white/65' : 'text-signal'
                       }`}
                     >
                       {d.note}
@@ -144,9 +144,9 @@ export function HoursStrip() {
                   */}
                   {live && (
                     <span
-                      className={`mt-3 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[12.5px] font-bold ${
+                      className={`mt-3 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[13.5px] font-bold ${
                         live.open
-                          ? 'bg-mint-400/15 text-mint-400'
+                          ? 'bg-signal/15 text-signal'
                           : 'bg-white/10 text-white/70'
                       }`}
                     >
@@ -170,7 +170,7 @@ export function HoursStrip() {
         점심시간은 요일 칸에 넣지 않는다 — 7칸 전부에 같은 값을 반복하게 되고,
         예외인 요일이 오히려 묻힌다.
       */}
-      <p className="mt-6 text-[14.5px] leading-[1.8] text-white/60">
+      <p className="mt-6 text-[15.5px] leading-[1.8] text-white/60">
         점심시간{' '}
         <span className="tabular font-bold text-white">
           {lunch.start} – {lunch.end}
@@ -185,7 +185,7 @@ export function HoursStrip() {
           걷어냈었다. 지금은 운영자 요청으로 되살리되 **한계를 함께 적는 조건**이다.
           이 문장이 없으면 쉬는 날 "진료 중" 하나가 환자를 헛걸음시킨다.
       */}
-      <p className="mt-2 text-[13.5px] leading-[1.8] text-white/45">
+      <p className="mt-2 text-[14.5px] leading-[1.8] text-white/60">
         공휴일·임시 휴진은 이 표시에 반영되지 않습니다. 방문 전{' '}
         <a href={CLINIC.phoneHref} className="font-bold text-white/70 underline underline-offset-4">
           {CLINIC.phone}

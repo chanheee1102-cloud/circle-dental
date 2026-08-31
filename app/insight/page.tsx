@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
-import { Container, SectionHead, CardLink, Breadcrumb, ContactCta } from '@/components/ui';
+import { Container, CardLink, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/seo';
 import { SYMPTOMS } from '@/lib/symptoms';
@@ -62,17 +62,15 @@ export default function InsightHubPage() {
   return (
     <>
       <JsonLd data={breadcrumbSchema(TRAIL)} />
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="consult"
+        eyebrow="미리 알아두기"
+        title="진료 시간에 다 못 하는 이야기를 여기에 적었습니다"
+        desc="치료 자체보다 그 앞뒤의 설명이 부족해서 불안한 경우가 많습니다. 미리 읽고 오시면 진료실에서 할 이야기가 달라집니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="미리 알아두기"
-          title="진료 시간에 다 못 하는 이야기를 여기에 적었습니다"
-          desc="치료 자체보다 그 앞뒤의 설명이 부족해서 불안한 경우가 많습니다. 미리 읽고 오시면 진료실에서 할 이야기가 달라집니다."
-        />
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">

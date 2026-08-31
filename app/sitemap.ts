@@ -63,7 +63,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const journeyPages = JOURNEYS.map((j) => entry(`/insight/journey/${j.slug}`, 0.8));
   const implantPages = IMPLANT_TOPICS.map((t) => entry(`/treatment/implant/${t.slug}`, 0.85));
   const specialPages = SPECIALS.map((s) => entry(`/about/special/${s.slug}`, 0.8));
-  const doctorPages = DOCTORS.map((d) => entry(`/about/doctors/${d.slug}`, 0.85));
 
   // Set 으로 중복 제거 — nav 에 이미 들어 있는 경로가 다시 들어오면 중복 URL 이 나간다.
   const seen = new Set<string>();
@@ -76,7 +75,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...journeyPages,
     ...implantPages,
     ...specialPages,
-    ...doctorPages,
   ].filter((e) => {
     if (seen.has(e.url)) return false;
     seen.add(e.url);

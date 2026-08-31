@@ -21,7 +21,7 @@ import { Reveal } from '@/components/Reveal';
  */
 export function WhyUsSection() {
   return (
-    <section className="border-y border-brand-200/60 bg-cream-deep/40 py-24 lg:py-28">
+    <section className="border-y border-brand-200/60 bg-wine-soft/40 py-24 lg:py-32">
       {/*
         ★★ 좌우 비대칭 — 제목을 왼쪽 레일에 세워 두고 내용만 오른쪽으로 흐른다 (2026-08-18) ★★
           운영자가 가져온 참고 사이트(리베리의원)에서 가장 값이 큰 아이디어였다.
@@ -38,7 +38,7 @@ export function WhyUsSection() {
       <Container>
         <div className="lg:grid lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-x-16">
           <div className="lg:sticky lg:top-28 lg:self-start lg:pt-1">
-            <p className="flex items-center gap-2.5 text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
+            <p className="flex items-center gap-2.5 text-[13.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
               무엇이 다른가
             </p>
@@ -49,7 +49,7 @@ export function WhyUsSection() {
             <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
               동그라미치과는 무엇이 다른가요?
             </h2>
-            <p className="mt-5 max-w-[46ch] text-[16px] leading-[1.85] text-ink-soft">
+            <p className="mt-5 max-w-[46ch] text-[17px] leading-[1.85] text-ink-soft">
               {/* ⚠️ 숫자 앞에 {' '} 이 필요하다 — 없으면 JSX 가 줄바꿈을 삼켜 "것들을12가지" 로 붙는다(실측). */}
               누가 보는지, 무엇으로 보는지, 오시기 편한지 — 병원을 고를 때 실제로 궁금한 것들을{' '}
               {WHY_US_COUNT}가지로 정리했습니다.
@@ -58,15 +58,15 @@ export function WhyUsSection() {
 
           <div className="mt-14 space-y-12 lg:mt-0">
           {WHY_US.map((group, gi) => (
-            <Reveal key={group.key} delay={gi * 80}>
+            <Reveal key={group.key} delay={gi * 45}>
               <div>
                 {/* 갈래 머리 — 갈래 이름과 부제를 한 줄에. 얇은 선으로만 나눠 카드와 위계를 만든다. */}
                 <div className="flex items-baseline gap-3 border-b border-brand-200/70 pb-3.5">
-                  <span className="text-[13px] font-black tracking-[0.06em] text-gold-600">
+                  <span className="text-[14px] font-black tracking-[0.06em] text-gold-600">
                     {group.key}
                   </span>
                   <span aria-hidden className="text-ink-muted">·</span>
-                  <span className="text-[13.5px] font-bold text-ink-muted">{group.label}</span>
+                  <span className="text-[14.5px] font-bold text-ink-muted">{group.label}</span>
                 </div>
 
                 {/*
@@ -79,7 +79,7 @@ export function WhyUsSection() {
                   {group.cards.map((c, i) => (
                     <li
                       key={c.title}
-                      className="group flex h-full flex-col rounded-xl border border-brand-200/70 bg-white p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+                      className="group flex h-full flex-col rounded-xl border border-brand-200/70 card-glass p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
                     >
                       {/*
                         ★★ 원형 배지 (2026-08-18) ★★
@@ -92,18 +92,18 @@ export function WhyUsSection() {
                       <div className="flex items-center gap-2.5">
                         <span
                           aria-hidden
-                          className="display-en inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-[13px] text-white transition-colors group-hover:bg-gold-600"
+                          className="display-en inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-[14px] text-white transition-colors group-hover:bg-gold-600"
                         >
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <p className="text-[12.5px] font-black tracking-[0.06em] text-brand-500">
+                        <p className="text-[13.5px] font-black tracking-[0.06em] text-brand-500">
                           {group.key}
                         </p>
                       </div>
-                      <h3 className="display-sm mt-3.5 text-[16.5px] leading-snug text-ink">
+                      <h3 className="display-sm mt-3.5 text-[17.5px] leading-snug text-ink">
                         {c.title}
                       </h3>
-                      <p className="mt-3 flex-1 text-[14px] leading-[1.8] text-ink-soft">{c.body}</p>
+                      <p className="mt-3 flex-1 text-[15px] leading-[1.8] text-ink-soft">{c.body}</p>
                     </li>
                   ))}
                 </ul>

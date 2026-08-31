@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
-import { Container, SectionHead, Breadcrumb, ContactCta } from '@/components/ui';
+import { Container, ContactCta, PageHero } from '@/components/ui';
 import { ArticleMeta, headingId } from '@/components/article';
 import { ClinicMap } from '@/components/ClinicMap';
 import { JsonLd } from '@/components/JsonLd';
@@ -112,17 +112,15 @@ export default function ContactPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="booth"
+        eyebrow="연락처"
+        title="어떻게 연락드리면 될까요?"
+        desc="전화, 네이버 예약, 카카오톡 중 편한 방법으로 연락하실 수 있습니다. 상황에 따라 맞는 창구가 다릅니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="연락처"
-          title="어떻게 연락드리면 될까요?"
-          desc="전화, 네이버 예약, 카카오톡 중 편한 방법으로 연락하실 수 있습니다. 상황에 따라 맞는 창구가 다르므로 아래에 각각 무엇에 적합한지 적어 두었습니다."
-        />
 
         <div className="mt-8 max-w-[70ch]">
           <ArticleMeta path="/contact" />
@@ -136,13 +134,13 @@ export default function ContactPage() {
             </caption>
             <thead>
               <tr className="bg-brand-50/70">
-                <th scope="col" className="px-6 py-4 text-[13px] font-black text-ink">
+                <th scope="col" className="px-6 py-4 text-[14px] font-black text-ink">
                   창구
                 </th>
-                <th scope="col" className="px-6 py-4 text-[13px] font-black text-ink">
+                <th scope="col" className="px-6 py-4 text-[14px] font-black text-ink">
                   연락처
                 </th>
-                <th scope="col" className="px-6 py-4 text-[13px] font-black text-ink">
+                <th scope="col" className="px-6 py-4 text-[14px] font-black text-ink">
                   이럴 때 적합합니다
                 </th>
               </tr>
@@ -150,7 +148,7 @@ export default function ContactPage() {
             <tbody>
               {CHANNELS.map((c) => (
                 <tr key={c.key} className="border-t border-brand-100">
-                  <th scope="row" className="px-6 py-5 align-top text-[15px] font-black text-ink">
+                  <th scope="row" className="px-6 py-5 align-top text-[16px] font-black text-ink">
                     {c.name}
                   </th>
                   <td className="px-6 py-5 align-top">
@@ -165,8 +163,8 @@ export default function ContactPage() {
                     </a>
                   </td>
                   <td className="px-6 py-5 align-top">
-                    <span className="block text-[14.5px] font-bold text-ink">{c.best}</span>
-                    <span className="mt-1.5 block max-w-[46ch] text-[13.5px] leading-relaxed text-ink-soft">
+                    <span className="block text-[15.5px] font-bold text-ink">{c.best}</span>
+                    <span className="mt-1.5 block max-w-[46ch] text-[14.5px] leading-relaxed text-ink-soft">
                       {c.detail}
                     </span>
                   </td>
@@ -185,11 +183,11 @@ export default function ContactPage() {
             >
               언제 연락하면 되나요?
             </h2>
-            <p className="mt-3 max-w-[62ch] text-[15.5px] leading-[1.8] text-ink-soft">
+            <p className="mt-3 max-w-[62ch] text-[16.5px] leading-[1.8] text-ink-soft">
               아래 진료시간에 전화가 연결됩니다. 네이버 예약과 카카오톡은 시간과 관계없이 남기실 수
               있고, 진료시간에 확인해 답변드립니다.
             </p>
-            <dl className="mt-7 max-w-2xl overflow-hidden rounded-2xl border border-brand-200/70 bg-white">
+            <dl className="mt-7 max-w-2xl overflow-hidden rounded-2xl border border-brand-200/70 card-glass">
               {UNVERIFIED.hours.display.map((h, i) => (
                 <div
                   key={h.label}
@@ -197,11 +195,11 @@ export default function ContactPage() {
                     i > 0 ? 'border-t border-brand-100' : ''
                   } ${h.label === '점심시간' ? 'bg-brand-50/70' : ''}`}
                 >
-                  <dt className="text-[15px] font-black text-ink">{h.label}</dt>
-                  <dd className="text-[15.5px] font-bold text-brand-700">{h.time}</dd>
+                  <dt className="text-[16px] font-black text-ink">{h.label}</dt>
+                  <dd className="text-[16.5px] font-bold text-brand-700">{h.time}</dd>
                 </div>
               ))}
-              <p className="border-t border-brand-100 px-7 py-3.5 text-[13.5px] font-semibold text-ink-muted">
+              <p className="border-t border-brand-100 px-7 py-3.5 text-[14.5px] font-semibold text-ink-muted">
                 ※ {UNVERIFIED.hours.closed}
               </p>
             </dl>
@@ -216,7 +214,7 @@ export default function ContactPage() {
           >
             어디로 가면 되나요?
           </h2>
-          <p className="mt-3 max-w-[62ch] text-[15.5px] leading-[1.8] text-ink-soft">
+          <p className="mt-3 max-w-[62ch] text-[16.5px] leading-[1.8] text-ink-soft">
             {CLINIC.address.full} ({CLINIC.address.building}). {CLINIC.nearestStation} 인근이며{' '}
             {CLINIC.parking.type}을 {CLINIC.parking.fee}로 이용하실 수 있습니다.
           </p>
@@ -225,7 +223,7 @@ export default function ContactPage() {
           </div>
           <Link
             href="/visit"
-            className="group mt-8 inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[14.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
+            className="group mt-8 inline-flex items-center gap-2 border-b-[1.5px] border-brand-400 pb-1 text-[15.5px] font-bold text-brand-700 transition-colors hover:border-brand-700"
           >
             대중교통·주차 자세히 보기{' '}
             <span aria-hidden className="transition-transform group-hover:translate-x-1">

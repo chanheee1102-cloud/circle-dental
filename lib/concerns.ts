@@ -68,7 +68,7 @@ export const CONCERNS: Concern[] = [
     quote: '다른 치과에서 뽑아야 한다고 들었어요.',
     topic: '뽑아야 한다고 들어서',
     answer:
-      '한 번 더 확인해 보시는 게 좋습니다. 뽑기 전에 다시 보는 것이 이 진료의 출발점이거든요. 신경치료 후 다시 아프신 경우나 금이 갔다고 들으신 경우도 마찬가지입니다.',
+      '한 번 더 확인해 보시는 편이 좋습니다. 뽑기 전에 다시 보는 것이 이 진료의 출발점입니다. 신경치료 후 다시 아프신 경우나 금이 갔다고 들으신 경우도 마찬가지입니다.',
     href: '/treatment/save-natural-tooth',
     cta: '살릴 수 있는지 보기',
     source: 'lib/treatments.ts save-natural-tooth whoFor — "다른 곳에서 발치를 권유받은 경우" 등',
@@ -86,7 +86,7 @@ export const CONCERNS: Concern[] = [
     quote: '비용이 얼마나 나올지 몰라 겁이 나요.',
     topic: '비용이 걱정돼서',
     answer:
-      '솔직히 말씀드리면 진료비는 상태에 따라 달라서 미리 확정해 드리기가 어렵습니다. 다만 무엇이 보험이 되고 무엇이 비용을 좌우하는지는 오시기 전에 아실 수 있습니다.',
+      '진료비는 상태에 따라 달라 미리 확정해 드리기 어렵습니다. 다만 무엇이 보험이 되고 무엇이 비용을 좌우하는지는 오시기 전에 아실 수 있습니다.',
     href: '/insight/cost',
     cta: '비용 가이드',
     source: 'lib/insight.ts COST_TOPICS — 건강보험 적용·조건부·비급여 구분 안내',

@@ -3,7 +3,7 @@ import { ArticleMeta } from '@/components/article';
 import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
 import Link from 'next/link';
 import { CLINIC } from '@/lib/clinic';
-import { Container, SectionHead, Breadcrumb, MedicalNotice, ContactCta } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, abs } from '@/lib/seo';
 
@@ -94,17 +94,15 @@ export default function ProcessPage() {
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={TRAIL} />
-      </Container>
+      <PageHero
+        trail={TRAIL}
+        photo="consult"
+        eyebrow="첫 방문 안내"
+        title="치과에 처음 가면 무엇을 하나요?"
+        desc="무엇을 하는지 모르면 첫 방문이 부담스럽습니다. 접수부터 상담까지의 순서는 대체로 정해져 있습니다."
+      />
 
       <Container className="py-12 lg:py-16">
-        <SectionHead
-          as="h1"
-          eyebrow="첫 방문 안내"
-          title="치과에 처음 가면 무엇을 하나요?"
-          desc="무엇을 하는지 모르면 첫 방문이 부담스럽습니다. 일반적으로 어떤 순서로 진행되는지 정리했습니다."
-        />
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -116,25 +114,25 @@ export default function ProcessPage() {
             <li key={f.n} className="relative pb-10 last:pb-0">
               <span
                 aria-hidden
-                className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-cream text-[12.5px] font-black text-brand-600"
+                className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-wine-bg text-[13.5px] font-black text-brand-600"
               >
                 {f.n}
               </span>
               <h2 className="display-sm text-[19px] text-ink">{f.t}</h2>
-              <p className="mt-3 max-w-[64ch] text-[15.5px] leading-[1.85] text-ink-soft">{f.d}</p>
+              <p className="mt-3 max-w-[64ch] text-[16.5px] leading-[1.85] text-ink-soft">{f.d}</p>
             </li>
           ))}
         </ol>
       </Container>
 
-      <section className="border-y border-brand-200/60 bg-white py-16">
+      <section className="border-y border-brand-200/60 bg-parchment py-16">
         <Container>
           <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">첫 방문 전 자주 묻는 것</h2>
           <div className="mt-8 divide-y divide-brand-100 border-t border-brand-100">
             {FIRST_VISIT_QA.map((qa) => (
               <article key={qa.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{qa.q}</h3>
-                <p className="mt-3 max-w-[68ch] text-[15.5px] leading-[1.85] text-ink-soft">{qa.a}</p>
+                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{qa.a}</p>
               </article>
             ))}
           </div>
@@ -142,15 +140,15 @@ export default function ProcessPage() {
       </section>
 
       <Container className="py-14">
-        <div className="rounded-2xl border border-brand-200/70 bg-white p-8 shadow-[var(--shadow-soft)]">
+        <div className="rounded-2xl border border-brand-200/70 card-glass p-8 shadow-[var(--shadow-soft)]">
           <h2 className="display-sm text-[19px] text-ink">동그라미치과의원 방문 안내</h2>
-          <p className="mt-3 text-[15.5px] leading-relaxed text-ink-soft">
+          <p className="mt-3 text-[16.5px] leading-relaxed text-ink-soft">
             진료시간과 위치는 내원 안내에서, 예약은 아래 채널로 확인하실 수 있습니다.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a
               href={CLINIC.phoneHref}
-              className="rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[15.5px] font-black text-white shadow-[var(--shadow-btn)]"
+              className="rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[16.5px] font-black text-white shadow-[var(--shadow-btn)]"
             >
               {CLINIC.phone}
             </a>
@@ -158,7 +156,7 @@ export default function ProcessPage() {
               href={CLINIC.booking.naver}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-brand-300 bg-white px-6 py-3 text-[15.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="rounded-full btn-pane border px-6 py-3 text-[16.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
             >
               네이버 예약
             </a>
@@ -166,13 +164,13 @@ export default function ProcessPage() {
               href={CLINIC.booking.kakao}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-brand-300 bg-white px-6 py-3 text-[15.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="rounded-full btn-pane border px-6 py-3 text-[16.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
             >
               카카오톡 상담
             </a>
             <Link
               href="/visit"
-              className="rounded-full border border-brand-300 bg-white px-6 py-3 text-[15.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="rounded-full btn-pane border px-6 py-3 text-[16.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
             >
               오시는 길
             </Link>

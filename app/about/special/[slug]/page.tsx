@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { SPECIALS, specialBySlug } from '@/lib/specials';
 import { CLINIC } from '@/lib/clinic';
-import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { StrengthIcon } from '@/components/StrengthIcons';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, og, imageObjectSchema } from '@/lib/seo';
@@ -100,11 +100,12 @@ export default async function SpecialDetailPage({
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={trail} />
-      </Container>
-
       <article>
+        {/*
+          ⚠️ 제목을 아래 격자에서 다시 그리지 말 것 (2026-08-28) — 머리는 PageHero 가 전담한다.
+          ★ 아이콘·번호·사진은 격자에 남긴다 — 그것은 머리말이 아니라 내용이다.
+        */}
+        <PageHero trail={trail} photo="consult" eyebrow={s.eyebrow} title={s.title} />
         {/* 히어로 — 사진을 크게 */}
         <Container className="py-10 lg:py-12">
           <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
@@ -117,17 +118,16 @@ export default async function SpecialDetailPage({
                   <StrengthIcon name={s.key} />
                 </span>
                 <div>
-                  <p className="text-[12.5px] font-black tracking-[0.16em] text-brand-500">
+                  <p className="text-[13.5px] font-black tracking-[0.16em] text-brand-500">
                     {s.eyebrow}
                   </p>
                   <p className="text-[26px] font-black leading-none text-ink-muted">{s.no}</p>
                 </div>
               </div>
 
-              <h1 className="display mt-7 text-[30px] text-ink sm:text-[42px]">{s.title}</h1>
 
               {/* 원문 그대로 — AI 인용 대상 */}
-              <p className="mt-7 max-w-[58ch] text-[17px] leading-[1.9] text-ink-soft"><Sentences text={s.body} /></p>
+              <p className="mt-7 max-w-[58ch] text-[18px] leading-[1.9] text-ink-soft"><Sentences text={s.body} /></p>
 
               <div className="mt-8">
                 <ArticleMeta path={SPATH} />
@@ -148,9 +148,9 @@ export default async function SpecialDetailPage({
         </Container>
 
         {/* 용어 풀이 — 일반적인 치과 지식 */}
-        <section className="border-y border-brand-200/60 bg-white py-16">
+        <section className="border-y border-brand-200/60 bg-parchment py-16">
           <Container>
-            <p className="text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
+            <p className="text-[13.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
               알아 두면 좋은 것
             </p>
             <div className="mb-10 max-w-[70ch]">
@@ -165,7 +165,7 @@ export default async function SpecialDetailPage({
                   <h2 id={headingId(c.h)} className="display-sm scroll-mt-28 text-[19px] text-ink sm:text-[21px]">
                     {c.h}
                   </h2>
-                  <p className="mt-3.5 max-w-[70ch] text-[16px] leading-[1.85] text-ink-soft">{c.p}</p>
+                  <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft">{c.p}</p>
                 </div>
               ))}
             </div>
@@ -180,7 +180,7 @@ export default async function SpecialDetailPage({
             {s.faq.map((f) => (
               <article key={f.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{f.q}</h3>
-                <p className="mt-3 max-w-[68ch] text-[15.5px] leading-[1.85] text-ink-soft">{f.a}</p>
+                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{f.a}</p>
               </article>
             ))}
           </div>
@@ -196,7 +196,7 @@ export default async function SpecialDetailPage({
                 <Link
                   key={o.slug}
                   href={`/about/special/${o.slug}`}
-                  className="group overflow-hidden rounded-2xl border border-brand-200/70 bg-white transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+                  className="group overflow-hidden rounded-2xl border border-brand-200/70 card-glass transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image
@@ -204,10 +204,10 @@ export default async function SpecialDetailPage({
                       alt=""
                       fill
                       sizes="(max-width: 640px) 100vw, 25vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                  <p className="px-5 py-4 text-[14.5px] font-black text-ink group-hover:text-brand-700">
+                  <p className="px-5 py-4 text-[15.5px] font-black text-ink group-hover:text-brand-700">
                     {o.title}
                   </p>
                 </Link>

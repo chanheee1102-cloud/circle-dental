@@ -139,7 +139,7 @@ export function HeroMedia() {
 
       <div
         aria-hidden
-        className={`pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-[1200ms] ease-out ${
+        className={`pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-500 ease-out ${
           shown ? 'opacity-100' : 'opacity-0'
         }`}
       >

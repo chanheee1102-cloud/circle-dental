@@ -6,7 +6,7 @@ import { SYMPTOMS, symptomBySlug } from '@/lib/symptoms';
 import { treatmentBySlug } from '@/lib/treatments';
 import { conditionsForSymptom } from '@/lib/conditions';
 import { CLINIC } from '@/lib/clinic';
-import { Container, Breadcrumb, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
@@ -86,21 +86,18 @@ export default async function SymptomDetailPage({
         ]}
       />
 
-      <Container className="pt-10">
-        <Breadcrumb trail={trail} />
-      </Container>
-
       <article>
-        <Container className="py-10 lg:py-14">
-          <p className="text-[12.5px] font-black tracking-[0.2em] text-gold-600 uppercase">증상</p>
-          {/* 제목은 환자가 말하는 문장 그대로. 자연어 질의와 매칭되는 핵심 지점이다. */}
-          <h1 className="mt-4 max-w-3xl text-[30px] font-black leading-[1.26] tracking-[-0.03em] text-ink sm:text-[40px]">
-            {s.title}
-          </h1>
+        {/*
+          ⚠️ 머리를 다시 손으로 그리지 말 것 — PageHero 하나가 전담한다(2026-08-28).
+          ⚠️ 바로 아래 '즉답 블록' 을 히어로 설명글로 옮기지 말 것. 같은 문장이 두 번 나오면
+             인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
+        */}
+        <PageHero trail={trail} photo="room" eyebrow="증상" title={s.title} />
+        <Container className="py-12 lg:py-16">
 
           {/* 즉답 블록 — AI 가 인용하는 자리. 제목 바로 아래에서 답이 끝난다. */}
-          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 bg-white p-6">
-            <p className="text-[17px] leading-[1.85] text-ink"><Sentences text={s.answer} /></p>
+          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 card-glass p-6">
+            <p className="text-[18px] leading-[1.85] text-ink"><Sentences text={s.answer} /></p>
           </div>
 
           {/*
@@ -160,7 +157,7 @@ export default async function SymptomDetailPage({
             >
               <span
                 aria-hidden
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-[14px] font-black text-white"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-[15px] font-black text-white"
               >
                 !
               </span>{' '}
@@ -168,7 +165,7 @@ export default async function SymptomDetailPage({
             </h2>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
               {s.urgent.map((u) => (
-                <li key={u} className="flex gap-2.5 text-[15px] leading-relaxed text-ink-soft">
+                <li key={u} className="flex gap-2.5 text-[16px] leading-relaxed text-ink-soft">
                   <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500" />
                   {u}
                 </li>
@@ -176,7 +173,7 @@ export default async function SymptomDetailPage({
             </ul>
             <a
               href={CLINIC.phoneHref}
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-[15.5px] font-black text-white transition-colors hover:bg-brand-600"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-[16.5px] font-black text-white transition-colors hover:bg-brand-600"
             >
               {CLINIC.phone} 로 전화
             </a>
@@ -190,21 +187,21 @@ export default async function SymptomDetailPage({
           >
             왜 이런 증상이 생기나요?
           </h2>
-          <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
+          <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
             아래는 이 증상에서 흔히 확인되는 원인들입니다. 증상만으로는 어느 쪽인지 특정할 수 없고,
             검사로 확인해야 치료가 정해집니다.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {s.causes.map((c) => (
-              <div key={c.name} className="rounded-2xl border border-brand-100 bg-white p-6">
-                <h3 className="text-[16.5px] font-black text-ink">{c.name}</h3>
-                <p className="mt-2.5 text-[14.5px] leading-relaxed text-ink-soft">{c.detail}</p>
+              <div key={c.name} className="rounded-2xl border border-brand-100 card-glass p-6">
+                <h3 className="text-[17.5px] font-black text-ink">{c.name}</h3>
+                <p className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft">{c.detail}</p>
               </div>
             ))}
           </div>
         </Container>
 
-        <section className="border-t border-brand-100 bg-white py-14">
+        <section className="border-t border-brand-100 bg-parchment py-14">
           <Container>
             <h2
               id={headingId('오기 전에 해볼 수 있는 것이 있나요?')}
@@ -212,16 +209,16 @@ export default async function SymptomDetailPage({
             >
               오기 전에 해볼 수 있는 것이 있나요?
             </h2>
-            <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
+            <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
               증상을 덜어주는 방법이지 원인을 없애는 방법은 아닙니다. 나아진 것처럼 느껴져도 원인은
               그대로 남아 있습니다.
             </p>
             <ul className="mt-7 max-w-[68ch] space-y-3.5">
               {s.selfCare.map((c) => (
-                <li key={c} className="flex gap-3 text-[15.5px] leading-relaxed text-ink-soft">
+                <li key={c} className="flex gap-3 text-[16.5px] leading-relaxed text-ink-soft">
                   <span
                     aria-hidden
-                    className="mt-1.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[12.5px] text-brand-600"
+                    className="mt-1.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[13.5px] text-brand-600"
                   >
                     ✓
                   </span>
@@ -251,7 +248,7 @@ export default async function SymptomDetailPage({
             >
               어떤 질환일 수 있나요?
             </h2>
-            <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">
+            <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
               이 증상에서 흔히 확인되는 질환입니다. 증상만으로 어느 쪽인지 단정할 수 없으니
               무엇을 확인하게 되는지 미리 읽어 보시는 정도로 보시면 됩니다.
             </p>
@@ -260,12 +257,12 @@ export default async function SymptomDetailPage({
                 <Link
                   key={c.slug}
                   href={`/insight/condition/${c.slug}`}
-                  className="group rounded-2xl border border-brand-100 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+                  className="group rounded-2xl border border-brand-100 card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
                 >
-                  <h3 className="text-[17px] font-black text-ink group-hover:text-brand-700">
+                  <h3 className="text-[18px] font-black text-ink group-hover:text-brand-700">
                     {c.name}
                   </h3>
-                  <p className="mt-2.5 text-[14px] leading-relaxed text-ink-soft">{c.definition}</p>
+                  <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">{c.definition}</p>
                 </Link>
               ))}
             </div>
@@ -282,12 +279,12 @@ export default async function SymptomDetailPage({
                 <Link
                   key={t!.slug}
                   href={`/treatment/${t!.slug}`}
-                  className="group rounded-2xl border border-brand-100 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+                  className="group rounded-2xl border border-brand-100 card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
                 >
-                  <h3 className="text-[17px] font-black text-ink group-hover:text-brand-700">
+                  <h3 className="text-[18px] font-black text-ink group-hover:text-brand-700">
                     {t!.name}
                   </h3>
-                  <p className="mt-2.5 text-[14px] leading-relaxed text-ink-soft">{t!.summary}</p>
+                  <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">{t!.summary}</p>
                 </Link>
               ))}
             </div>

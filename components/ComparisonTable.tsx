@@ -18,18 +18,18 @@ export function ComparisonTable({ data }: { data: Data }) {
       <h2 id={data.id} className="display-sm scroll-mt-28 text-[22px] text-ink sm:text-[26px]">
         {data.title}
       </h2>
-      <p className="mt-3 max-w-[64ch] text-[15.5px] leading-[1.8] text-ink-soft">{data.lead}</p>
+      <p className="mt-3 max-w-[64ch] text-[16.5px] leading-[1.8] text-ink-soft">{data.lead}</p>
 
       <div className="mt-7 overflow-x-auto rounded-2xl border border-brand-200/70">
         <table className="w-full min-w-[640px] border-collapse text-left">
           <caption className="sr-only">{data.title}</caption>
           <thead>
             <tr className="bg-brand-50/70">
-              <th scope="col" className="px-6 py-4 text-[13px] font-black text-ink-muted">
+              <th scope="col" className="px-6 py-4 text-[14px] font-black text-ink-muted">
                 비교 기준
               </th>
               {data.columns.map((c) => (
-                <th key={c} scope="col" className="px-6 py-4 text-[14.5px] font-black text-ink">
+                <th key={c} scope="col" className="px-6 py-4 text-[15.5px] font-black text-ink">
                   {c}
                 </th>
               ))}
@@ -40,14 +40,14 @@ export function ComparisonTable({ data }: { data: Data }) {
               <tr key={r.label} className="border-t border-brand-100">
                 <th
                   scope="row"
-                  className="bg-white px-6 py-4 align-top text-[14px] font-bold text-ink-soft"
+                  className="bg-parchment px-6 py-4 align-top text-[15px] font-bold text-ink-soft"
                 >
                   {r.label}
                 </th>
                 {r.cells.map((cell, i) => (
                   <td
                     key={`${r.label}-${i}`}
-                    className="px-6 py-4 align-top text-[14.5px] leading-relaxed text-ink"
+                    className="px-6 py-4 align-top text-[15.5px] leading-relaxed text-ink"
                   >
                     {cell}
                   </td>
@@ -59,7 +59,7 @@ export function ComparisonTable({ data }: { data: Data }) {
       </div>
 
       {/* ⚠️ 이 줄을 빼지 말 것 — 표는 차이를 보여 주는 것이지 판단을 대신하지 않는다. */}
-      <p className="mt-4 max-w-[68ch] text-[13.5px] leading-relaxed text-ink-muted">{data.note}</p>
+      <p className="mt-4 max-w-[68ch] text-[14.5px] leading-relaxed text-ink-muted">{data.note}</p>
     </section>
   );
 }

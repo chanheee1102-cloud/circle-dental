@@ -19,12 +19,31 @@
  *   즉시 읽힌다. 라벨까지 한글이면 두 줄이 서로 경쟁한다.
  */
 
+/*
+ * ⚠️⚠️ 2026-08-27 현재 **화면에서 안 쓴다** ⚠️⚠️
+ *   히어로의 사실 띠(전문의·대표원장·야간진료·토요일·주차)를 걷어내면서 호출처가 사라졌다.
+ *   지우지 않고 남기는 이유 —
+ *     ① 여기 담긴 판단(확인된 값만 올린다, 라벨과 값이 같은 말을 하지 않는다,
+ *        야간·토요일이 없으면 대표 진료시간으로 대체한다)이 다시 필요해질 수 있다.
+ *     ② 되살릴 때 UNVERIFIED 게이트를 다시 짜는 것이 이 파일을 읽는 것보다 오래 걸린다.
+ *   ⚠️ 되살릴 거면 형태는 라벨/값 격자로 돌아가지 말 것 — 참고 경쟁 사이트와 같은 장치다.
+ */
 import { CLINIC, UNVERIFIED } from './clinic';
 import { DOCTORS } from './doctors';
 
 export interface HeroFact {
   label: string;
   value: string;
+  /**
+   * 첫 화면 칩에 쓰는 **한 덩어리 문구**.
+   *
+   * ★ 왜 따로 두나 — 칩은 라벨과 값을 한 줄에 붙여 읽는다. 그냥 이으면
+   *   "전문의 통합치의학과 전문의 3인" 처럼 같은 말이 두 번 나오거나,
+   *   "화·목 20:30까지" 처럼 무엇에 대한 시간인지 사라진다.
+   *   그래서 항목마다 자연스러운 한 문장을 여기서 직접 만든다.
+   * ⚠️ 라벨/값은 그대로 둔다 — 되살릴 때와 다른 화면에서 쓸 수 있다.
+   */
+  chip: string;
 }
 
 /** '09:30 - 20:30' → '20:30'. 못 읽으면 빈 문자열. */
@@ -46,9 +65,17 @@ export function heroFacts(): HeroFact[] {
    *   '3인' 이라는 숫자보다 **어떤 자격인지**가 판단에 쓰인다.
    */
   if (UNVERIFIED.doctors.verified && DOCTORS.length > 0) {
-    out.push({ label: '전문의', value: `통합치의학과 전문의 ${DOCTORS.length}인` });
+    out.push({
+      label: '전문의',
+      value: `통합치의학과 전문의 ${DOCTORS.length}인`,
+      chip: `통합치의학과 전문의 ${DOCTORS.length}인`,
+    });
     /* ② 대표원장 이력 — 원본 홈페이지가 첫 화면에 내세우던 사실이다. */
-    out.push({ label: '대표원장', value: '경희대 치의학전문대학원 외래교수' });
+    out.push({
+      label: '대표원장',
+      value: '경희대 치의학전문대학원 외래교수',
+      chip: '대표원장 경희대 외래교수',
+    });
   }
 
   if (UNVERIFIED.hours.verified) {
@@ -56,7 +83,13 @@ export function heroFacts(): HeroFact[] {
 
     /* ③ 야간 진료 — 직장인이 실제로 찾는 값. 요일과 끝 시각을 함께 준다. */
     const night = rows.find((r) => closeMinutes(r.time) >= 19 * 60);
-    if (night) out.push({ label: '야간진료', value: `${night.label} ${closeTime(night.time)}까지` });
+    if (night) {
+      out.push({
+        label: '야간진료',
+        value: `${night.label} ${closeTime(night.time)}까지`,
+        chip: `야간진료 ${night.label} ${closeTime(night.time)}까지`,
+      });
+    }
 
     /*
      * ④ 토요일 — 여는지 아닌지가 궁금한 것이므로 '연다 + 언제까지' 로 답한다.
@@ -64,11 +97,21 @@ export function heroFacts(): HeroFact[] {
      *      처럼 같은 말이 두 번 나온다(실측). 라벨은 갈래, 값은 새 정보여야 한다.
      */
     const sat = rows.find((r) => /토/.test(r.label));
-    if (sat) out.push({ label: '토요일', value: `${sat.time.replace('-', '–')} 진료` });
+    if (sat) {
+      out.push({
+        label: '토요일',
+        value: `${sat.time.replace('-', '–')} 진료`,
+        chip: `토요일 ${sat.time.replace('-', '–')} 진료`,
+      });
+    }
 
     /* 야간·토요일이 둘 다 없으면 대표 진료시간이라도 — 빈 띠보다 낫다. */
     if (!night && !sat && rows[0]) {
-      out.push({ label: '진료시간', value: `${rows[0].label} ${rows[0].time}` });
+      out.push({
+        label: '진료시간',
+        value: `${rows[0].label} ${rows[0].time}`,
+        chip: `${rows[0].label} ${rows[0].time}`,
+      });
     }
   }
 
@@ -78,8 +121,26 @@ export function heroFacts(): HeroFact[] {
    *   주차 여부는 사이트에 안 적혀 있으면 알 길이 없다.
    */
   if (CLINIC.parking?.fee) {
-    out.push({ label: '주차', value: `건물 내 주차 ${CLINIC.parking.fee}` });
+    out.push({
+      label: '주차',
+      value: `건물 내 주차 ${CLINIC.parking.fee}`,
+      chip: `건물 내 주차 ${CLINIC.parking.fee}`,
+    });
   }
 
-  return out.slice(0, 5);
+  /*
+   * ⑥ 지역 — **검색 때문에 넣는다** (2026-08-27).
+   *   첫 화면 문구를 원본 홈페이지 3줄로 되돌리면서 '고양시 덕양구 화정동' 이 히어로에서
+   *   빠졌다. 지역명은 h1 주변 본문에 있을 때 가장 세게 먹히는 신호이고,
+   *   "고양 화정동 치과" 같은 질의에 AI 가 답할 때 근거로 삼는 자리가 거기다.
+   *   페이지 제목·JSON-LD·오시는 길·푸터에만 있으면 첫 화면 신호가 0 이 된다.
+   * ⚠️ 이 항목을 빼려면 지역명을 **첫 화면 어딘가에** 대신 넣을 것.
+   */
+  out.push({
+    label: '위치',
+    value: `${CLINIC.address.dong} · ${CLINIC.nearestStation} 인근`,
+    chip: `${CLINIC.address.dong} · ${CLINIC.nearestStation} 인근`,
+  });
+
+  return out.slice(0, 6);
 }

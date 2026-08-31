@@ -50,7 +50,7 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
                 aria-hidden
                 /* 번호는 영문 세리프 — 라틴 숫자만 있는 자리라 조건에 맞고, 본문 글꼴과
                    결이 달라 순번이 '장식'이 아니라 '표식'으로 읽힌다(globals.css .display-en). */
-                className="display-en inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[15px] text-brand-500 transition-colors group-hover:border-gold-500 group-hover:text-gold-600"
+                className="display-en inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[16px] text-brand-500 transition-colors group-hover:border-gold-500 group-hover:text-gold-600"
               >
                 {String(i + 1).padStart(2, '0')}
               </span>
@@ -63,21 +63,21 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
                   이 진료 페이지에 답이 몇 개 적혀 있는지 — 카드 격자에 있던 값이다.
                   '읽을 것이 있다' 는 신호라 목록으로 옮길 때 함께 가져왔다.
                 */}
-                <p className="mt-1.5 text-[12.5px] font-bold tracking-wide text-brand-500 tabular-nums">
+                <p className="mt-1.5 text-[13.5px] font-bold tracking-wide text-brand-500 tabular-nums">
                   질문 {t.qa.length}개
                 </p>
               </div>
 
               <div className="min-w-0">
                 {/* 한 줄 요약 — 카드 격자가 보여 주던 값. 칩만으로는 무엇을 하는 치료인지 모른다. */}
-                <p className="text-[14.5px] leading-[1.7] text-ink-soft">{t.summary}</p>
+                <p className="text-[15.5px] leading-[1.7] text-ink-soft">{t.summary}</p>
 
                 {/* '이런 경우' — 셋까지만. 넷을 넘으면 줄이 두 줄이 되어 목록의 리듬이 깨진다. */}
                 <ul className="mt-3 flex flex-wrap gap-2">
                   {t.whoFor.slice(0, 3).map((w) => (
                     <li
                       key={w}
-                      className="rounded-full bg-brand-100/80 px-2.5 py-1 text-[12.5px] leading-snug text-ink-soft"
+                      className="rounded-full bg-brand-100/80 px-2.5 py-1 text-[13.5px] leading-snug text-ink-soft"
                     >
                       {w}
                     </li>
@@ -107,17 +107,17 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
   if (headless) return list;
 
   return (
-    <section className="py-24 lg:py-28">
+    <section className="py-24 lg:py-32">
       <Container>
         <div className="max-w-3xl">
-          <p className="flex items-center gap-2.5 text-[12.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
+          <p className="flex items-center gap-2.5 text-[13.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
             진료 영역
           </p>
           <h2 className="display-sm mt-4 text-[30px] text-ink sm:text-[38px]">
             어떤 경우에 어떤 진료를 하나요?
           </h2>
-          <p className="mt-5 text-[16px] leading-[1.85] text-ink-soft">
+          <p className="mt-5 text-[17px] leading-[1.85] text-ink-soft">
             <Sentences
               text={`${TREATMENTS.length}가지 진료 영역을 ‘이런 경우에 봅니다’ 기준으로 정리했습니다. 자기 상황과 가까운 줄을 눌러 보세요.`}
             />

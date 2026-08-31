@@ -371,7 +371,7 @@ export const SYMPTOMS: Symptom[] = [
       '치실을 하루 한 번은 함께 씁니다. 유치는 사이가 넓게 닿아 칫솔이 안 들어갑니다.',
     ],
     urgent: ['아이가 한쪽으로만 씹거나 그 부위를 피할 때', '잇몸이 붓거나 고름 주머니가 보일 때', '밤에 아파서 깰 때', '뺨이 부었을 때'],
-    relatedTreatments: ['pediatric', 'cavity'],
+    relatedTreatments: ['cavity', 'scaling-prevention'],
   },
   {
     slug: 'tooth-eruption',
@@ -390,7 +390,7 @@ export const SYMPTOMS: Symptom[] = [
       '어느 치아가 언제 빠졌는지 기록해 두면 진료 때 도움이 됩니다.',
     ],
     urgent: ['유치가 빠지지 않았는데 영구치가 이미 올라왔을 때', '좌우 대칭이 크게 어긋날 때', '나올 시기가 한참 지났는데 안 날 때'],
-    relatedTreatments: ['pediatric'],
+    relatedTreatments: ['cavity'],
   },
   {
     slug: 'loose-denture',
