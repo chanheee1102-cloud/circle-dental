@@ -856,9 +856,9 @@ time,
    */
   background-image:
     radial-gradient(120% 90% at 88% -8%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%),
-    linear-gradient(135deg, rgba(23, 23, 26, 0.32), rgba(23, 23, 26, 0.1));
-  backdrop-filter: blur(10px) brightness(0.5) saturate(1.6);
-  -webkit-backdrop-filter: blur(10px) brightness(0.5) saturate(1.6);
+    linear-gradient(135deg, rgba(23, 23, 26, 0.46), rgba(23, 23, 26, 0.22));
+  backdrop-filter: blur(10px) brightness(0.46) saturate(1.6);
+  -webkit-backdrop-filter: blur(10px) brightness(0.46) saturate(1.6);
   /*
    * ⚠️ 윗변의 밝은 실선과 아랫변의 그늘 — 이 둘이 **유리의 두께**다. 지우면 그냥 어두운 네모가 된다.
    * ★ 그림자는 세 겹이다(가까운 것 / 중간 / 먼 것). 한 겹이면 스티커처럼 붙어 보인다.
