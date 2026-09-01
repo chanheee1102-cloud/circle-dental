@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
-import { Container, PageHero } from '@/components/ui';
+import { Container, PageHero, Sentences } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/seo';
@@ -85,7 +85,7 @@ export default function VisitPage() {
                   </span>
                 </dd>
                 <dd className="mt-2 text-[14.5px] leading-relaxed text-ink-muted">
-                  {CLINIC.parking.note}
+                  <Sentences text={CLINIC.parking.note} />
                 </dd>
               </div>
             </dl>
@@ -128,7 +128,7 @@ export default function VisitPage() {
                       {h.time}
                       {h.note && (
                         <span className="ml-2 rounded-full bg-gold-500/15 px-2 py-0.5 text-[13.5px] font-black text-gold-600">
-                          {h.note}
+                          <Sentences text={h.note} />
                         </span>
                       )}
                     </span>
@@ -152,8 +152,7 @@ export default function VisitPage() {
         <div className="mt-8">
           <h2 className="display-sm text-[22px] text-ink">어떻게 찾아가나요?</h2>
           <p className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft">
-            길찾기는 아래 네이버 지도나 카카오맵 버튼을 눌러 주세요. 대중교통 경로와 로드뷰까지 함께
-            확인하실 수 있습니다.
+            <Sentences text="길찾기는 아래 네이버 지도나 카카오맵 버튼을 눌러 주세요. 대중교통 경로와 로드뷰까지 함께 확인하실 수 있습니다." />
           </p>
           <div className="mt-6">
             <ClinicMap height={460} />

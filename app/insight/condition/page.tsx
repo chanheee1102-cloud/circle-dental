@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import { CONDITIONS } from '@/lib/conditions';
-import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/seo';
 
@@ -69,7 +69,7 @@ export default function ConditionIndexPage() {
                 <h2 className="display-sm text-[19px] text-ink group-hover:text-brand-700">{c.name}</h2>
                 <span className="text-[14px] font-semibold text-ink-muted">{c.aka.join(' · ')}</span>
               </div>
-              <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">{c.definition}</p>
+              <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft"><Sentences text={c.definition} /></p>
               <span className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-black text-brand-700">
                 자세히 보기
                 <span aria-hidden className="transition-transform group-hover:translate-x-1">

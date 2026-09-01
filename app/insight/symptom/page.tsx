@@ -3,7 +3,7 @@ import { ArticleMeta } from '@/components/article';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SYMPTOMS } from '@/lib/symptoms';
-import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
 
@@ -84,7 +84,7 @@ export default function SymptomIndexPage() {
                   </h2>
                   {/* 목록에서도 즉답 첫 문장을 보여 준다 — 클릭 전에 답의 방향을 알 수 있게. */}
                   <p className="mt-2.5 line-clamp-2 text-[15.5px] leading-relaxed text-ink-soft">
-                    {s.answer}
+                    <Sentences text={s.answer} />
                   </p>
                 </div>
                 <span

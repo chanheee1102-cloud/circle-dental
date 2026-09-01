@@ -3,6 +3,7 @@ import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { NAV } from '@/lib/nav';
 import { LogoLockup } from '@/components/Logo';
 import { SITE_MODIFIED, formatKoreanDate } from '@/lib/contentMeta';
+import { Sentences } from '@/components/ui';
 
 /**
  * 전역 푸터.
@@ -62,7 +63,7 @@ export function SiteFooter() {
               {CLINIC.nameEn}
             </p>
             <p className="mt-5 text-[15px] leading-relaxed text-mist/90 lg:max-w-none">
-              {CLINIC.description}
+              <Sentences text={CLINIC.description} />
             </p>
             {/*
               ★ 전화 버튼을 칸 폭에 꽉 채운다(w-full). 아래 채널 격자와 좌우 끝이 맞아
@@ -223,9 +224,7 @@ export function SiteFooter() {
         */}
         <div className="mt-12 border-t border-white/10 pt-8">
           <p className="max-w-[86ch] text-[13.5px] leading-relaxed text-mist/70">
-            본 사이트의 진료 정보는 일반적인 이해를 돕기 위한 것으로 개별 진단을 대신하지 않습니다. 치료
-            결과는 개인의 구강 상태와 전신 건강에 따라 다를 수 있으며, 모든 의료 행위에는 부작용이 따를 수
-            있습니다.
+            <Sentences text="본 사이트의 진료 정보는 일반적인 이해를 돕기 위한 것으로 개별 진단을 대신하지 않습니다. 치료 결과는 개인의 구강 상태와 전신 건강에 따라 다를 수 있으며, 모든 의료 행위에는 부작용이 따를 수 있습니다." />
           </p>
         </div>
         {/*

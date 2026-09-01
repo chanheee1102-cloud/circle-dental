@@ -165,7 +165,7 @@ export default async function SpecialDetailPage({
                   <h2 id={headingId(c.h)} className="display-sm scroll-mt-28 text-[19px] text-ink sm:text-[21px]">
                     {c.h}
                   </h2>
-                  <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft">{c.p}</p>
+                  <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft"><Sentences text={c.p} /></p>
                 </div>
               ))}
             </div>
@@ -180,7 +180,7 @@ export default async function SpecialDetailPage({
             {s.faq.map((f) => (
               <article key={f.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{f.q}</h3>
-                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{f.a}</p>
+                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft"><Sentences text={f.a} /></p>
               </article>
             ))}
           </div>

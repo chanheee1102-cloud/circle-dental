@@ -274,7 +274,7 @@ export default async function ConditionDetailPage({
             {c.faq.map((f) => (
               <article key={f.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{f.q}</h3>
-                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{f.a}</p>
+                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft"><Sentences text={f.a} /></p>
               </article>
             ))}
           </div>

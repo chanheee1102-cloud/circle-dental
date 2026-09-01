@@ -1,5 +1,5 @@
 import { WHY_US, WHY_US_COUNT } from '@/lib/whyUs';
-import { Container } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
 
 /**
@@ -103,7 +103,7 @@ export function WhyUsSection() {
                       <h3 className="display-sm mt-3.5 text-[17.5px] leading-snug text-ink">
                         {c.title}
                       </h3>
-                      <p className="mt-3 flex-1 text-[15px] leading-[1.8] text-ink-soft">{c.body}</p>
+                      <p className="mt-3 flex-1 text-[15px] leading-[1.8] text-ink-soft"><Sentences text={c.body} /></p>
                     </li>
                   ))}
                 </ul>

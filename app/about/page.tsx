@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CLINIC, TREATMENT_PILLARS, OUTREACH, CREDENTIALS } from '@/lib/clinic';
 import { IMG } from '@/lib/assets';
-import { Container, SectionHead, ContactCta, PageHero } from '@/components/ui';
+import { Container, SectionHead, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { SpecialGrid } from '@/components/SpecialGrid';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { JsonLd } from '@/components/JsonLd';
@@ -121,7 +121,7 @@ export default function AboutPage() {
                 className="card-glass rounded-[18px] border border-mist p-7 sm:p-8"
               >
                 <h2 className="display-sm text-[20px] text-ink sm:text-[22px]">{qa.q}</h2>
-                <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft">{qa.a}</p>
+                <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft"><Sentences text={qa.a} /></p>
               </article>
             ))}
           </div>

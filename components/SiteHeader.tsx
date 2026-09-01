@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { NAV, type NavItem } from '@/lib/nav';
 import { CLINIC } from '@/lib/clinic';
 import { LogoLockup } from '@/components/Logo';
+import { Sentences } from '@/components/ui';
 
 /**
  * 전역 헤더.
@@ -373,7 +374,7 @@ export function SiteHeader() {
                                 </span>
                                 {c.desc && (
                                   <span className="mt-0.5 block text-[13.5px] text-ash">
-                                    {c.desc}
+                                    <Sentences text={c.desc} />
                                   </span>
                                 )}
                               </Link>

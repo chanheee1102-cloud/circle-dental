@@ -900,7 +900,7 @@ function HoursSection() {
                       <strong className="font-semibold text-signal">{CLINIC.parking.fee}</strong>
                       {/* ⚠️ 기계식 주차장 주의사항을 빼지 말 것 — 큰 차량이 헛걸음하는 것을 막는다. */}
                       <span className="mt-1.5 block text-[16px] leading-[1.8] text-mist/70">
-                        {CLINIC.parking.note}
+                        <Sentences text={CLINIC.parking.note} />
                       </span>
                     </dd>
                   </div>

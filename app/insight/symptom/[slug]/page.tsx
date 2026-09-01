@@ -188,14 +188,13 @@ export default async function SymptomDetailPage({
             왜 이런 증상이 생기나요?
           </h2>
           <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
-            아래는 이 증상에서 흔히 확인되는 원인들입니다. 증상만으로는 어느 쪽인지 특정할 수 없고,
-            검사로 확인해야 치료가 정해집니다.
+            <Sentences text="아래는 이 증상에서 흔히 확인되는 원인들입니다. 증상만으로는 어느 쪽인지 특정할 수 없고, 검사로 확인해야 치료가 정해집니다." />
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {s.causes.map((c) => (
               <div key={c.name} className="rounded-2xl border border-brand-100 card-glass p-6">
                 <h3 className="text-[17.5px] font-black text-ink">{c.name}</h3>
-                <p className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft">{c.detail}</p>
+                <p className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft"><Sentences text={c.detail} /></p>
               </div>
             ))}
           </div>
@@ -210,8 +209,7 @@ export default async function SymptomDetailPage({
               오기 전에 해볼 수 있는 것이 있나요?
             </h2>
             <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
-              증상을 덜어주는 방법이지 원인을 없애는 방법은 아닙니다. 나아진 것처럼 느껴져도 원인은
-              그대로 남아 있습니다.
+              <Sentences text="증상을 덜어주는 방법이지 원인을 없애는 방법은 아닙니다. 나아진 것처럼 느껴져도 원인은 그대로 남아 있습니다." />
             </p>
             <ul className="mt-7 max-w-[68ch] space-y-3.5">
               {s.selfCare.map((c) => (
@@ -249,8 +247,7 @@ export default async function SymptomDetailPage({
               어떤 질환일 수 있나요?
             </h2>
             <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
-              이 증상에서 흔히 확인되는 질환입니다. 증상만으로 어느 쪽인지 단정할 수 없으니
-              무엇을 확인하게 되는지 미리 읽어 보시는 정도로 보시면 됩니다.
+              <Sentences text="이 증상에서 흔히 확인되는 질환입니다. 증상만으로 어느 쪽인지 단정할 수 없으니 무엇을 확인하게 되는지 미리 읽어 보시는 정도로 보시면 됩니다." />
             </p>
             <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {conditions.map((c) => (
@@ -262,7 +259,7 @@ export default async function SymptomDetailPage({
                   <h3 className="text-[18px] font-black text-ink group-hover:text-brand-700">
                     {c.name}
                   </h3>
-                  <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">{c.definition}</p>
+                  <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft"><Sentences text={c.definition} /></p>
                 </Link>
               ))}
             </div>

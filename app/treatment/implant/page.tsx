@@ -272,8 +272,7 @@ export default function ImplantPage() {
                   화면에서 먼저 심어 봅니다
                 </h3>
                 <p className="mt-3.5 text-[16px] leading-[1.85] text-ink-soft">
-                  신경관까지 남은 높이와 뼈 두께를 단면으로 확인하고, 고정체가 들어갈 자리를 미리
-                  잡아 둡니다. 수술 중에 판단할 것을 수술 전으로 옮기는 것이 이 방식의 요점입니다.
+                  <Sentences text="신경관까지 남은 높이와 뼈 두께를 단면으로 확인하고, 고정체가 들어갈 자리를 미리 잡아 둡니다. 수술 중에 판단할 것을 수술 전으로 옮기는 것이 이 방식의 요점입니다." />
                 </p>
               </div>
             </Card>
@@ -285,7 +284,7 @@ export default function ImplantPage() {
                     <NumChip n={i + 1} />
                     <div>
                       <h3 className="display-sm text-[18px] tracking-[-0.01em] text-ink">{b.title}</h3>
-                      <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft">{b.body}</p>
+                      <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={b.body} /></p>
                     </div>
                   </div>
                 </Card>
@@ -323,7 +322,7 @@ export default function ImplantPage() {
                     </div>
                     <div className="flex flex-1 flex-col p-6">
                       <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink">{s.title}</h3>
-                      <p className="mt-2.5 text-[15px] leading-[1.8] text-ink-soft">{s.body}</p>
+                      <p className="mt-2.5 text-[15px] leading-[1.8] text-ink-soft"><Sentences text={s.body} /></p>
                     </div>
                   </Card>
                 </li>
@@ -362,7 +361,7 @@ export default function ImplantPage() {
 
           {/* ⚠️ 이 단서를 지우지 말 것 — 카드 두 장만 두면 '디지털이 항상 낫다' 로 읽힌다. */}
           <p className="reveal mt-8 max-w-[74ch] text-[14.5px] leading-[1.9] text-ink-muted">
-            {IMPLANT_COMPARE.note}
+            <Sentences text={IMPLANT_COMPARE.note} />
           </p>
         </Container>
       </section>
@@ -410,7 +409,7 @@ export default function ImplantPage() {
                             className="object-cover"
                           />
                         </div>
-                        <p className="mt-2.5 text-[13.5px] font-bold text-brand-300">{im.caption}</p>
+                        <p className="mt-2.5 text-[13.5px] font-bold text-brand-300"><Sentences text={im.caption} /></p>
                       </li>
                     ))}
                   </ul>
@@ -440,7 +439,7 @@ export default function ImplantPage() {
               <Card as="li" key={s.title} className="reveal p-7">
                 <NumChip n={String(i + 1).padStart(2, '0')} />
                 <h3 className="display-sm mt-5 text-[18px] tracking-[-0.01em] text-ink">{s.title}</h3>
-                <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft">{s.body}</p>
+                <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={s.body} /></p>
               </Card>
             ))}
           </ul>
@@ -462,7 +461,7 @@ export default function ImplantPage() {
             */}
             <blockquote>
               <p className="display-sm max-w-[22em] text-[clamp(28px,4.2vw,46px)] leading-[1.34] tracking-[-0.03em] text-white">
-                자연치아를 살리기 위해 노력하며, 임플란트는 마지막 선택이 될 수 있도록 합니다.
+                <Sentences text="자연치아를 살리기 위해 노력하며, 임플란트는 마지막 선택이 될 수 있도록 합니다." />
               </p>
             </blockquote>
 
@@ -670,8 +669,7 @@ export default function ImplantPage() {
                   심을 수 있는지부터 확인해 보세요
                 </h2>
                 <p className="mt-5 max-w-[50ch] text-[16.5px] leading-[1.9] text-ink-soft">
-                  뼈의 양과 잇몸 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이
-                  필요한지 말씀드립니다.
+                  <Sentences text="뼈의 양과 잇몸 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이 필요한지 말씀드립니다." />
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">

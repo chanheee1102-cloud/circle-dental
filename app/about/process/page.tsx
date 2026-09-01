@@ -3,7 +3,7 @@ import { ArticleMeta } from '@/components/article';
 import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
 import Link from 'next/link';
 import { CLINIC } from '@/lib/clinic';
-import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, abs } from '@/lib/seo';
 
@@ -132,7 +132,7 @@ export default function ProcessPage() {
             {FIRST_VISIT_QA.map((qa) => (
               <article key={qa.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{qa.q}</h3>
-                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{qa.a}</p>
+                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft"><Sentences text={qa.a} /></p>
               </article>
             ))}
           </div>

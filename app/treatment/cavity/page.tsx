@@ -235,9 +235,9 @@ export default function CavityPage() {
                     <span className="text-[13.5px] font-black text-clay-400 tabular-nums">{d.n}</span>
                     <p className="text-[18px] font-black tracking-[-0.02em] text-white">{d.layer}</p>
                   </div>
-                  <p className="mt-3 text-[15.5px] leading-[1.85] text-brand-300">{d.body}</p>
+                  <p className="mt-3 text-[15.5px] leading-[1.85] text-brand-300"><Sentences text={d.body} /></p>
                   <p className="mt-4 inline-flex rounded-full bg-clay-400/12 px-3 py-1.5 text-[13.5px] font-black text-clay-300">
-                    {d.cure}
+                    <Sentences text={d.cure} />
                   </p>
                 </li>
               ))}
@@ -422,8 +422,7 @@ export default function CavityPage() {
                 신경을 살릴 수 있는 상태인지부터 확인하세요
               </h2>
               <p className="reveal mt-6 max-w-[32em] text-[17px] leading-[1.9] text-brand-300">
-                같은 깊이라도 신경의 노출 정도와 감염 상태에 따라 방법이 달라집니다. 검사로 확인한
-                뒤에 무엇이 가능한지 말씀드립니다.
+                <Sentences text="같은 깊이라도 신경의 노출 정도와 감염 상태에 따라 방법이 달라집니다. 검사로 확인한 뒤에 무엇이 가능한지 말씀드립니다." />
               </p>
             </div>
             <div className="reveal flex flex-wrap gap-3">

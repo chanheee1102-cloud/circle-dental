@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { SPECIALS } from '@/lib/specials';
 import { StrengthIcon } from '@/components/StrengthIcons';
+import { Sentences } from '@/components/ui';
 
 /**
  * '동그라미 치과만의 특별함' 카드 5장.
@@ -53,7 +54,7 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
             <h3 className="display-sm mt-2.5 text-[20px] text-ink group-hover:text-brand-700">
               {s.title}
             </h3>
-            <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">{s.body}</p>
+            <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.8] text-ink-soft"><Sentences text={s.body} /></p>
             <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-brand-700">
               자세히 보기
               <span

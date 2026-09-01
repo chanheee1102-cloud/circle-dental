@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
-import { Container, ContactCta, PageHero } from '@/components/ui';
+import { Container, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { ArticleMeta, headingId } from '@/components/article';
 import { ClinicMap } from '@/components/ClinicMap';
 import { JsonLd } from '@/components/JsonLd';
@@ -163,9 +163,9 @@ export default function ContactPage() {
                     </a>
                   </td>
                   <td className="px-6 py-5 align-top">
-                    <span className="block text-[15.5px] font-bold text-ink">{c.best}</span>
+                    <span className="block text-[15.5px] font-bold text-ink"><Sentences text={c.best} /></span>
                     <span className="mt-1.5 block max-w-[46ch] text-[14.5px] leading-relaxed text-ink-soft">
-                      {c.detail}
+                      <Sentences text={c.detail} />
                     </span>
                   </td>
                 </tr>
@@ -184,8 +184,7 @@ export default function ContactPage() {
               언제 연락하면 되나요?
             </h2>
             <p className="mt-3 max-w-[62ch] text-[16.5px] leading-[1.8] text-ink-soft">
-              아래 진료시간에 전화가 연결됩니다. 네이버 예약과 카카오톡은 시간과 관계없이 남기실 수
-              있고, 진료시간에 확인해 답변드립니다.
+              <Sentences text="아래 진료시간에 전화가 연결됩니다. 네이버 예약과 카카오톡은 시간과 관계없이 남기실 수 있고, 진료시간에 확인해 답변드립니다." />
             </p>
             <dl className="mt-7 max-w-2xl overflow-hidden rounded-2xl border border-brand-200/70 card-glass">
               {UNVERIFIED.hours.display.map((h, i) => (

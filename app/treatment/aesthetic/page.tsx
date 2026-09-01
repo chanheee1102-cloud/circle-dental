@@ -340,8 +340,7 @@ export default function WhiteningPage() {
             모든 어두움이 미백으로 밝아지지는 않습니다.
           </h2>
           <p className="mt-8 max-w-[34em] text-[18px] leading-[1.7] font-normal text-lichen">
-            미백제는 법랑질 안에 스며든 착색 분자를 분해합니다. 그래서 어두움이 어디서 왔는지에
-            따라 듣는 정도가 다르고, 아예 다른 방법이 필요한 경우도 있습니다.
+            <Sentences text="미백제는 법랑질 안에 스며든 착색 분자를 분해합니다. 그래서 어두움이 어디서 왔는지에 따라 듣는 정도가 다르고, 아예 다른 방법이 필요한 경우도 있습니다." />
           </p>
 
           <div className="mt-16 grid gap-6 lg:grid-cols-2">
@@ -417,8 +416,7 @@ export default function WhiteningPage() {
             어떤 착색인지부터 확인하세요.
           </h2>
           <p className="mt-10 max-w-[34em] text-[18px] leading-[1.7] font-normal text-lichen">
-            같은 누런색이라도 겉에 쌓인 것인지, 안쪽에서 온 것인지에 따라 방법이 달라집니다.
-            보철물이 있는 경우에는 색이 어긋나지 않도록 순서를 먼저 정합니다.
+            <Sentences text="같은 누런색이라도 겉에 쌓인 것인지, 안쪽에서 온 것인지에 따라 방법이 달라집니다. 보철물이 있는 경우에는 색이 어긋나지 않도록 순서를 먼저 정합니다." />
           </p>
 
           <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-5">

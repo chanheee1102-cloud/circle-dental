@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Sentences } from '@/components/ui';
 
 /**
  * 랜딩 페이지 조각들.
@@ -80,7 +81,7 @@ export function SectionHead({
         <p
           className={`mt-5 max-w-[56ch] text-[17px] leading-[1.9] ${dark ? 'text-brand-200' : 'text-ink-soft'}`}
         >
-          {desc}
+          <Sentences text={desc} tone={dark ? 'dark' : 'light'} />
         </p>
       ) : null}
     </div>

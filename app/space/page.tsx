@@ -9,6 +9,7 @@ import { imageSize } from '@/lib/imageSize';
 import { HeroMedia } from '@/components/HeroMedia';
 import { SpaceHeader, SpaceFooter } from './SpaceChrome';
 import { ClinicMap } from '@/components/ClinicMap';
+import { Sentences } from '@/components/ui';
 
 /**
  * /space — 메인 화면을 **손으로 새로 짠 것**.
@@ -335,8 +336,7 @@ function Doctors({ doctors }: { doctors: typeof DOCTORS }) {
             함께 봅니다
           </h2>
           <p className="mt-7 max-w-[34ch] text-[14.5px] leading-[2.05] text-[color:var(--sp-dim)]">
-            같은 치료라도 누가 보느냐에 따라 판단이 달라집니다. 보존·근관·보철을 각각
-            깊게 보는 원장들이 한 병원에서 함께 진료합니다.
+            <Sentences text="같은 치료라도 누가 보느냐에 따라 판단이 달라집니다. 보존·근관·보철을 각각 깊게 보는 원장들이 한 병원에서 함께 진료합니다." />
           </p>
           <Link href="/about/doctors" className="sp-arrow mt-10">
             의료진 보기
@@ -484,7 +484,7 @@ function Treatments({
                     </span>
                   </span>
                   <span className="mt-6 block px-3 text-[13.5px] leading-[1.9] text-[color:var(--sp-dim)]">
-                    {p.copy}
+                    <Sentences text={p.copy} />
                   </span>
                 </Link>
               </li>
@@ -530,8 +530,7 @@ function Story({ photo }: { photo: { src: string; alt: string; ratio: number } }
             빼지 않습니다
           </h2>
           <p className="mt-7 text-[14.5px] leading-[2.05] text-[color:var(--sp-dim)] lg:ml-auto lg:max-w-[34ch]">
-            임플란트가 마지막 선택이 될 수 있도록, 신경치료와 잇몸치료로 살릴 수 있는
-            길을 먼저 찾습니다. 오래 쓰실 수 있는 방향인지부터 함께 확인합니다.
+            <Sentences text="임플란트가 마지막 선택이 될 수 있도록, 신경치료와 잇몸치료로 살릴 수 있는 길을 먼저 찾습니다. 오래 쓰실 수 있는 방향인지부터 함께 확인합니다." />
           </p>
           <Link href="/treatment/save-natural-tooth" className="sp-arrow mt-10">
             자연치아 살리기
@@ -691,7 +690,7 @@ function Visit() {
                 <dd className="mt-3 text-[16px] tracking-[0.02em]">
                   {h.time}
                   {h.note && (
-                    <span className="ml-2 text-[13.5px] text-[color:var(--sp-dim)]">{h.note}</span>
+                    <span className="ml-2 text-[13.5px] text-[color:var(--sp-dim)]"><Sentences text={h.note} /></span>
                   )}
                 </dd>
               </div>
@@ -712,7 +711,7 @@ function Visit() {
                 {...(w.ext ? { target: '_blank', rel: 'noreferrer' } : {})}
                 className="group flex h-[168px] flex-col justify-between border border-[color:var(--sp-line)] bg-[color:var(--sp-canvas)] p-7 transition-colors duration-500 hover:border-[color:var(--sp-accent)]"
               >
-                <span className="sp-label">{w.sub}</span>
+                <span className="sp-label"><Sentences text={w.sub} /></span>
                 <span className="sp-serif flex items-center justify-between text-[21px]">
                   {w.label}
                   <span

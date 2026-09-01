@@ -1,4 +1,5 @@
 import type { ComparisonTable as Data } from '@/lib/comparisons';
+import { Sentences } from '@/components/ui';
 
 /**
  * 비교표 렌더러.
@@ -18,7 +19,7 @@ export function ComparisonTable({ data }: { data: Data }) {
       <h2 id={data.id} className="display-sm scroll-mt-28 text-[22px] text-ink sm:text-[26px]">
         {data.title}
       </h2>
-      <p className="mt-3 max-w-[64ch] text-[16.5px] leading-[1.8] text-ink-soft">{data.lead}</p>
+      <p className="mt-3 max-w-[64ch] text-[16.5px] leading-[1.8] text-ink-soft"><Sentences text={data.lead} /></p>
 
       <div className="mt-7 overflow-x-auto rounded-2xl border border-brand-200/70">
         <table className="w-full min-w-[640px] border-collapse text-left">
@@ -59,7 +60,7 @@ export function ComparisonTable({ data }: { data: Data }) {
       </div>
 
       {/* ⚠️ 이 줄을 빼지 말 것 — 표는 차이를 보여 주는 것이지 판단을 대신하지 않는다. */}
-      <p className="mt-4 max-w-[68ch] text-[14.5px] leading-relaxed text-ink-muted">{data.note}</p>
+      <p className="mt-4 max-w-[68ch] text-[14.5px] leading-relaxed text-ink-muted"><Sentences text={data.note} /></p>
     </section>
   );
 }

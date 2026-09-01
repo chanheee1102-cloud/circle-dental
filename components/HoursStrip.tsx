@@ -2,6 +2,7 @@
 
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { buildWeek, liveOf, useSeoulNow } from '@/lib/liveHours';
+import { Sentences } from '@/components/ui';
 
 /**
  * 진료시간 — 한 주가 한 줄에 들어가고, 오늘 칸에 지금 상태가 실시간으로 뜬다.
@@ -134,7 +135,7 @@ export function HoursStrip() {
                         d.closed ? 'text-white/65' : 'text-signal'
                       }`}
                     >
-                      {d.note}
+                      <Sentences text={d.note} />
                     </span>
                   )}
 
@@ -156,7 +157,7 @@ export function HoursStrip() {
                           live.open ? 'live-dot' : ''
                         }`}
                       />
-                      {live.text}
+                      <Sentences text={live.text} />
                     </span>
                   )}
                 </dd>
