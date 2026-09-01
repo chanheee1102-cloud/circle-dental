@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
-import Image from 'next/image';
 import Link from 'next/link';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
@@ -41,24 +40,8 @@ export default function SymptomIndexPage() {
 
       <Container className="py-12 lg:py-16">
 
-        {/*
-          도입 삽화.
-          ★ 이 페이지는 목록이라 글자만 이어진다. 첫 화면에 사람이 한 명도 없으면
-            '자료' 로 읽히고, 자기 얘기라고 느끼기까지 시간이 걸린다.
-          ⚠️ 장식이라 alt 는 비우지 않는다 — 본문에 없는 정보(누가·어떤 상황인지)를 담고 있다.
-          ⚠️ priority: 첫 화면 안에 들어오는 유일한 큰 이미지다. LCP 를 이 이미지가 잡는다.
-        */}
-        <figure className="mt-10 overflow-hidden rounded-3xl border border-brand-100 bg-brand-50">
-          <Image
-            src="/img/ai/symptom-hero.webp"
-            alt="밝은 창가에 앉아 한 손으로 턱 옆을 짚은 채 생각에 잠긴 사람. 아픈 곳을 어떻게 말해야 할지 고르는 표정이다."
-            width={1536}
-            height={1024}
-            priority
-            sizes="(min-width: 1024px) 1024px, 100vw"
-            className="h-[220px] w-full object-cover object-[30%_40%] sm:h-[300px] lg:h-[360px]"
-          />
-        </figure>
+        {/* ⚠️ 도입 삽화를 되살리지 말 것 (2026-09-01 오너) — 목록이 2단 유리 카드라
+            사람 사진 없이도 '자료' 로 읽히지 않는다. 큰 사진은 목록을 화면 아래로 민다. */}
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
