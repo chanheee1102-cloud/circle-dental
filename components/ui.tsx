@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { IMG } from '@/lib/assets';
@@ -96,14 +97,61 @@ function Marked({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
     </>
   );
 }
+/**
+ * 쉼표 뒤에서 줄이 바뀌게 한다 — **이보다 짧은 마디만** 통째로 움직인다(글자 수).
+ *
+ * ⚠️ 값을 크게 올리지 말 것. 마디가 길수록 줄 끝에 남는 빈자리도 그만큼 커진다.
+ *    실측(9개 페이지): 16 → 문장부호 뒤 18%, 26 → 25%, 34 → 31%.
+ *    그런데 줄 끝에 남는 빈자리(상위 10%)는 104px → 141px → 229px 로 뛴다.
+ *    34 는 한 줄에 일곱 자쯤이 통째로 비어 눈에 띈다. 26 이 얻는 것과 잃는 것의 경계다.
+ * ⚠️ 0 으로 두면 쉼표 규칙이 통째로 꺼진다(줄바꿈이 아무 데서나 일어나던 상태로 돌아간다).
+ */
+const CLAUSE_MAX = 26;
+
+/**
+ * 한 문장 안에서 **쉼표 뒤**를 줄바꿈 자리로 밀어 준다.
+ *
+ * ★★ 왜 (2026-09-01 운영자) ★★
+ *   "최대한 마침표 뒤나 쉼표 뒤에서" — 마침표는 Sentences 가 문장마다 줄을 나눠 해결하지만,
+ *   한 문장이 두 줄을 넘으면 그 안에서는 여전히 아무 데서나 끊겼다("…를 먼저 보고, 심을 /
+ *   수 있는지부터"). 쉼표는 문장 안에서 숨을 쉬는 자리라 거기서 끊는 편이 읽기 쉽다.
+ *
+ * ★★ 어떻게 ★★
+ *   짧은 마디를 inline-block 으로 만든다. 그러면 그 마디는 **쪼개지지 않고**, 남은 자리에
+ *   안 들어가면 통째로 다음 줄로 내려간다 → 앞 줄이 쉼표에서 끝난다.
+ *
+ * ⚠️⚠️ 띄어쓰기를 &nbsp; 로 묶는 방법을 쓰지 말 것 ⚠️⚠️
+ *   같은 효과를 내지만, 마디가 칸보다 넓으면 **가로로 넘쳐** 페이지에 가로 스크롤이 생긴다.
+ *   inline-block 은 그럴 때 마디 안에서 알아서 줄을 바꾼다 — 넘치지 않는다.
+ *
+ * ⚠️ 강조 표시(**)가 든 문장은 건드리지 않는다. 쉼표가 강조 안에 있으면 여는 표시와 닫는
+ *    표시가 서로 다른 마디로 갈라져, Marked 의 짝 검사에 걸려 강조가 통째로 사라진다.
+ */
+function Clauses({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
+  if (text.includes('**')) return <Marked text={text} tone={tone} />;
+  const parts = text.split(/(?<=,)\s+/);
+  if (parts.length < 2) return <Marked text={text} tone={tone} />;
+  return (
+    <>
+      {parts.map((c, i) => (
+        <Fragment key={`${i}-${c.slice(0, 8)}`}>
+          {c.length <= CLAUSE_MAX ? <span className="clause">{c}</span> : c}
+          {/* 나눌 때 없어진 띄어쓰기를 되돌린다 — 없으면 마디끼리 붙어 버린다. */}
+          {i < parts.length - 1 ? ' ' : null}
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
 export function Sentences({ text, tone = 'light' }: { text: string; tone?: 'light' | 'dark' }) {
   const parts = text.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g)?.map((s) => s.trim()).filter(Boolean);
-  if (!parts || parts.length < 2) return <Marked text={text} tone={tone} />;
+  if (!parts || parts.length < 2) return <Clauses text={text} tone={tone} />;
   return (
     <>
       {parts.map((s, i) => (
         <span key={`${i}-${s.slice(0, 8)}`} className="block">
-          <Marked text={s} tone={tone} />
+          <Clauses text={s} tone={tone} />
         </span>
       ))}
     </>
@@ -402,7 +450,7 @@ export function QABlock({ items }: { items: Array<{ q: string; a: string }> }) {
           >
             {it.q}
           </h2>
-          <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft">{it.a}</p>
+          <p className="mt-3.5 max-w-[70ch] text-[17px] leading-[1.85] text-ink-soft"><Sentences text={it.a} /></p>
         </article>
       ))}
     </div>
@@ -429,7 +477,9 @@ export function NeedsInfo({ label, note }: { label: string; note: string }) {
         </span>
         {label} — 확인 필요
       </p>
-      <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{note}</p>
+      <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
+        <Sentences text={note} />
+      </p>
     </div>
   );
 }
@@ -463,7 +513,9 @@ function MedicalNoticeHidden({ extra, tone = 'light' }: { extra?: string; tone?:
         ⚠️ max-w 를 지우지 말 것 — 없으면 넓은 화면에서 한 줄이 86자까지 늘어난다(실측).
            한글에서 편한 한 줄은 35~45자다. em 으로 잡는 이유는 1em ≈ 한글 한 글자이기 때문이다.
       */}
-      <p className="mt-2 max-w-[44em]">{MEDICAL_DISCLAIMER}</p>
+      <p className="mt-2 max-w-[44em]">
+        <Sentences text={MEDICAL_DISCLAIMER} />
+      </p>
       {extra && <p className="mt-2 max-w-[44em]">{extra}</p>}
     </aside>
   );
@@ -488,7 +540,9 @@ export function ContactCta({
         </div>
         <div className="relative max-w-xl">
           <h2 className="display-sm text-[26px] sm:text-[33px]">{title}</h2>
-          <p className="mt-5 text-[17px] leading-[1.85] text-brand-100/90">{desc}</p>
+          <p className="mt-5 text-[17px] leading-[1.85] text-brand-100/90">
+            <Sentences text={desc} tone="dark" />
+          </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a
               href={CLINIC.phoneHref}
@@ -559,7 +613,9 @@ export function CardLink({
       <Heading className="display-sm relative text-[18px] text-ink group-hover:text-brand-700">
         {title}
       </Heading>
-      <p className="relative mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">{desc}</p>
+      <p className="relative mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">
+        <Sentences text={desc} />
+      </p>
       <span className="relative mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-brand-700">
         자세히 보기
         <span

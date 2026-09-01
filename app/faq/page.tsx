@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { TREATMENTS } from '@/lib/treatments';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { CLINIC_QA } from '@/lib/faq';
-import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
 
@@ -77,7 +77,7 @@ export default function FaqPage() {
             {CLINIC_QA.map((qa) => (
               <article key={qa.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{qa.q}</h3>
-                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{qa.a}</p>
+                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft"><Sentences text={qa.a} /></p>
               </article>
             ))}
           </div>
@@ -127,7 +127,7 @@ export default function FaqPage() {
               {t.qa.map((qa) => (
                 <article key={qa.q} className="py-6">
                   <h3 className="text-[18px] font-black leading-snug text-ink">{qa.q}</h3>
-                  <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft">{qa.a}</p>
+                  <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft"><Sentences text={qa.a} /></p>
                 </article>
               ))}
             </div>

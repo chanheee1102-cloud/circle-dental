@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Sentences } from '@/components/ui';
 import type { ReactNode } from 'react';
 
 /*
@@ -70,7 +71,12 @@ export function HomeHead({
             dark ? 'text-mist/80' : 'text-ash'
           }`}
         >
-          {desc}
+          {/* ⚠️ desc 는 ReactNode 라 글자일 때만 문장 단위로 끊는다. */}
+          {typeof desc === 'string' ? (
+            <Sentences text={desc} tone={dark ? 'dark' : 'light'} />
+          ) : (
+            desc
+          )}
         </p>
       ) : null}
     </div>

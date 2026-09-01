@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GLOSSARY } from '@/lib/insight';
-import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, articleSchema, medicalWebPageSchema } from '@/lib/seo';
 import { ArticleMeta, References, charCount } from '@/components/article';
@@ -108,7 +108,7 @@ export default function GlossaryPage() {
                 )}
               </dt>
               <dd className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft">
-                {t.def}
+                <Sentences text={t.def} />
                 {/*
                   ⚠️ 링크를 설명 문장 **뒤에 이어 붙이지** 말 것 (2026-08-31) —
                      '관련 진료 보기' 가 통째로 다음 줄로 떨어져 끝줄에 두 글자만 남았다(실측).

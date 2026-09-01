@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { IMG } from '@/lib/assets';
-import { Container, ContactCta, PageHero } from '@/components/ui';
+import { Container, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, medicalWebPageSchema } from '@/lib/seo';
 
@@ -285,7 +285,7 @@ export default function DoctorsPage() {
                   Clinical Relevance
                 </p>
                 <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">
-                  {PUBLICATION_DETAIL.relevanceKo}
+                  <Sentences text={PUBLICATION_DETAIL.relevanceKo} />
                 </p>
               </div>
             </div>

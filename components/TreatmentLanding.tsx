@@ -236,7 +236,7 @@ export function TreatmentLanding({
                           <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink">
                             {s.title}
                           </h3>
-                          <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft">{s.body}</p>
+                          <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={s.body} /></p>
                         </Card>
                       </li>
                     ))}
@@ -282,7 +282,7 @@ export function TreatmentLanding({
                       <h3 className="display-sm mt-5 text-[18px] tracking-[-0.01em] text-ink">
                         {it.title}
                       </h3>
-                      <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft">{it.body}</p>
+                      <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={it.body} /></p>
                     </Card>
                   ))}
                   </ul>
@@ -295,7 +295,7 @@ export function TreatmentLanding({
                       <h3 className="display-sm mt-5 text-[18px] tracking-[-0.01em] text-ink">
                         {it.title}
                       </h3>
-                      <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft">{it.body}</p>
+                      <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={it.body} /></p>
                     </Card>
                   ))}
                 </ul>
@@ -522,7 +522,7 @@ export function TreatmentLanding({
       {usesAi ? (
         <Container className="pb-6">
           <p className="max-w-[52em] text-[12.5px] leading-[1.7] text-ink-muted/70">
-            일부 이미지는 진료 과정을 설명하기 위해 만든 것으로 실제 진료 사진이 아닙니다.
+            <Sentences text="일부 이미지는 진료 과정을 설명하기 위해 만든 것으로 실제 진료 사진이 아닙니다." />
           </p>
         </Container>
       ) : null}

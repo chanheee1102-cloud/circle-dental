@@ -197,8 +197,7 @@ export default function CrownProsthesisPage() {
           </div>
 
           <p className="mt-14 max-w-[38em] text-[18px] leading-[1.7] text-stone">
-            깎은 치아 구조는 돌아오지 않습니다. 그래서 덜 깎는 방법이 가능한지부터 확인하고,
-            그것으로 버티지 못하는 자리에만 더 깎는 방법을 씁니다.
+            <Sentences text="깎은 치아 구조는 돌아오지 않습니다. 그래서 덜 깎는 방법이 가능한지부터 확인하고, 그것으로 버티지 못하는 자리에만 더 깎는 방법을 씁니다." />
           </p>
         </Container>
       </section>
@@ -239,7 +238,7 @@ export default function CrownProsthesisPage() {
                 <h3 className="display-sm mt-6 text-[clamp(28px,4.2vw,46px)] leading-[1.08] tracking-[-0.05em]">
                   {m.name}
                 </h3>
-                <p className="mt-6 text-[18px] leading-[1.65]">{m.def}</p>
+                <p className="mt-6 text-[18px] leading-[1.65]"><Sentences text={m.def} /></p>
 
                 <div className="mt-10 img-in overflow-hidden rounded-[36px]">
                   <div className="relative aspect-[16/10]">
@@ -304,18 +303,17 @@ export default function CrownProsthesisPage() {
             자리마다 유리한 재료가 다릅니다
           </h2>
           <p className="reveal mt-8 max-w-[36em] text-[18px] leading-[1.7] text-stone">
-            앞니는 빛이 통과하는 정도가, 어금니는 씹는 힘을 견디는 강도가 먼저입니다. 하나로
-            정해 두면 한쪽이 손해를 봅니다.
+            <Sentences text="앞니는 빛이 통과하는 정도가, 어금니는 씹는 힘을 견디는 강도가 먼저입니다. 하나로 정해 두면 한쪽이 손해를 봅니다." />
           </p>
 
           <ul className="reveal-stack mt-16 grid gap-6 lg:grid-cols-3">
             {MATERIALS.map((m) => (
               <li key={m.name} className="reveal rounded-[50px] card-glass p-8 sm:p-10">
-                <p className="text-[14px] font-bold tracking-[0.06em] text-stone">{m.where}</p>
+                <p className="text-[14px] font-bold tracking-[0.06em] text-stone"><Sentences text={m.where} /></p>
                 <h3 className="display-sm mt-5 text-[26px] leading-[1.1] tracking-[-0.04em]">
                   {m.name}
                 </h3>
-                <p className="mt-5 text-[17.5px] leading-[1.65]">{m.body}</p>
+                <p className="mt-5 text-[17.5px] leading-[1.65]"><Sentences text={m.body} /></p>
               </li>
             ))}
           </ul>
@@ -331,7 +329,7 @@ export default function CrownProsthesisPage() {
                 색은 마지막이 아니라 순서의 문제입니다
               </h2>
               <p className="reveal mt-8 max-w-[26em] text-[18px] leading-[1.7] text-stone">
-                보철은 나중에 색이 변하지 않습니다. 그래서 무엇을 먼저 하느냐가 결과를 가릅니다.
+                <Sentences text="보철은 나중에 색이 변하지 않습니다. 그래서 무엇을 먼저 하느냐가 결과를 가릅니다." />
               </p>
               <div className="img-in reveal mt-12 overflow-hidden rounded-[64px]">
                 <div className="relative aspect-[4/3]">
@@ -392,8 +390,7 @@ export default function CrownProsthesisPage() {
               덜 깎고도 되는지부터 봅니다
             </h2>
             <p className="mt-7 max-w-[34em] text-[18px] leading-[1.7] text-stone">
-              남은 치아의 양과 무는 힘, 잇몸 상태를 먼저 확인한 뒤에 어떤 방법이 가능한지
-              말씀드립니다. 씹는 기능과 잇몸을 정리하는 것이 색과 모양보다 앞섭니다.
+              <Sentences text="남은 치아의 양과 무는 힘, 잇몸 상태를 먼저 확인한 뒤에 어떤 방법이 가능한지 말씀드립니다. 씹는 기능과 잇몸을 정리하는 것이 색과 모양보다 앞섭니다." />
             </p>
 
             {journey ? (

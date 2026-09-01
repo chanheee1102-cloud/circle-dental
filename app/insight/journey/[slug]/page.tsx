@@ -186,7 +186,7 @@ export default async function JourneyDetailPage({
             이럴 때 더 걸립니다
           </h2>
           <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
-            위 회차는 일반적인 경우입니다. 아래에 해당하면 단계가 추가되거나 기다리는 기간이 늘어납니다.
+            <Sentences text="위 회차는 일반적인 경우입니다. 아래에 해당하면 단계가 추가되거나 기다리는 기간이 늘어납니다." />
           </p>
           <ul className="mt-7 grid gap-3 sm:grid-cols-2">
             {j.variables.map((v) => (

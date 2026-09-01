@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { CLINIC_QA, HOME_FAQ_COUNT } from '@/lib/faq';
-import { Container } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
 import { HomeHead, QuietLink } from '@/components/home';
 import { Reveal } from '@/components/Reveal';
 
@@ -82,7 +82,7 @@ export function HomeFaqSection() {
                 </summary>
                 {/* ⚠️ 폭 제한은 ch 가 아니라 em 이다 — ch 는 숫자 0 의 폭이라 한글에서 약 0.68배로 좁아진다. */}
                 <p className="max-w-[48em] pr-8 pb-7 pl-[2.9rem] text-[17.5px] leading-[1.9] text-ash">
-                  {qa.a}
+                  <Sentences text={qa.a} />
                 </p>
               </details>
               </Reveal>

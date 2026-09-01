@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import { CLINIC } from '@/lib/clinic';
-import { Container, MedicalNotice, PageHero } from '@/components/ui';
+import { Container, MedicalNotice, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
 
@@ -170,12 +170,12 @@ export default function EmergencyPage() {
             >
               <div className="border-b border-brand-50 p-7">
                 <span className="inline-flex rounded-full bg-gold-400/20 px-3 py-1 text-[13.5px] font-black text-gold-600">
-                  {c.urgency}
+                  <Sentences text={c.urgency} />
                 </span>
                 <h2 className="mt-3.5 text-[20px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[22px]">
                   {c.title}
                 </h2>
-                <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.85] text-ink">{c.answer}</p>
+                <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.85] text-ink"><Sentences text={c.answer} /></p>
               </div>
 
               <div className="grid gap-0 sm:grid-cols-2">
@@ -215,7 +215,7 @@ export default function EmergencyPage() {
                 ⚠️ em 단위여야 한다. ch 는 한글에서 절반으로 계산된다(이 세션에서 겪었다).
               */}
               <p className="border-t border-brand-50 bg-wine-bg/60 px-7 py-4 text-[14.5px] leading-relaxed text-ink-soft">
-                <span className="block max-w-[44em]">{c.note}</span>
+                <span className="block max-w-[44em]"><Sentences text={c.note} /></span>
               </p>
             </article>
           ))}

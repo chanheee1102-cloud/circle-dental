@@ -6,6 +6,7 @@ import { CONCERNS } from '@/lib/concerns';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { LogoMark } from '@/components/Logo';
 import { buildWeek, liveOf, useSeoulNow } from '@/lib/liveHours';
+import { Sentences } from '@/components/ui';
 
 /**
  * 망설임 — 손 안의 대화 한 판.
@@ -287,7 +288,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                                   live.open ? 'live-dot' : ''
                                 }`}
                               />
-                              {live.text}
+                              <Sentences text={live.text} />
                             </span>
                           </>
                         )}
@@ -319,12 +320,12 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                             key={m.key}
                             className="max-w-[80%] self-start rounded-2xl rounded-tl-md border border-wine-line bg-parchment/80 px-4 py-2.5 text-[14.5px] leading-[1.6] font-semibold text-charcoal"
                           >
-                            {m.text}
+                            <Sentences text={m.text} />
                           </p>
                         ) : (
                           <span key={m.key} className="flex max-w-[86%] flex-col items-end gap-1.5 self-end">
                             <span className="rounded-2xl rounded-tr-md bg-signal px-4 py-3 text-[14px] leading-[1.75] font-medium text-charcoal shadow-[0_2px_8px_-4px_rgba(0,0,0,.25)]">
-                              {m.text}
+                              <Sentences text={m.text} />
                             </span>
                             {/*
                               말풍선 밑에 붙는 바로가기. 진짜 <a> 라 크롤러도 링크로 읽는다 —

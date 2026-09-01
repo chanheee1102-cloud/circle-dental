@@ -1,4 +1,5 @@
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
+import { Sentences } from '@/components/ui';
 
 /**
  * 병원 위치 지도.
@@ -117,7 +118,7 @@ export function ClinicMap({
             />
             <span className="min-w-0 flex-1">
               <span className="block text-[15.5px] font-semibold text-ink">{l.label}</span>
-              <span className="mt-0.5 block text-[13.5px] text-ink-soft">{l.sub}</span>
+              <span className="mt-0.5 block text-[13.5px] text-ink-soft"><Sentences text={l.sub} /></span>
             </span>
             <span aria-hidden className="text-[15px] text-ink-soft">
               ↗

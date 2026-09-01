@@ -88,8 +88,7 @@ export function TrustSection({ headless = false }: { headless?: boolean }) {
               인증과 자격은 어디서 받았나요?
             </Q>
             <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink-soft">
-              발급처를 함께 적었습니다. &lsquo;수료증 4건&rsquo;은 인상이지만 &lsquo;세계근관치료학회가 준
-              수료증&rsquo;은 확인할 수 있는 사실입니다.
+              <Sentences text="발급처를 함께 적었습니다. &lsquo;수료증 4건&rsquo;은 인상이지만 &lsquo;세계근관치료학회가 준 수료증&rsquo;은 확인할 수 있는 사실입니다." />
             </p>
 
             <div className="card-glass mt-6 overflow-x-auto rounded-[18px]">

@@ -70,7 +70,7 @@ export function CareListSection({ headless = false }: { headless?: boolean } = {
 
               <div className="min-w-0">
                 {/* 한 줄 요약 — 카드 격자가 보여 주던 값. 칩만으로는 무엇을 하는 치료인지 모른다. */}
-                <p className="text-[15.5px] leading-[1.7] text-ink-soft">{t.summary}</p>
+                <p className="text-[15.5px] leading-[1.7] text-ink-soft"><Sentences text={t.summary} /></p>
 
                 {/* '이런 경우' — 셋까지만. 넷을 넘으면 줄이 두 줄이 되어 목록의 리듬이 깨진다. */}
                 <ul className="mt-3 flex flex-wrap gap-2">

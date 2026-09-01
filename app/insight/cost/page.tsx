@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { COST_TOPICS, COST_LABEL } from '@/lib/insight';
 import { UNVERIFIED } from '@/lib/clinic';
-import { Container, NeedsInfo, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
+import { Container, NeedsInfo, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, articleSchema, medicalWebPageSchema } from '@/lib/seo';
 import { KeyPoints, ArticleMeta, References, charCount, headingId } from '@/components/article';
@@ -114,15 +114,10 @@ export default function CostPage() {
         </div>
         <div className="mt-6 max-w-[68ch] space-y-3 text-[16.5px] leading-[1.85] text-ink-soft">
           <p>
-            아래 표에서 각 항목이 급여인지 비급여인지, 그리고 무엇이 비용을 가르는지 먼저
-            확인하실 수 있습니다. 급여 항목의 본인부담률과 만 65세 이상 임플란트·틀니 적용 조건은
-            국민건강보험공단이 정한 기준을 따르므로, 정확한 최신 기준은 공단과
-            건강보험심사평가원에서 확인하시는 것이 정확합니다.
+            <Sentences text="아래 표에서 각 항목이 급여인지 비급여인지, 그리고 무엇이 비용을 가르는지 먼저 확인하실 수 있습니다. 급여 항목의 본인부담률과 만 65세 이상 임플란트·틀니 적용 조건은 국민건강보험공단이 정한 기준을 따르므로, 정확한 최신 기준은 공단과 건강보험심사평가원에서 확인하시는 것이 정확합니다." />
           </p>
           <p>
-            비급여 진료비는 검사 결과에 따라 필요한 항목이 달라져 검사 전에는 말씀드릴 수
-            없습니다. 내원하시면 촬영 사진을 함께 보며 필요한 항목과 각각의 금액을 안내드리고,
-            원내 게시된 비급여 진료비도 함께 확인하실 수 있습니다.
+            <Sentences text="비급여 진료비는 검사 결과에 따라 필요한 항목이 달라져 검사 전에는 말씀드릴 수 없습니다. 내원하시면 촬영 사진을 함께 보며 필요한 항목과 각각의 금액을 안내드리고, 원내 게시된 비급여 진료비도 함께 확인하실 수 있습니다." />
           </p>
         </div>
 
@@ -207,8 +202,8 @@ export default function CostPage() {
                 {c.title}
               </h2>
               {/* 즉답 */}
-              <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.85] text-ink">{c.answer}</p>
-              <p className="mt-3 max-w-[68ch] text-[16px] leading-[1.8] text-ink-soft">{c.detail}</p>
+              <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.85] text-ink"><Sentences text={c.answer} /></p>
+              <p className="mt-3 max-w-[68ch] text-[16px] leading-[1.8] text-ink-soft"><Sentences text={c.detail} /></p>
 
               <div className="mt-5 border-t border-brand-50 pt-4">
                 <h3 className="text-[13.5px] font-black tracking-wide text-ink-muted">

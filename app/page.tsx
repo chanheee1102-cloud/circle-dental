@@ -414,7 +414,7 @@ function PillarSection() {
                     {p.name}
                   </h3>
                   <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.75] text-parchment/85">
-                    {p.copy}
+                    <Sentences text={p.copy} tone="dark" />
                   </p>
                   {/*
                     ★★ 아이콘은 맨 아래 오른쪽이다 (2026-08-28 오너) ★★
@@ -899,7 +899,7 @@ function HoursSection() {
                       <strong className="font-semibold text-signal">{CLINIC.parking.fee}</strong>
                       {/* ⚠️ 기계식 주차장 주의사항을 빼지 말 것 — 큰 차량이 헛걸음하는 것을 막는다. */}
                       <span className="mt-1.5 block text-[16px] leading-[1.8] text-mist/70">
-                        {CLINIC.parking.note}
+                        <Sentences text={CLINIC.parking.note} />
                       </span>
                     </dd>
                   </div>

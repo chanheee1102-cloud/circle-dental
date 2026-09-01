@@ -466,7 +466,7 @@ export default function WisdomToothPage() {
                 미리 아셔야 할 것
               </h2>
               <p className="mt-6 max-w-[38em] text-[17px] leading-[1.7] font-normal text-oat/70">
-                발치는 수술입니다. 아래는 실제로 생길 수 있는 일이며, 사람마다 정도가 다릅니다.
+                <Sentences text="발치는 수술입니다. 아래는 실제로 생길 수 있는 일이며, 사람마다 정도가 다릅니다." />
               </p>
               <ul className="mt-12 grid gap-6 sm:grid-cols-2">
                 {RISKS.map((r, i) => (
@@ -493,8 +493,7 @@ export default function WisdomToothPage() {
               빼야 하는지부터 확인하세요
             </h2>
             <p className="mt-8 max-w-[32em] text-[clamp(16px,1.5vw,20px)] leading-[1.55] font-normal text-oat/80">
-              누운 각도와 신경관까지의 거리에 따라 방법과 회복이 달라집니다. 사진으로 위치를
-              확인한 뒤에 뺄지 지켜볼지 함께 정합니다.
+              <Sentences text="누운 각도와 신경관까지의 거리에 따라 방법과 회복이 달라집니다. 사진으로 위치를 확인한 뒤에 뺄지 지켜볼지 함께 정합니다." />
             </p>
 
             <div className="mt-12 flex flex-wrap items-center gap-3">

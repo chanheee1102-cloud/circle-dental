@@ -3,7 +3,7 @@ import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
 import { JOURNEYS } from '@/lib/insight';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
-import { Container, MedicalNotice, ContactCta, PageHero } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
 
@@ -64,7 +64,7 @@ export default function JourneyIndexPage() {
               <h2 className="display-sm mt-4 text-[18px] text-ink group-hover:text-brand-700">
                 {j.question}
               </h2>
-              <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">{j.answer}</p>
+              <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft"><Sentences text={j.answer} /></p>
 
               <div className="mt-5 flex flex-wrap gap-2 border-t border-brand-100 pt-4">
                 <span className="rounded-full border border-brand-200 px-3 py-1.5 text-[13.5px] font-bold text-brand-700">
