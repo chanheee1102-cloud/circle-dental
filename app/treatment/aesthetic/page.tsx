@@ -152,7 +152,7 @@ export default function WhiteningPage() {
       {/* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다(다른 페이지와 같은 수치). */}
       <section className="-mt-[68px] pt-[128px] pb-24 sm:-mt-[94px] sm:pt-[154px] lg:pb-32">
         <Container>
-          <nav aria-label="현재 위치" className={`${MONO} text-[14px] text-lichen`}>
+          <nav aria-label="현재 위치" className={`${MONO} text-[14px] font-bold text-lichen`}>
             {TRAIL.map((c, i) => (
               <span key={c.path}>
                 {i > 0 ? <span aria-hidden className="mx-2">/</span> : null}
@@ -167,7 +167,7 @@ export default function WhiteningPage() {
             ))}
           </nav>
 
-          <p className={`mt-14 flex items-center gap-2.5 ${MONO} text-[14px] text-lichen`}>
+          <p className={`mt-14 flex items-center gap-2.5 ${MONO} text-[14px] font-bold text-lichen`}>
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-lime" />
             치아미백 · 고양 화정동
           </p>
@@ -262,7 +262,7 @@ export default function WhiteningPage() {
           <ol className="reveal-stack mt-16 divide-y divide-graphite border-y border-graphite">
             {STEPS.map((s) => (
               <li key={s.n} className="reveal grid gap-6 py-9 lg:grid-cols-[6rem_minmax(0,14em)_minmax(0,1fr)] lg:gap-10">
-                <span className={`${MONO} text-[14px] text-lime`}>{s.n}</span>
+                <span className={`${MONO} text-[14px] font-bold text-lime`}>{s.n}</span>
                 <h3 className="display-sm text-[24px] leading-[1.2] tracking-[-0.006em] text-white">
                   {s.t}
                 </h3>
@@ -308,7 +308,7 @@ export default function WhiteningPage() {
             <ul className="grid gap-6 sm:grid-cols-2">
               {PRODUCT_POINTS.map((p) => (
                 <li key={p.t} className="rounded-[20px] border border-lichen card-glass p-8">
-                  <p className={`${MONO} text-[14px] text-graphite`}>{p.k}</p>
+                  <p className={`${MONO} text-[14px] font-bold text-graphite`}>{p.k}</p>
                   <h3 className="display-sm mt-4 text-[24px] leading-[1.2] tracking-[-0.006em] text-abyss">
                     {p.t}
                   </h3>
@@ -320,7 +320,7 @@ export default function WhiteningPage() {
 
           {/* 적응증 — 원문 3가지. */}
           <div className="mt-16 rounded-[40px] bg-tissue p-10 sm:p-14">
-            <p className={`${MONO} text-[14px] text-graphite`}>이런 분들께 권합니다</p>
+            <p className={`${MONO} text-[14px] font-bold text-graphite`}>이런 분들께 권합니다</p>
             <ul className="mt-8 divide-y divide-lichen border-y border-lichen">
               {INDICATIONS.map((v) => (
                 <li key={v} className="py-6 text-[20px] leading-[1.4] font-normal tracking-[-0.006em] text-abyss">
@@ -397,7 +397,7 @@ export default function WhiteningPage() {
           </div>
 
           <div className="mt-16 rounded-[40px] card-glass p-10 sm:p-14">
-            <p className={`${MONO} text-[14px] text-graphite`}>미백 후 며칠</p>
+            <p className={`${MONO} text-[14px] font-bold text-graphite`}>미백 후 며칠</p>
             <ul className="mt-8 grid gap-x-12 gap-y-6 sm:grid-cols-2">
               {AFTERCARE.map((a) => (
                 <li key={a} className="flex gap-4 text-[17.5px] leading-[1.6] font-normal text-abyss">
@@ -433,7 +433,7 @@ export default function WhiteningPage() {
 
           <div className="mt-20 grid gap-8 border-t border-graphite pt-12 sm:grid-cols-2 lg:grid-cols-4">
             <Link href="/faq#aesthetic" className="group">
-              <p className={`${MONO} text-[14px] text-lichen`}>FAQ</p>
+              <p className={`${MONO} text-[14px] font-bold text-lichen`}>FAQ</p>
               <p className="mt-3 text-[18px] leading-[1.4] font-normal text-white transition-colors group-hover:text-lime">
                 많이 묻는 것 {t.qa.length}가지
               </p>
