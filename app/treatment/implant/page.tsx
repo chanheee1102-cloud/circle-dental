@@ -125,14 +125,38 @@ export default function ImplantPage() {
         ⚠️ 이 면 위 글자는 parchment 계열이다. 회색조(ink-soft 등)는 3:1 대로 떨어진다.
       */}
       <section className="relative isolate -mt-[68px] overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
+        <Image
+          src="/img/clinic/implant-hero.webp"
+          alt="동그라미치과의원 상담실에서 원장이 모니터를 함께 보며 환자에게 치료 계획을 설명하는 모습."
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[58%_center]"
+        />
+        {/*
+          두 겹 덮개 — 방사형(가운데를 살림) + 선형(위아래를 눌러 줌).
+          ⚠️ 한 겹으로 줄이지 말 것. 사진 밝은 부분에서 작은 글자가 먼저 무너진다.
+        */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_58%_at_78%_10%,rgba(217,164,65,0.16)_0%,transparent_64%)]"
+          className="absolute inset-0 bg-[radial-gradient(80%_64%_at_50%_38%,rgba(36,34,30,0.5)_0%,rgba(36,34,30,0.82)_62%,rgba(36,34,30,0.93)_100%)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(36,34,30,0.72)_0%,rgba(36,34,30,0.46)_38%,rgba(36,34,30,0.88)_100%)]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_58%_at_78%_10%,rgba(217,164,65,0.14)_0%,transparent_64%)]"
         />
         <Container className="relative pt-10 pb-20 lg:pb-28">
           <Breadcrumb trail={TRAIL} tone="dark" />
 
-          <div className="mt-12 grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+          {/*
+            ⚠️ 2단으로 되돌리지 말 것 — 사진이 배경으로 갔으므로 오른쪽 칸에 넣을 것이 없다.
+               (거기 있던 '진료 전 확인' 쪽지는 바로 위 머리글이 이미 같은 말을 한다)
+          */}
+          <div className="mt-12 max-w-[46em]">
             <div>
               <span
                 className="enter inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[13.5px] font-black text-parchment backdrop-blur-[10px]"
@@ -194,32 +218,6 @@ export default function ImplantPage() {
               </dl>
             </div>
 
-            <div className="relative">
-              <div
-                className="img-in enter overflow-hidden rounded-[28px] border border-brand-200/70 card-glass shadow-[var(--shadow-lift)]"
-                style={{ animationDelay: '220ms' }}
-              >
-                <div className="relative aspect-[4/3]">
-                  <Image
-                    src="/img/clinic/implant-hero.webp"
-                    alt="동그라미치과의원 상담실에서 원장이 모니터를 함께 보며 환자에게 치료 계획을 설명하는 모습"
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 620px, 100vw"
-                    className="object-cover object-[58%_center]"
-                  />
-                </div>
-              </div>
-              <div
-                className="enter absolute -bottom-6 -left-4 hidden max-w-[17rem] rounded-2xl border border-brand-200/70 card-glass p-5 shadow-[var(--shadow-lift)] sm:block"
-                style={{ animationDelay: '660ms' }}
-              >
-                <p className="text-[14px] font-black text-clay-700">진료 전 확인</p>
-                <p className="mt-2 text-[15px] leading-[1.7] text-ink-soft">
-                  뼈의 양과 신경 위치를 먼저 보고, 심을 수 있는지부터 말씀드립니다.
-                </p>
-              </div>
-            </div>
           </div>
         </Container>
       </section>

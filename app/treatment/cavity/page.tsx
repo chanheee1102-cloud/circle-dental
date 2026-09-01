@@ -128,9 +128,29 @@ export default function CavityPage() {
       */}
       {/* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다. 다른 페이지와 같은 수치다. */}
       <section className="relative isolate -mt-[68px] overflow-hidden bg-night pt-[128px] pb-24 sm:-mt-[94px] sm:pt-[154px] lg:pb-32">
+        <Image
+          src="/img/scene/cavity-review.webp"
+          alt="원장이 책상에서 모니터에 띄운 치아 방사선 사진 중 깊은 충치가 있는 어금니를 펜으로 짚어 확인하는 모습."
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        {/*
+          두 겹 덮개 — 방사형(가운데를 살림) + 선형(위아래를 눌러 줌).
+          ⚠️ 한 겹으로 줄이지 말 것. 사진 밝은 부분에서 작은 글자가 먼저 무너진다.
+        */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(56%_42%_at_50%_-6%,rgba(217,164,65,0.18)_0%,transparent_66%)]"
+          className="absolute inset-0 bg-[radial-gradient(80%_64%_at_50%_38%,rgba(28,23,25,0.5)_0%,rgba(28,23,25,0.82)_62%,rgba(28,23,25,0.93)_100%)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(28,23,25,0.72)_0%,rgba(28,23,25,0.46)_38%,rgba(28,23,25,0.88)_100%)]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(56%_42%_at_50%_-6%,rgba(217,164,65,0.14)_0%,transparent_66%)]"
         />
         {/* 미세 노이즈 — 큰 어두운 면이 밴딩으로 뭉개지는 것을 막는다. */}
         <div
@@ -189,19 +209,6 @@ export default function CavityPage() {
             </a>
           </div>
 
-          {/* 히어로 아래 화면 — 어두운 카드 위에 뜨는 사진. */}
-          <div className="reveal img-in mx-auto mt-16 max-w-[62rem] overflow-hidden rounded-[20px] border border-white/12 card-glass/[0.04] p-2 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.8)] lg:mt-20">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-[13px]">
-              <Image
-                src="/img/scene/cavity-review.webp"
-                alt="원장이 책상에서 모니터에 띄운 치아 방사선 사진 중 깊은 충치가 있는 어금니를 펜으로 짚어 확인하는 모습."
-                fill
-                priority
-                sizes="(min-width: 1024px) 992px, 100vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
         </Container>
       </section>
 
