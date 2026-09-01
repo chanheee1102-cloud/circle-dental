@@ -564,14 +564,13 @@ function DoctorSection() {
               .page-dark 안에서는 ash 가 밝은 값으로 뒤집히지만, 이 구획은 밝은 페이지 안의
               어두운 섬이라 그 치환이 닿지 않는다.
           */}
-          <p className="reveal flex items-center gap-2.5 text-[15px] font-medium text-oat">
-            <span
-              aria-hidden
-              className="bar-grow h-px shrink-0 bg-signal"
-              style={{ ['--w' as string]: '28px' }}
-            />
-            인증
-          </p>
+          {/*
+            ⚠️ '인증' 으로 되돌리지 말 것 — 바로 위 의료진 구획이 '보건복지부 인정 전문의' 를
+               말하고 있어, 같은 화면에 '인증' 이 또 나오면 둘이 같은 것처럼 읽힌다.
+               여기 걸린 넷은 위촉패·수료패·수료증·회원증, 즉 쌓아 온 기록이라 '경력' 이 맞다.
+            ⚠️ 선 + 라벨로 되돌리지 말 것 — 구획 눈금은 사이트 전체가 유리 알약 하나를 쓴다.
+          */}
+          <p className="reveal eyebrow-chip text-oat">경력</p>
 
           {/*
             ★★ 조명 hover → 부채꼴 펼침 + 커서 3D (2026-08-25 운영자: "이렇게 버전2에서

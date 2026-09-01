@@ -73,7 +73,12 @@ export function ConcernsSection() {
         heading={
           <Reveal className="reveal-plain relative max-w-xl lg:max-w-[38rem]">
           {/* ⚠️ 영문 대문자 눈썹을 되살리지 말 것 — 한글에는 대문자가 없다(components/home.tsx 주석). */}
-          <p className="eyebrow-chip text-mist">망설임</p>
+          {/*
+            ⚠️ '망설임' 으로 되돌리지 말 것 (2026-09-01 오너) — 그 말은 환자의 상태를
+               가리키는데, 이 구획이 하는 일은 **내원 전에 걸리는 것들을 미리 답하는 것**이다.
+               '내원 전' 이 그 자리를 말한다.
+          */}
+          <p className="eyebrow-chip text-mist">내원 전</p>
           {/*
             ★ 이 섹션의 제목만 다른 섹션보다 크다. 여기는 화면에 고정돼 한 장면을
               통째로 쓰는 자리라 다른 섹션과 같은 크기면 왼쪽이 비어 보인다.

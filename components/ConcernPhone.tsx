@@ -317,13 +317,13 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                         m.who === 'me' ? (
                           <p
                             key={m.key}
-                            className="max-w-[80%] self-end rounded-2xl rounded-tr-md bg-signal px-4 py-2.5 text-[14.5px] leading-[1.6] font-semibold text-charcoal"
+                            className="max-w-[80%] self-start rounded-2xl rounded-tl-md border border-wine-line bg-parchment/80 px-4 py-2.5 text-[14.5px] leading-[1.6] font-semibold text-charcoal"
                           >
                             {m.text}
                           </p>
                         ) : (
-                          <span key={m.key} className="flex max-w-[86%] flex-col items-start gap-1.5 self-start">
-                            <span className="rounded-2xl rounded-tl-md card-glass px-4 py-3 text-[14px] leading-[1.75] text-charcoal shadow-[0_2px_8px_-4px_rgba(0,0,0,.25)]">
+                          <span key={m.key} className="flex max-w-[86%] flex-col items-end gap-1.5 self-end">
+                            <span className="rounded-2xl rounded-tr-md bg-signal px-4 py-3 text-[14px] leading-[1.75] font-medium text-charcoal shadow-[0_2px_8px_-4px_rgba(0,0,0,.25)]">
                               {m.text}
                             </span>
                             {/*
