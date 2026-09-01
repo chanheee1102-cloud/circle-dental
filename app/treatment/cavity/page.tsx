@@ -84,6 +84,18 @@ const DEPTHS = [
   { n: '03', layer: '치수', body: '가만히 있어도 욱신거리는 단계입니다. 보통은 신경을 전부 제거하지만 예외가 있습니다.', cure: 'MTA 또는 신경치료' },
 ];
 
+/*
+ * 단계 도해의 글자 대체본 — 그림(cavity-stages.webp)에 적힌 그대로다.
+ * ⚠️ 그림과 다르게 적지 말 것. 둘이 어긋나면 화면과 기계가 서로 다른 말을 하게 된다.
+ */
+const STAGE_ROWS = [
+  { stage: '01 법랑질 충치', symptom: '통증 거의 없음', cure: '레진' },
+  { stage: '02 상아질 충치', symptom: '차가운 음식 먹을 때 시린 증상', cure: '레진 또는 인레이' },
+  { stage: '03 신경(치수) 침범', symptom: '자발적 통증 발생, 밤에 심해짐', cure: '신경 치료(근관 치료) 후 크라운' },
+  { stage: '04 치근단 염증', symptom: '씹을 때 통증, 잇몸 부음', cure: '신경 치료 후 크라운' },
+  { stage: '05 치아 발치 필요', symptom: '심한 치아 손상, 지속적인 통증, 고름, 잇몸 부종', cure: '발치 후 임플란트, 브릿지, 틀니' },
+];
+
 const CASE_ROWS = [
   { n: 'A', t: '치료 전', d: '어금니 안쪽으로 충치의 어두운 그림자가 신경이 있는 방까지 내려와 있습니다.' },
   { n: 'B', t: '충치 제거 후', d: '썩은 부분을 걷어 내자 신경이 드러났고, 그 자리를 흰색 MTA로 덮었습니다.' },
@@ -259,6 +271,49 @@ export default function CavityPage() {
               </p>
             </div>
           </div>
+
+          {/*
+            단계 도해 — 위 층 셋을 다섯 단계로 늘려 단계마다의 치료까지 보여 준다.
+            ⚠️ 아래 sr-only 표를 지우지 말 것 — 그림 속 글자는 검색·AI 가 못 읽는다.
+               이 페이지에서 가장 촘촘한 정보(5단계 × 증상 × 치료)가 그림 안에 있어서,
+               표가 없으면 기계에는 통째로 안 보인다. 숨김이 아니라 글자 대체본이다.
+            ⚠️ 밝은 판에 얹는 이유 — 어두운 면 위의 흰 도해는 잘린 종이처럼 뜬다.
+            ⚠️ 좁은 화면에서 줄이지 말고 가로로 밀어 보게 한다. 줄이면 그림 속 글자가 뭉갠다.
+          */}
+          <figure className="reveal mt-16">
+            <div className="overflow-x-auto rounded-[20px] border border-white/10 bg-parchment p-3 sm:p-4">
+              <Image
+                src="/img/ai/cavity-stages.webp"
+                alt="충치 진행 5단계 도해. 법랑질 충치, 상아질 충치, 신경(치수) 침범, 치근단 염증, 치아 발치 필요 순으로 단면 그림과 함께 단계별 증상과 치료 방법을 정리했다."
+                width={1536}
+                height={1024}
+                sizes="(min-width: 1024px) 1100px, 100vw"
+                className="h-auto w-full min-w-[720px] rounded-[12px]"
+              />
+            </div>
+
+            <figcaption className="sr-only">
+              <table>
+                <caption>충치 진행 단계별 증상과 치료 방법</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">단계</th>
+                    <th scope="col">증상</th>
+                    <th scope="col">치료 방법</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {STAGE_ROWS.map((r) => (
+                    <tr key={r.stage}>
+                      <th scope="row">{r.stage}</th>
+                      <td>{r.symptom}</td>
+                      <td>{r.cure}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </figcaption>
+          </figure>
         </Container>
       </section>
 
